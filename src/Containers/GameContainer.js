@@ -1,6 +1,6 @@
 import React, { useReducer } from 'react'
 import GameContext, { initialState, GameReducer } from '../Context/GameContext'
-import { Board } from '../Components/Board'
+import Board from '../Components/Board/Board'
 
 import './GameContainer.css'
 
@@ -16,4 +16,4 @@ const App = () => {
   )
 }
 
-export default App 
+export default App;

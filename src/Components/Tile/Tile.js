@@ -1,12 +1,13 @@
 import React, { useContext, useCallback, useMemo } from 'react';
-import GameContext from '../Context/GameContext'
+import PropTypes from 'prop-types';
+import GameContext from '../../Context/GameContext'
 import './Tile.css';
 
-export const Tile = ({ row, col, onClick }) => {
+const Tile = ({ row, col, onClick }) => {
   const { shipPlacements } = useContext(GameContext);
 
   const doClick = useCallback(() => {
-    onClick && onClick(row, col);
+    onClick(row, col);
   }, [row, col, onClick]);
 
   const hasShip = useMemo(() => {
@@ -19,3 +20,11 @@ export const Tile = ({ row, col, onClick }) => {
     </button>
   );
 }
+
+Tile.propTypes = {
+  row: PropTypes.number,
+  col: PropTypes.number,
+  onClick: PropTypes.func.isRequired,
+};
+
+export default Tile;
