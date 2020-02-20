@@ -1,5 +1,31 @@
-.select-ship-container {
+.main-ship-container {
   display: flex;
   justify-content: center;
   padding: 15px;
+  border: 1px solid #000000;
+  width: max-content;
+  align-self: center;
+  margin: 10px 0px 15px 0px;
+  flex-direction: column;
+}
+
+.select-ship-container {
+  display: flex;
+  justify-content: center;
+}
+
+.orientation-btn {
+  width: fit-content;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.orientation-div {
+  display: flex;
+  justify-content: baseline;
+}
+
+.current-orientation {
+  margin: 10px;
+    font-size: 20px;
 }
