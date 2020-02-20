@@ -10,13 +10,13 @@ const Tile = ({ row, col, onClick }) => {
     onClick(row, col);
   }, [row, col, onClick]);
 
-  const hasShip = useMemo(() => {
+  const placedShip = useMemo(() => {
     return shipPlacements[row] && shipPlacements[row][col];
   }, [row, col, shipPlacements]);
 
   return (
     <button className='tile' onClick={doClick}>
-      {hasShip ? 'ship' : 'water'}
+      {placedShip ? placedShip.name : 'water'}
     </button>
   );
 }

@@ -1,38 +1,58 @@
 import React from 'react'
 
 export const initialState = {
-  boardRows: 10,
-  boardCols: 10,
+  boardRows: Array(10).fill(null),
+  boardCols: Array(10).fill(null),
   shipPlacements: {},
   ships: {
-    Carrier: 5,
-    Battleship: 4,
-    Cruiser: 3,
-    Submarine: 3,
-    Destroyer: 2
+    Carrier: {
+      size: 5,
+      damage: 0
+    },
+    Battleship: {
+      size: 4,
+      damage: 0
+    },
+    Cruiser: {
+      size: 3,
+      damage: 0
+    },
+    Submarine: {
+      size: 3,
+      damage: 0
+    },
+    Destroyer: {
+      size: 2,
+      damage: 0
+    }
   },
-  selectedShip: null,
+  selectedShip: { name: null, orientation: 'horizontal' },
 };
 
 export const GameReducer = (prevState, action) => {
   switch (action.type) {
     case 'SELECT_SHIP': {
       const { value, size } = action;
-      console.log(value, size);
-      const selection = { [value]: size };
-      return { ...prevState, selectedShip: selection };
+      const selectedShip = { name: value, size: size, orientation: 'horizontal' };
+      console.log(selectedShip)
+      return { ...prevState, selectedShip };
     }
     case 'PLACE_SHIP': {
+      const selectedShip = prevState.selectedShip;
+      if (!selectedShip) {
+        alert('Select a ship first');
+        return prevState;
+      }
+
       const { row, col } = action;
       const prevPlacements = prevState.shipPlacements;
       const newPlacements = {
         ...prevPlacements,
         [row]: {
           ...prevPlacements[row],
-          [col]: 'placed boat',
+          [col]: prevState.selectedShip,
         }
       };
-      console.log(newPlacements);
       return { ...prevState, shipPlacements: newPlacements };
     }
     case 'CLEAR_PLACEMENTS':

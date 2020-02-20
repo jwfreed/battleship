@@ -1,0 +1,7 @@
+.ship {
+  border: 1px solid #000000;
+  margin: 1px;
+  border-radius: 3px;
+  width: fit-content;
+  padding: 3px;
+}

@@ -1,10 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import './Ship.css'
 
 const Ship = ({ value, size, onClick }) => {
   return (
     <div className='ship' onClick={() => onClick(value, size)}>
-      {value}
+      <h4>{value}</h4>
+      <p>Tile Length: {size}</p>
     </div>
   );
 };
