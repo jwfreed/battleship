@@ -11,6 +11,7 @@ export const initialState = {
     { name: 'Submarine', size: 3 },
     { name: 'Destroyer', size: 2 },
   ],
+  shipsPlaced: { Carrier: false, Battleship: false, Cruiser: false, Submarine: false, Destroyer: false },
   selectedShip: { name: null, size: null },
   placementOrientation: 'H', // H or V
 };
@@ -20,7 +21,6 @@ export const GameReducer = (prevState, action) => {
     case 'SELECT_SHIP': {
       const ship = action.ship;
       const selectedShip = { name: ship.name, size: ship.size };
-      console.log(selectedShip);
       return { ...prevState, selectedShip };
     }
     case 'CHANGE_SHIP_ORIENTATION': {
@@ -32,6 +32,11 @@ export const GameReducer = (prevState, action) => {
       const selectedShip = prevState.selectedShip;
       if (!selectedShip.name) {
         alert('Select a ship first');
+        return prevState;
+      }
+
+      if (prevState.shipsPlaced[selectedShip.name]) {
+        alert('Ship is already on the board')
         return prevState;
       }
 
@@ -48,11 +53,25 @@ export const GameReducer = (prevState, action) => {
           }
         };
         for (let i = 0; i < selectedShip.size; i++) {
-          let column = col + i;
-          newPlacements[row][column] = selectedShip
+          let nextCol = col + i;
+          newPlacements[row][nextCol] = selectedShip;
         }
       }
-      return { ...prevState, shipPlacements: newPlacements };
+
+      if (prevState.placementOrientation === 'V') {
+        newPlacements = {
+          ...prevPlacements,
+        }
+        for (let i = 0; i < selectedShip.size; i++) {
+          let nextRow = row + i;
+          newPlacements[nextRow] = {
+            ...prevPlacements[nextRow],
+          }
+          newPlacements[nextRow][col] = selectedShip;
+        }
+      }
+
+      return { ...prevState, shipPlacements: newPlacements, shipsPlaced: { [selectedShip.name]: true } };
     }
     case 'CLEAR_PLACEMENTS':
       return { ...prevState, shipPlacements: initialState.shipPlacements };
