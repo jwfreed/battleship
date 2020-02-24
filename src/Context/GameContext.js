@@ -11,7 +11,7 @@ export const initialState = {
     { name: 'Submarine', size: 3 },
     { name: 'Destroyer', size: 2 },
   ],
-  shipsPlaced: { Carrier: false, Battleship: false, Cruiser: false, Submarine: false, Destroyer: false },
+  shipsPlaced: {},
   selectedShip: { name: null, size: null },
   placementOrientation: 'H', // H or V
 };
@@ -30,13 +30,13 @@ export const GameReducer = (prevState, action) => {
     }
     case 'PLACE_SHIP': {
       const selectedShip = prevState.selectedShip;
-      if (!selectedShip.name) {
+      if (!selectedShip.name) {           // if no selected ship
         alert('Select a ship first');
         return prevState;
       }
 
-      if (prevState.shipsPlaced[selectedShip.name]) {
-        alert('Ship is already on the board')
+      if (prevState.shipsPlaced[selectedShip.name]) {             // if ship is already on the board
+        alert('Ship is already on the board\n Select another ship')
         return prevState;
       }
 
@@ -45,7 +45,9 @@ export const GameReducer = (prevState, action) => {
 
       let newPlacements = {};
 
-      if (prevState.placementOrientation === 'H') {
+      let shipPlacementSuccessful = { [selectedShip.name]: true }
+
+      if (prevState.placementOrientation === 'H') {       // if orientation is set to horizontal
         newPlacements = {
           ...prevPlacements,
           [row]: {
@@ -54,24 +56,41 @@ export const GameReducer = (prevState, action) => {
         };
         for (let i = 0; i < selectedShip.size; i++) {
           let nextCol = col + i;
-          newPlacements[row][nextCol] = selectedShip;
+          if (nextCol < prevState.boardCols.length) {
+            newPlacements[row][nextCol] = selectedShip;
+          } else {
+            alert('off board')
+            newPlacements = { ...prevPlacements }
+            shipPlacementSuccessful = { [selectedShip.name]: false }
+            return prevState;
+          }
         }
       }
 
-      if (prevState.placementOrientation === 'V') {
+      if (prevState.placementOrientation === 'V') {       // if orientation is set to vertical
         newPlacements = {
           ...prevPlacements,
         }
         for (let i = 0; i < selectedShip.size; i++) {
           let nextRow = row + i;
-          newPlacements[nextRow] = {
-            ...prevPlacements[nextRow],
+          if (nextRow < prevState.boardRows.length) {
+            newPlacements[nextRow] = {
+              ...prevPlacements[nextRow],
+            }
+            newPlacements[nextRow][col] = selectedShip;
+          } else {
+            alert('off board')
+            newPlacements = { ...prevPlacements }
+            shipPlacementSuccessful = { [selectedShip.name]: false }
+            return prevState;
           }
-          newPlacements[nextRow][col] = selectedShip;
         }
+        // for (let row in newPlacements) {
+
+        // }
       }
 
-      return { ...prevState, shipPlacements: newPlacements, shipsPlaced: { [selectedShip.name]: true } };
+      return { ...prevState, shipPlacements: newPlacements, shipsPlaced: shipPlacementSuccessful };
     }
     case 'CLEAR_PLACEMENTS':
       return { ...prevState, shipPlacements: initialState.shipPlacements };
