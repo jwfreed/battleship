@@ -1,6 +1,6 @@
 import React, { useContext, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import GameContext from '../../Context/GameContext'
+import GameContext from '../../Context/GameContext';
 import './Tile.css';
 
 const Tile = ({ row, col, onClick }) => {
@@ -10,16 +10,16 @@ const Tile = ({ row, col, onClick }) => {
     onClick(row, col);
   }, [row, col, onClick]);
 
-  const placedShip = useMemo(() => {
-    return shipPlacements[row] && shipPlacements[row][col];
-  }, [row, col, shipPlacements]);
+  const placedShip = useMemo(() => (
+    shipPlacements[row] && shipPlacements[row][col]
+  ), [row, col, shipPlacements]);
 
   return (
-    <button className='tile' onClick={doClick}>
+    <button className="tile" onClick={doClick}>
       {placedShip ? placedShip.name : 'water'}
     </button>
   );
-}
+};
 
 Tile.propTypes = {
   row: PropTypes.number,

@@ -1,8 +1,8 @@
-import React, { useContext, useCallback } from 'react'
-import GameContext from '../../Context/GameContext'
-import Ship from '../../Components/Ship/Ship'
+import React, { useContext, useCallback } from 'react';
+import GameContext from '../../Context/GameContext';
+import Ship from '../../Components/Ship/Ship';
 
-import './SelectShip.css'
+import './SelectShip.css';
 
 const ShipSelect = () => {
   const { ships, selectedShip, placementOrientation, dispatch } = useContext(GameContext);
@@ -12,19 +12,19 @@ const ShipSelect = () => {
   }, [dispatch]);
 
   const doChangeShipOrientation = () => {
-    dispatch({ type: 'CHANGE_SHIP_ORIENTATION' })
-  }
+    dispatch({ type: 'CHANGE_SHIP_ORIENTATION' });
+  };
 
-  const renderShips = useCallback(() => {
-    return ships.map((ship) => (
+  const renderShips = useCallback(() => (
+    ships.map((ship) => (
       <Ship
         key={ship.name}
         ship={ship}
         selected={selectedShip && ship.name === selectedShip.name}
         onClick={doSelectShip}
       />
-    ));
-  }, [ships, selectedShip, doSelectShip]);
+    ))
+  ), [ships, selectedShip, doSelectShip]);
 
   return (
     <div className="main-ship-container">
