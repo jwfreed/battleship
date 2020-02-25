@@ -8,6 +8,8 @@ const GameReducer = (prevState, action) => {
       return GameActions.changeOrientation(prevState, action);
     case 'PLACE_SHIP':
       return GameActions.placeShip(prevState, action);
+    case 'REMOVE_SHIP':
+      return GameActions.removeShip(prevState, action);
     default:
       return prevState;
   }

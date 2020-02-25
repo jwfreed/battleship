@@ -79,7 +79,7 @@ export const placeShip = (prevState, action) => {
           ...currentPlacements[nextRow],
         };
         newPlacements[nextRow][col] = selectedShip;
-
+        placedShipRowColArr.push([nextRow, col]);
         if (currentPlacements[nextRow] && currentPlacements[nextRow][col]) {
           return invalidMove();
         }
@@ -90,4 +90,18 @@ export const placeShip = (prevState, action) => {
   }
 
   return { ...prevState, shipPlacements: newPlacements, shipsPlaced: shipPlacementSuccessful };
+};
+
+export const removeShip = (prevState, action) => {
+  const currentShipsPlaced = prevState.shipsPlaced;
+  const currentPlacements = prevState.shipPlacements;
+
+  const removedShipPlacements = currentShipsPlaced[action.ship].forEach(arr => {
+    currentPlacements[arr[0]][arr[1]] = undefined
+  })
+  const remonedShipsPlaced = currentShipsPlaced[action.ship] = undefined;
+  console.log(currentShipsPlaced)
+  console.log(currentPlacements)
+
+  return { ...prevState, shipsPlaced: { ...currentShipsPlaced, remonedShipsPlaced }, shipPlacements: { ...currentShipsPlaced, removedShipPlacements } };
 };

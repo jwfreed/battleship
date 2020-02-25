@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import GameContext from '../../Context/GameContext';
 import './Ship.css';
@@ -6,14 +6,14 @@ import './Ship.css';
 const Ship = ({ ship, selected, onClick }) => {
   const { shipsPlaced, dispatch } = useContext(GameContext);
 
-  const shipOnBoard = (() => {
-    if (Object.entries(shipsPlaced).length === 0 && shipsPlaced.constructor === Object) {
-      return false;
-    } else {
-      const ships = Object.keys(shipsPlaced);
-      return ships.includes(ship.name);
-    }
-  })();
+  const doResetShip = (ship) => {
+    dispatch({ type: 'REMOVE_SHIP', ship });
+  };
+
+  const shipOnBoard = useMemo(() => {
+    const shipPlacement = shipsPlaced[ship.name];
+    return !!shipPlacement;
+  }, [ship.name, shipsPlaced]);
 
   return (
     <div className="ship" >
@@ -25,7 +25,7 @@ const Ship = ({ ship, selected, onClick }) => {
           Tile Length: {ship.size}
         </p>
       </div>
-      {shipOnBoard && <button>Reset {ship.name}</button>}
+      {shipOnBoard && <button onClick={() => doResetShip(ship.name)}>Reset {ship.name}</button>}
     </div>
   )
 };

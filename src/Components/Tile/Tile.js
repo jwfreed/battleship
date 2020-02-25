@@ -16,7 +16,7 @@ const Tile = ({ row, col, onClick }) => {
 
   return (
     <button className="tile" onClick={doClick}>
-      {placedShip ? placedShip.name : 'water'}
+      {placedShip ? placedShip.name : '-'}
     </button>
   );
 };
