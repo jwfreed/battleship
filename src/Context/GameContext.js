@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 export const initialState = {
   boardRows: Array(5).fill(null),

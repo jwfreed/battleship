@@ -1,72 +1,90 @@
+import { initialState } from './GameContext'
+
 export const selectShip = (prevState, action) => {
   const ship = action.ship;
   const selectedShip = { name: ship.name, size: ship.size };
   return { ...prevState, selectedShip };
 };
 
-export const changeOrientation = (prevState, action) => {
+export const changeOrientation = (prevState) => {
   const currentOrientation = prevState.placementOrientation;
   const placementOrientation = currentOrientation === 'H' ? 'V' : 'H';
   return { ...prevState, placementOrientation };
 };
 
 export const placeShip = (prevState, action) => {
+  const { row, col } = action;
   const selectedShip = prevState.selectedShip;
+  const currentPlacements = prevState.shipPlacements;
+
+  let newPlacements = {};
+  let shipPlacementSuccessful = { [selectedShip.name]: true };
+
   if (!selectedShip.name) { // if no selected ship
     alert('Select a ship first');
     return prevState;
   }
 
   if (prevState.shipsPlaced[selectedShip.name]) { // if ship is already on the board
-    alert('Ship is already on the board\nSelect another ship')
+    alert('Ship is already on the board\nSelect another ship');
     return prevState;
   }
 
-  const { row, col } = action;
-  const prevPlacements = prevState.shipPlacements;
+  const noOverflow = (rowOrCol) => {
+    const shipLength = parseInt(selectedShip.size);
+    const arg = parseInt(rowOrCol);
+    const boardLength = parseInt(initialState.boardCols.length);
+    if (boardLength - arg >= shipLength) return true;
+  }
 
-  let newPlacements = {};
-
-  let shipPlacementSuccessful = { [selectedShip.name]: true }
+  const invalidMove = () => {
+    alert('cannot place ships off board or on occupied tile');
+    newPlacements = { ...currentPlacements };
+    shipPlacementSuccessful = { [selectedShip.name]: false };
+    return prevState;
+  }
 
   if (prevState.placementOrientation === 'H') { // if orientation is set to horizontal
     newPlacements = {
-      ...prevPlacements,
+      ...currentPlacements,
       [row]: {
-        ...prevPlacements[row],
-      }
+        ...currentPlacements[row],
+      },
     };
-    for (let i = 0; i < selectedShip.size; i++) {
-      let nextCol = col + i;
-      if (nextCol < prevState.boardCols.length && prevPlacements[row] === undefined) {
+
+    if (noOverflow(col)) {
+      for (let i = 0; i < selectedShip.size; i++) {
+        const nextCol = col + i;
         newPlacements[row][nextCol] = selectedShip;
-      } else {
-        alert('cannot place ships off board or on occupied tile')
-        newPlacements = { ...prevPlacements }
-        shipPlacementSuccessful = { [selectedShip.name]: false }
-        return prevState;
+
+        if (currentPlacements[row] && currentPlacements[row][nextCol]) {
+          return invalidMove();
+        }
       }
+    } else {
+      return invalidMove();
     }
   }
 
   if (prevState.placementOrientation === 'V') { // if orientation is set to vertical
     newPlacements = {
-      ...prevPlacements,
-    }
-    for (let i = 0; i < selectedShip.size; i++) {
-      let nextRow = row + i;
-      if (nextRow < prevState.boardRows.length) {
-        // console.log(prevPlacements)
+      ...currentPlacements,
+    };
+
+    if (noOverflow(row)) {
+      for (let i = 0; i < selectedShip.size; i++) {
+        const nextRow = row + i;
         newPlacements[nextRow] = {
-          ...prevPlacements[nextRow],
-        }
+          ...currentPlacements[nextRow],
+        };
         newPlacements[nextRow][col] = selectedShip;
-      } else {
-        alert('cannot place ships off board or on occupied tile')
-        newPlacements = { ...prevPlacements }
-        shipPlacementSuccessful = { [selectedShip.name]: false }
-        return prevState;
+
+        if (currentPlacements[nextRow] && currentPlacements[nextRow][col]) {
+          return invalidMove();
+        }
       }
+    } else {
+      return invalidMove();
     }
   }
 
