@@ -18,7 +18,8 @@ export const placeShip = (prevState, action) => {
   const currentPlacements = prevState.shipPlacements;
 
   let newPlacements = {};
-  let shipPlacementSuccessful = { [selectedShip.name]: true };
+  const placedShipRowColArr = []
+  let shipPlacementSuccessful = { ...prevState.shipsPlaced, [selectedShip.name]: placedShipRowColArr };
 
   if (!selectedShip.name) { // if no selected ship
     alert('Select a ship first');
@@ -56,7 +57,7 @@ export const placeShip = (prevState, action) => {
       for (let i = 0; i < selectedShip.size; i++) {
         const nextCol = col + i;
         newPlacements[row][nextCol] = selectedShip;
-
+        placedShipRowColArr.push([row, nextCol]);
         if (currentPlacements[row] && currentPlacements[row][nextCol]) {
           return invalidMove();
         }
