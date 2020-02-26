@@ -105,3 +105,7 @@ export const removeShip = (prevState, action) => {
 
   return { ...prevState, shipsPlaced: { ...currentShipsPlaced, remonedShipsPlaced }, shipPlacements: { ...currentShipsPlaced, removedShipPlacements } };
 };
+
+export const resetGame = (prevState, action) => {
+  return initialState;
+};

@@ -8,11 +8,18 @@ import './Game.css';
 const Game = () => {
   const [state, dispatch] = useReducer(GameReducer, initialState);
 
+  const doResetGame = () => {
+    dispatch({ type: 'RESET_GAME' });
+  };
+
   return (
     <div className="game">
       <header className="title">Battleship</header>
       <GameContext.Provider value={{ ...state, dispatch }}>
         <ShipSelect />
+        <div className="reset-div">
+          <button className="reset-btn" onClick={doResetGame}>Reset Game</button>
+        </div>
         <Board />
       </GameContext.Provider>
     </div>

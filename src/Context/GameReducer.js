@@ -1,4 +1,5 @@
 import * as GameActions from './GameActions';
+import { initialState } from './GameContext';
 
 const GameReducer = (prevState, action) => {
   switch (action.type) {
@@ -10,6 +11,8 @@ const GameReducer = (prevState, action) => {
       return GameActions.placeShip(prevState, action);
     case 'REMOVE_SHIP':
       return GameActions.removeShip(prevState, action);
+    case 'RESET_GAME':
+      return GameActions.resetGame(initialState);
     default:
       return prevState;
   }
