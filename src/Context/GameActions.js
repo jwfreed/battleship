@@ -1,10 +1,6 @@
 import { initialState } from './GameContext'
 
 export const selectShip = (prevState, action) => {
-  if (prevState.view === 'A') {
-    alert('Cannot place ships in Attack View');
-    return prevState;
-  };
   const ship = action.ship;
   const selectedShip = { name: ship.name, size: ship.size };
   return { ...prevState, selectedShip };

@@ -25,7 +25,7 @@ const Game = () => {
     <div className="game">
       <header className="title">Battleship</header>
       <GameContext.Provider value={{ ...state, dispatch }}>
-        <ShipSelect />
+        {state.view === 'P' && <ShipSelect />}
         <div className="reset-view-div">
           <button className="reset-btn" onClick={doResetGame}>Reset Game</button>
           <button className="view-btn" onClick={doChangeView}>Board View</button>
