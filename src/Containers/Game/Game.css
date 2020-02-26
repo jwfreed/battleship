@@ -18,15 +18,22 @@ body {
   text-align: center;
 }
 
-.reset-div {
+.reset-view-div {
   display: flex;
-  justify-content: center;
-  margin: 0px 0px 10px 0px;
+  justify-content: space-evenly;
 }
 
-.reset-btn {
+.reset-btn, .view-btn {
   text-align: center;
   font-size: 15px;
   width: fit-content;
   height: auto;
+}
+
+.reset-btn {
+  color: crimson;
+}
+
+.view-text {
+  text-align: center;
 }

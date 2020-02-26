@@ -13,6 +13,10 @@ const GameReducer = (prevState, action) => {
       return GameActions.removeShip(prevState, action);
     case 'RESET_GAME':
       return GameActions.resetGame(initialState);
+    case 'ATTACK':
+      return GameActions.attack(prevState, action);
+    case 'CHANGE_VIEW':
+      return GameActions.changeView(prevState, action);
     default:
       return prevState;
   }

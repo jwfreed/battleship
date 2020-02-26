@@ -1,5 +1,8 @@
 import React from 'react';
 
+const localRawState = localStorage.getItem('state');
+export const localState = localRawState && JSON.parse(localRawState);
+
 export const initialState = {
   boardRows: Array(5).fill(null),
   boardCols: Array(5).fill(null),
@@ -14,6 +17,8 @@ export const initialState = {
   shipsPlaced: {},
   selectedShip: { name: null, size: null },
   placementOrientation: 'H', // H or V
+  view: 'P', // P or A
+  attackPlacements: {},
 };
 
 export default React.createContext();
