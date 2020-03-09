@@ -62,7 +62,11 @@ app.ws('/match/:id', (connection, req) => {
 
       const query = 'UPDATE matches SET player2 = $1 WHERE id = $2';
       const values = [data.id, matchId]; // player2 value from client
-      await pool.query(query, values);
+      try {
+        await pool.query(query, values);
+      } catch (err) {
+        connection.send(err);
+      };
 
       Object.keys(connections).forEach((playerId) => {
         if (playerId === data.id) return;
@@ -81,21 +85,32 @@ app.ws('/match/:id', (connection, req) => {
       if (players.player1 !== connection.id && players.player2 !== connection.id) {
         connection.send('you are not a player in this game');
         return;
-      } else if (players.player1 === connection.id) {
+      };
+      if (players.player1 === connection.id) {
         const query = 'UPDATE matches SET playeroneshipplacements = $1 WHERE id = $2';
         const values = [placements, matchId];
-        await pool.query(query, values);
-      } else {
+        try {
+          await pool.query(query, values);
+        } catch (err) {
+          connection.send(err);
+        };
+      };
+      if (players.player2 === connection.id) {
         const query = 'UPDATE matches SET playertwoshipplacements = $1 WHERE id = $2';
         const values = [JSON.stringify(placements), matchId];
-        await pool.query(query, values);
+        try {
+          await pool.query(query, values);
+        } catch (err) {
+          connection.send(err);
+        };
       };
+
 
       Object.keys(connections).forEach((playerId) => {
         if (playerId === connection.id) return;
 
         const playerConnections = connections[playerId] || [];
-        playerConnections.forEach((playerConnection) => playerConnection.send('opponent placed his ships'));
+        playerConnections.forEach((playerConnection) => playerConnection.send('opponent ships are in place'));
       });
     };
 
@@ -113,21 +128,16 @@ app.ws('/match/:id', (connection, req) => {
       if (matchData.player1 !== connection.id && matchData.player2 !== connection.id) {
         connection.send('you are not a player in this game');
         return;
-      }
+      };
+
+      const msgAllConnections = (msg) => {
+        Object.keys(connections).forEach((playerId) => {
+          const playerConnections = connections[playerId];
+          playerConnections.forEach((connection) => connection.send(msg));
+        });
+      };
+
       if (matchData.player1 === connection.id) {
-        if (matchData.playeroneattackplacements) {
-          const attackPlacements = matchData.playeroneattackplacements;
-          attackPlacements.push([row, col]);
-
-          const query = 'UPDATE matches SET playeroneattackplacements = ARRAY[$1] WHERE id = $2';
-          const values = [JSON.stringify(attackPlacements), matchId];
-          await pool.query(query, values);
-          return;
-        }
-        const query = 'UPDATE matches SET playeroneattackplacements = ARRAY[$1] WHERE id = $2';
-        const values = [JSON.stringify([row, col]), matchId];
-        await pool.query(query, values);
-
         if (matchData.playertwoshipplacements[row] && matchData.playertwoshipplacements[row][col]) {
           Object.keys(connections).forEach((playerId) => {
             const playerConnections = connections[playerId];
@@ -139,30 +149,64 @@ app.ws('/match/:id', (connection, req) => {
             playerConnections.forEach((connection) => connection.send('miss!'));
           });
         };
+
+        const attackPlacements = [...matchData.playeroneattackplacements];
+        if (matchData.playeroneattackplacements) {
+          attackPlacements.push([row, col]);
+
+          const query = 'UPDATE matches SET playeroneattackplacements = ARRAY[$1] WHERE id = $2';
+          const values = [JSON.stringify(attackPlacements), matchId];
+          try {
+            await pool.query(query, values);
+            return;
+          } catch (err) {
+            connection.send(err);
+          };
+        };
+        attackPlacements = [[row, col]];
+        const query = 'UPDATE matches SET playeroneattackplacements = ARRAY[$1] WHERE id = $2';
+        const values = [JSON.stringify(attackPlacements), matchId];
+        try {
+          await pool.query(query, values);
+        } catch (err) {
+          connection.send(err);
+        };
       };
+
       if (matchData.playertwoattackplacements) {
-        const attackPlacements = matchData.playertwoattackplacements;
+        if (matchData.playeroneshipplacements[row] && matchData.playeroneshipplacements[row][col]) {
+          Object.keys(connections).forEach((playerId) => {
+            const playerConnections = connections[playerId];
+            playerConnections.forEach((connection) => connection.send('hit!'));
+          });
+        } else {
+          Object.keys(connections).forEach((playerId) => {
+            const playerConnections = connections[playerId];
+            playerConnections.forEach((connection) => connection.send('miss!'));
+          });
+        };
+
+        const attackPlacements = [...matchData.playertwoattackplacements];
         attackPlacements.push([row, col]);
-        console.log('attack', attackPlacements)
+
         const query = 'UPDATE matches SET playertwoattackplacements = $1 WHERE id = $2';
         const values = [JSON.stringify(attackPlacements), matchId];
-        await pool.query(query, values);
-        return;
+        try {
+          await pool.query(query, values);
+          return;
+        } catch (err) {
+          connection.send(err);
+        };
       };
-      const query = 'UPDATE matches SET playertwoattackplacements = $1 WHERE id = $2';
-      const values = [JSON.stringify([row, col]), matchId];
-      await pool.query(query, values);
-
-      if (matchData.playeroneshipplacements[row] && matchData.playeroneshipplacements[row][col]) {
-        Object.keys(connections).forEach((playerId) => {
-          const playerConnections = connections[playerId];
-          playerConnections.forEach((connection) => connection.send('hit!'));
-        });
-      } else {
-        Object.keys(connections).forEach((playerId) => {
-          const playerConnections = connections[playerId];
-          playerConnections.forEach((connection) => connection.send('miss!'));
-        });
+      if (!matchData.playertwoattackplacements) {
+        attackPlacement = [[row, col]];
+        const query = 'UPDATE matches SET playertwoattackplacements = $1 WHERE id = $2';
+        const values = [JSON.stringify(attackPlacement), matchId];
+        try {
+          await pool.query(query, values);
+        } catch (err) {
+          connection.send(err);
+        };
       };
     };
   });
