@@ -1,4 +1,14 @@
 import React from 'react';
+import shortid from 'shortid';
+
+const currentUID = (() => {
+  const storedUID = localStorage.getItem('uid');
+  if (storedUID) return storedUID;
+
+  const newUID = shortid.generate();
+  localStorage.setItem('uid', newUID);
+  return newUID;
+})();
 
 const localRawState = localStorage.getItem('state');
 export const localState = localRawState && JSON.parse(localRawState);
@@ -18,7 +28,10 @@ export const initialState = {
   selectedShip: { name: null, size: null },
   placementOrientation: 'H', // H or V
   view: 'P', // P or A
-  attackPlacements: {},
+  myAttackPlacements: {},
+  opponentAttackPlacements: {},
+  uid: currentUID,
+  matchID: null,
 };
 
 export default React.createContext();

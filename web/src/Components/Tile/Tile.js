@@ -4,7 +4,7 @@ import GameContext from '../../Context/GameContext';
 import './Tile.css';
 
 const Tile = ({ row, col, onClick, onAttack }) => {
-  const { shipPlacements, view, attackPlacements } = useContext(GameContext);
+  const { shipPlacements, view, myAttackPlacements } = useContext(GameContext);
 
   const doClick = useCallback(() => {
     onClick(row, col);
@@ -19,8 +19,8 @@ const Tile = ({ row, col, onClick, onAttack }) => {
   ), [row, col, shipPlacements]);
 
   const attackAttempts = useMemo(() => (
-    attackPlacements[row] && attackPlacements[row][col]
-  ), [row, col, attackPlacements]);
+    myAttackPlacements[row] && myAttackPlacements[row][col]
+  ), [row, col, myAttackPlacements]);
 
   return (
     (

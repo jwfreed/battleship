@@ -111,29 +111,46 @@ export const resetGame = () => {
 };
 
 export const attack = (prevState, action) => {
-  const { row, col } = action;
+  const { id, data } = action;
   const shipPlacements = prevState.shipPlacements;
-  const currentAttacks = prevState.attackPlacements;
-  let newAttacks = { ...currentAttacks };
 
-  newAttacks = {
-    ...currentAttacks,
-    [row]: {
-      ...currentAttacks[row],
-    },
+  const myCurrentAttacks = prevState.myAttackPlacements;
+  let myNewAttacks = { ...myCurrentAttacks };
+
+  const opponentCurrentAttacks = prevState.opponentAttackPlacements;
+  let opponentNewAttacks = { ...opponentCurrentAttacks };
+
+  console.log('here', action)
+
+  if (id === initialState.uid) {
+    data.forEach((coordinate) => {
+      let row = coordinate[0];
+      let col = coordinate[1];
+      myNewAttacks = {
+        ...myCurrentAttacks,
+        [row]: {
+          ...myCurrentAttacks[row]
+        },
+      };
+
+      if (shipPlacements[row] && shipPlacements[row][col]) {
+        myNewAttacks[row][col] = 'hit'
+      } else {
+        myNewAttacks[row][col] = 'miss';
+      };
+    });
   };
 
-  if (shipPlacements[row] && shipPlacements[row][col]) {
-    newAttacks[row][col] = 'hit'
-  } else {
-    newAttacks[row][col] = 'miss';
-  };
-
-  return { ...prevState, attackPlacements: newAttacks };
+  return { ...prevState, myAttackPlacements: myNewAttacks };
 };
 
 export const changeView = (prevState) => {
   const currentView = prevState.view;
-  const view = currentView === 'P' ? 'A' : 'P'
-  return { ...prevState, view }
+  const view = currentView === 'P' ? 'A' : 'P';
+  return { ...prevState, view };
+};
+
+export const joinGame = (prevState, action) => {
+  const matchID = action.matchID;
+  return { ...prevState, matchID };
 };

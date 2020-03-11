@@ -4,7 +4,7 @@ import GameContext from '../../Context/GameContext';
 
 import './Board.css';
 
-const Board = () => {
+const Board = ({ doAttackTile }) => {
   const { boardRows, boardCols, dispatch } = useContext(GameContext);
 
   const doPlaceShip = useCallback((row, col) => {
@@ -12,8 +12,9 @@ const Board = () => {
   }, [dispatch]);
 
   const doAttack = useCallback((row, col) => {
-    dispatch({ type: 'ATTACK', row, col });
-  }, [dispatch]);
+    // dispatch({ type: 'ATTACK', row, col });
+    doAttackTile(row, col);
+  }, [doAttackTile]);
 
   return (
     <div className="board">
