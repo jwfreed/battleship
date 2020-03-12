@@ -16,20 +16,16 @@ export const Match = () => {
 
   useEffect(() => {
     if (isConnected) {
-      const authMessage = JSON.stringify({ action: 'auth', id: uid });
-      sendMessage(authMessage)
+      const authMessage = JSON.stringify({ action: 'AUTH', uid: uid });
+      sendMessage(authMessage);
     }
   }, [isConnected, sendMessage, uid]);
 
   useEffect(() => {
     if (lastMessage && lastMessage.data) {
-      if (lastMessage.data === 'hit!' || lastMessage.data === 'miss!' || lastMessage.data === 'opponent connected') {
-        setMessage(lastMessage.data);
-      } else {
-        const data = JSON.parse(lastMessage.data);
-        console.log(data)
-        dispatch({ type: 'ATTACK', action: data });
-      };
+      const msg = JSON.parse(lastMessage.data);
+
+      dispatch({ type: 'UPDATE_CONTEXT', data: msg });
     };
   }, [lastMessage, dispatch])
 
@@ -42,12 +38,12 @@ export const Match = () => {
   };
 
   const doCommitShips = () => {
-    const placeShipsMessage = JSON.stringify({ action: 'shipPlacement', placements: shipPlacements });
+    const placeShipsMessage = JSON.stringify({ action: 'SHIP_PLACEMENTS', placements: shipPlacements, uid: uid });
     sendMessage(placeShipsMessage);
   };
 
   const doAttackTile = (row, col) => {
-    const placeAttackMessage = JSON.stringify({ action: 'attackPlacement', attackPlacement: [row, col] });
+    const placeAttackMessage = JSON.stringify({ action: 'ATTACK', row: row, col: col, uid: uid });
     sendMessage(placeAttackMessage);
   };
 

@@ -15,8 +15,8 @@ const GameReducer = (prevState, action) => {
       return GameActions.resetGame(initialState);
     case 'CHANGE_VIEW':
       return GameActions.changeView(prevState, action);
-    case 'ATTACK':
-      return GameActions.attack(prevState, action);
+    case 'UPDATE_CONTEXT':
+      return GameActions.updateContext(prevState, action);
     case 'JOIN_GAME':
       return GameActions.joinGame(prevState, action);
     default:
