@@ -111,7 +111,7 @@ export const resetGame = () => {
 };
 
 export const updateContext = (prevState, action) => {
-  const { player_one, player_one_attack_placements, player_two_attack_placements, turn, status } = action.data;
+  const { player_one, player_one_attack_placements, player_two_attack_placements, status } = action.data;
   // {"match":"9pMMCSHx","player_one":"OMovA5qJ","player_two":"9wRtyZb3","player_one_attack_placements":null,"player_two_attack_placements":null,"status":null}
   console.log(action.data)
   const playerId = initialState.uid;
@@ -119,13 +119,13 @@ export const updateContext = (prevState, action) => {
   const myAttacks = player_one === playerId ? player_one_attack_placements : player_two_attack_placements;
   const opponentAttacks = myAttacks === player_one_attack_placements ? player_two_attack_placements : player_one_attack_placements;
 
-  const updateTurnStatus = prevState.turn === 'player_one' ? 'player_two' : 'player_one';
+  // const updateTurnStatus = prevState.turn === 'player_one' ? 'player_two' : 'player_one';
 
   return {
     ...prevState,
     myAttackPlacements: myAttacks,
     opponentAttackPlacements: opponentAttacks,
-    turn: updateTurnStatus,
+    // turn: updateTurnStatus,
     status: status,
   };
 };

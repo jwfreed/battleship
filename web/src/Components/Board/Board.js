@@ -1,35 +1,27 @@
 import React, { useContext, useCallback, useMemo } from 'react';
 import Tile from '../Tile/Tile';
 import GameContext from '../../Context/GameContext';
-
+import { createAttacksObj } from './boardService'
 import './Board.css';
 
 const Board = ({ doAttackTile }) => {
-  const { boardRows, boardCols, myAttackPlacements, dispatch } = useContext(GameContext);
+  const { boardRows, boardCols, myAttackPlacements, opponentAttackPlacements, dispatch } = useContext(GameContext);
 
   const doPlaceShip = useCallback((row, col) => {
     dispatch({ type: 'PLACE_SHIP', row, col });
   }, [dispatch]);
 
   const doAttack = useCallback((row, col) => {
-    // dispatch({ type: 'ATTACK', row, col });
     doAttackTile(row, col);
   }, [doAttackTile]);
 
   const myAttacks = useMemo(() => {
-    const attacks = {};
-    myAttackPlacements.forEach(attack => {
-      console.log(attack)
-      const row = attack.row;
-      const col = attack.col;
-      const hit = attack.hit ? attack.hit.name : 'miss';
-      attacks[row] = {
-        ...attacks[row],
-        [col]: hit,
-      };
-    });
-    return attacks;
+    return createAttacksObj(myAttackPlacements);
   }, [myAttackPlacements]);
+
+  const opponentAttacks = useMemo(() => {
+    return createAttacksObj(opponentAttackPlacements);
+  }, [opponentAttackPlacements]);
 
   return (
     <div className="board">
@@ -37,7 +29,7 @@ const Board = ({ doAttackTile }) => {
         boardRows.map((rv, rowIndex) => (
           <div key={`row-${rowIndex}`} className="boardRow">
             {boardCols.map((cv, colIndex) => (
-              <Tile key={`${rowIndex}-${colIndex}`} row={rowIndex} col={colIndex} onClick={doPlaceShip} onAttack={doAttack} myAttacks={myAttacks} />
+              <Tile key={`${rowIndex}-${colIndex}`} row={rowIndex} col={colIndex} onClick={doPlaceShip} onAttack={doAttack} myAttacks={myAttacks} opponentAttacks={opponentAttacks} />
             ))}
           </div>
         ))

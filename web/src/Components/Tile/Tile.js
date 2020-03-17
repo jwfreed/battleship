@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import GameContext from '../../Context/GameContext';
 import './Tile.css';
 
-const Tile = ({ row, col, onClick, onAttack, myAttacks }) => {
+const Tile = ({ row, col, onClick, onAttack, myAttacks, opponentAttacks }) => {
   const { shipPlacements, view } = useContext(GameContext);
 
   const doClick = useCallback(() => {
@@ -18,16 +18,20 @@ const Tile = ({ row, col, onClick, onAttack, myAttacks }) => {
     shipPlacements[row] && shipPlacements[row][col]
   ), [row, col, shipPlacements]);
 
+  const opponentAttempts = useMemo(() => (
+    opponentAttacks[row] && opponentAttacks[row][col]
+  ), [row, col, opponentAttacks]);
+
   const attackAttempts = useMemo(() => (
     myAttacks[row] && myAttacks[row][col]
   ), [row, col, myAttacks]);
 
-  console.log(attackAttempts)
   return (
     (
       view === 'P' ?
         <button className="tile" onClick={doClick}>
           {placedShip ? placedShip.name : '-'}
+          {opponentAttempts ? '*' : ''}
         </button> :
         <button className="tile" onClick={doAttack}>
           {attackAttempts ? attackAttempts : '-'}

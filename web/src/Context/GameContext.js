@@ -28,8 +28,8 @@ export const initialState = {
   selectedShip: { name: null, size: null },
   placementOrientation: 'H', // H or V
   view: 'P', // P or A
-  myAttackPlacements: {},
-  opponentAttackPlacements: {},
+  myAttackPlacements: [],
+  opponentAttackPlacements: [],
   uid: currentUID,
   matchID: null,
   turn: 'player_one',
