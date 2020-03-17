@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import GameContext from '../../Context/GameContext';
 import './Tile.css';
 
-const Tile = ({ row, col, onClick, onAttack }) => {
-  const { shipPlacements, view, myAttackPlacements } = useContext(GameContext);
+const Tile = ({ row, col, onClick, onAttack, myAttacks }) => {
+  const { shipPlacements, view } = useContext(GameContext);
 
   const doClick = useCallback(() => {
     onClick(row, col);
@@ -19,9 +19,10 @@ const Tile = ({ row, col, onClick, onAttack }) => {
   ), [row, col, shipPlacements]);
 
   const attackAttempts = useMemo(() => (
-    myAttackPlacements[row] && myAttackPlacements[row][col]
-  ), [row, col, myAttackPlacements]);
+    myAttacks[row] && myAttacks[row][col]
+  ), [row, col, myAttacks]);
 
+  console.log(attackAttempts)
   return (
     (
       view === 'P' ?

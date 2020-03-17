@@ -32,6 +32,8 @@ export const initialState = {
   opponentAttackPlacements: {},
   uid: currentUID,
   matchID: null,
+  turn: 'player_one',
+  status: null,
 };
 
 export default React.createContext();

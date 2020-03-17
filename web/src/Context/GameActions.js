@@ -111,54 +111,58 @@ export const resetGame = () => {
 };
 
 export const updateContext = (prevState, action) => {
-  const { player_one, player_two, player_one_attack_placements, player_two_attack_placements, status } = action.data;
+  const { player_one, player_one_attack_placements, player_two_attack_placements, turn, status } = action.data;
   // {"match":"9pMMCSHx","player_one":"OMovA5qJ","player_two":"9wRtyZb3","player_one_attack_placements":null,"player_two_attack_placements":null,"status":null}
   console.log(action.data)
   const playerId = initialState.uid;
-  const player = player_one === playerId ? 'player_one' : 'player_two';
-  const opponent = player_one === playerId ? 'player_two' : 'player_one';
 
-  const myAttackPlacements = prevState.myAttackPlacements;
-  const opponentAttackPlacements = prevState.opponentAttackPlacements;
-  console.log(player_one_attack_placements)
+  const myAttacks = player_one === playerId ? player_one_attack_placements : player_two_attack_placements;
+  const opponentAttacks = myAttacks === player_one_attack_placements ? player_two_attack_placements : player_one_attack_placements;
 
-  // return { ...prevState, myAttackPlacements: [...myAttackPlacements, `${player}_attack_placements`], opponentAttackPlacements: [...opponentAttackPlacements, `${opponent}_attack_placements`] };
-  return prevState;
-};
+  const updateTurnStatus = prevState.turn === 'player_one' ? 'player_two' : 'player_one';
 
-export const attack = (prevState, action) => {
-  const { id, data } = action;
-  const shipPlacements = prevState.shipPlacements;
-
-  const myCurrentAttacks = prevState.myAttackPlacements;
-  let myNewAttacks = { ...myCurrentAttacks };
-
-  const opponentCurrentAttacks = prevState.opponentAttackPlacements;
-  let opponentNewAttacks = { ...opponentCurrentAttacks };
-
-  // console.log('here', action)
-
-  if (id === initialState.uid) {
-    data.forEach((coordinate) => {
-      let row = coordinate[0];
-      let col = coordinate[1];
-      myNewAttacks = {
-        ...myCurrentAttacks,
-        [row]: {
-          ...myCurrentAttacks[row]
-        },
-      };
-
-      if (shipPlacements[row] && shipPlacements[row][col]) {
-        myNewAttacks[row][col] = 'hit'
-      } else {
-        myNewAttacks[row][col] = 'miss';
-      };
-    });
+  return {
+    ...prevState,
+    myAttackPlacements: myAttacks,
+    opponentAttackPlacements: opponentAttacks,
+    turn: updateTurnStatus,
+    status: status,
   };
-
-  return { ...prevState, myAttackPlacements: myNewAttacks };
 };
+
+// export const attack = (prevState, action) => {
+//   const { id, data } = action;
+//   const shipPlacements = prevState.shipPlacements;
+
+//   const myCurrentAttacks = prevState.myAttackPlacements;
+//   let myNewAttacks = { ...myCurrentAttacks };
+
+//   const opponentCurrentAttacks = prevState.opponentAttackPlacements;
+//   let opponentNewAttacks = { ...opponentCurrentAttacks };
+
+//   // console.log('here', action)
+
+//   if (id === initialState.uid) {
+//     data.forEach((coordinate) => {
+//       let row = coordinate[0];
+//       let col = coordinate[1];
+//       myNewAttacks = {
+//         ...myCurrentAttacks,
+//         [row]: {
+//           ...myCurrentAttacks[row]
+//         },
+//       };
+
+//       if (shipPlacements[row] && shipPlacements[row][col]) {
+//         myNewAttacks[row][col] = 'hit'
+//       } else {
+//         myNewAttacks[row][col] = 'miss';
+//       };
+//     });
+//   };
+
+//   return { ...prevState, myAttackPlacements: myNewAttacks };
+// };
 
 export const changeView = (prevState) => {
   const currentView = prevState.view;

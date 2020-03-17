@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useEffect, useState } from 'react';
+import React, { useContext, useMemo, useEffect } from 'react';
 import useWebSocket from 'react-use-websocket';
 import Board from '../../Components/Board/Board';
 import ShipSelect from '../ShipSelect/ShipSelect';
@@ -6,8 +6,6 @@ import GameContext from '../../Context/GameContext';
 
 export const Match = () => {
   const { uid, matchID, view, shipPlacements, dispatch } = useContext(GameContext);
-
-  const [message, setMessage] = useState('');
 
   const socketUrl = `ws://localhost:3001/match/${matchID}`;
   const [sendMessage, lastMessage, readyState] = useWebSocket(socketUrl);
@@ -56,7 +54,6 @@ export const Match = () => {
         <button className="commit-ships-btn" onClick={doCommitShips}>Commit Ships</button>
       </div>
       <div>{view === 'P' ? <p className="view-text">Place Ships</p> : <p className="view-text">Attack</p>}</div>
-      <div>{message}</div>
       <Board doAttackTile={doAttackTile} />
     </div>
   );
