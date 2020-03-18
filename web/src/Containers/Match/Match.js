@@ -3,9 +3,12 @@ import useWebSocket from 'react-use-websocket';
 import Board from '../../Components/Board/Board';
 import ShipSelect from '../ShipSelect/ShipSelect';
 import GameContext from '../../Context/GameContext';
+import { createAttacksObj } from '../../Containers/Match/matchService';
+import { Fleet } from '../../Components/Fleet/Fleet';
+import './Match.css';
 
 export const Match = () => {
-  const { uid, matchID, view, shipPlacements, dispatch } = useContext(GameContext);
+  const { uid, matchID, view, shipPlacements, ships, shipsCommitted, myAttackPlacements, opponentAttackPlacements, dispatch } = useContext(GameContext);
 
   const socketUrl = `ws://localhost:3001/match/${matchID}`;
   const [sendMessage, lastMessage, readyState] = useWebSocket(socketUrl);
@@ -22,7 +25,6 @@ export const Match = () => {
   useEffect(() => {
     if (lastMessage && lastMessage.data) {
       const msg = JSON.parse(lastMessage.data);
-
       dispatch({ type: 'UPDATE_CONTEXT', data: msg });
     };
   }, [lastMessage, dispatch])
@@ -36,8 +38,11 @@ export const Match = () => {
   };
 
   const doCommitShips = () => {
-    const placeShipsMessage = JSON.stringify({ action: 'SHIP_PLACEMENTS', placements: shipPlacements, uid: uid });
-    sendMessage(placeShipsMessage);
+    if (Object.keys(shipPlacements).length === ships.length) {
+      const placeShipsMessage = JSON.stringify({ action: 'SHIP_PLACEMENTS', placements: shipPlacements, uid: uid });
+      sendMessage(placeShipsMessage);
+    };
+    return;
   };
 
   const doAttackTile = (row, col) => {
@@ -45,16 +50,28 @@ export const Match = () => {
     sendMessage(placeAttackMessage);
   };
 
+  const myAttacks = useMemo(() => {
+    return createAttacksObj(myAttackPlacements);
+  }, [myAttackPlacements]);
+
+  const opponentAttacks = useMemo(() => {
+    return createAttacksObj(opponentAttackPlacements);
+  }, [opponentAttackPlacements]);
+
   return (
-    <div>
-      {view === 'P' && <ShipSelect />}
+    <div className="game">
+      {view === 'P' && !shipsCommitted && <ShipSelect />}
       <div className="reset-view-div">
         <button className="reset-btn" onClick={doResetGame}>Reset Game</button>
-        <button className="view-btn" onClick={doChangeView}>Board View</button>
-        <button className="commit-ships-btn" onClick={doCommitShips}>Commit Ships</button>
+        <button className="view-btn" onClick={doChangeView}>{view === 'P' ? 'Attack View' : 'Fleet View'}</button>
+        {!shipsCommitted && <button className="commit-ships-btn" onClick={doCommitShips}>Commit Ships</button>}
       </div>
-      <div>{view === 'P' ? <p className="view-text">Place Ships</p> : <p className="view-text">Attack</p>}</div>
-      <Board doAttackTile={doAttackTile} />
+      <div>{view === 'P' ? <p className="view-text">Your Fleet</p> : <p className="view-text">Select Target Tile</p>}</div>
+      <div className="board-info">
+        <Fleet opponentAttacks={opponentAttacks} />
+        <Board doAttackTile={doAttackTile} myAttacks={myAttacks} opponentAttacks={opponentAttacks} />
+        <Fleet myAttacks={myAttacks} />
+      </div>
     </div>
   );
 };

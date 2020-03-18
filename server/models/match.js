@@ -40,14 +40,16 @@ const MatchModel = {
   },
 
   createMatchObject: (matchData) => {
-    const { id, player_one, player_two, player_one_attack_placements, player_two_attack_placements, status } = matchData;
+    const { id, player_one, player_two, player_one_attack_placements, player_two_attack_placements, player_one_ship_placements, player_two_ship_placements } = matchData;
     return matchInfo = {
       match: id,
       player_one: player_one,
       player_two: player_two,
+      player_one_ship_placements: (player_one_ship_placements && true),
+      player_two_ship_placements: (player_two_ship_placements && true),
       player_one_attack_placements: player_one_attack_placements,
       player_two_attack_placements: player_two_attack_placements,
-      status: status,
+      // status: status,
     };
   },
 };

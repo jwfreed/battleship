@@ -4,7 +4,7 @@ import GameContext from '../../Context/GameContext';
 import './Tile.css';
 
 const Tile = ({ row, col, onClick, onAttack, myAttacks, opponentAttacks }) => {
-  const { shipPlacements, view } = useContext(GameContext);
+  const { shipPlacements, shipsCommitted, view } = useContext(GameContext);
 
   const doClick = useCallback(() => {
     onClick(row, col);
@@ -43,6 +43,8 @@ const Tile = ({ row, col, onClick, onAttack, myAttacks, opponentAttacks }) => {
 Tile.propTypes = {
   row: PropTypes.number,
   col: PropTypes.number,
+  myAttacks: PropTypes.object,
+  opponentAttacks: PropTypes.object,
   onClick: PropTypes.func.isRequired,
   onAttack: PropTypes.func.isRequired,
 };

@@ -23,7 +23,7 @@ body {
   justify-content: space-evenly;
 }
 
-.reset-btn, .view-btn {
+.reset-btn, .view-btn, .commit-ships-btn {
   text-align: center;
   font-size: 15px;
   width: fit-content;

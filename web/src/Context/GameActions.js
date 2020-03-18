@@ -21,12 +21,17 @@ export const placeShip = (prevState, action) => {
   const placedShipRowColArr = []
   let shipPlacementSuccessful = { ...prevState.shipsPlaced, [selectedShip.name]: placedShipRowColArr };
 
-  if (!selectedShip.name) { // if no selected ship
+  if (prevState.shipsCommitted) {
+    alert('Ships already placed and committed');
+    return prevState;
+  };
+
+  if (!selectedShip.name && !prevState.shipsCommitted) { // if no selected ship
     alert('Select a ship first');
     return prevState;
   };
 
-  if (prevState.shipsPlaced[selectedShip.name]) { // if ship is already on the board
+  if (prevState.shipsPlaced[selectedShip.name] && !prevState.shipsCommitted) { // if ship is already on the board
     alert('Ship is already on the board\nSelect another ship');
     return prevState;
   };
@@ -111,58 +116,28 @@ export const resetGame = () => {
 };
 
 export const updateContext = (prevState, action) => {
-  const { player_one, player_one_attack_placements, player_two_attack_placements, status } = action.data;
-  // {"match":"9pMMCSHx","player_one":"OMovA5qJ","player_two":"9wRtyZb3","player_one_attack_placements":null,"player_two_attack_placements":null,"status":null}
-  console.log(action.data)
+  const { player_one, player_two, player_one_attack_placements, player_two_attack_placements, player_one_ship_placements, player_two_ship_placements } = action.data;
+
   const playerId = initialState.uid;
 
   const myAttacks = player_one === playerId ? player_one_attack_placements : player_two_attack_placements;
   const opponentAttacks = myAttacks === player_one_attack_placements ? player_two_attack_placements : player_one_attack_placements;
 
-  // const updateTurnStatus = prevState.turn === 'player_one' ? 'player_two' : 'player_one';
+  const shipsCommitted = player_one === playerId ? player_one_ship_placements : player_two_ship_placements;
+  const opponentCommittedShips = player_two !== playerId ? player_two_ship_placements : player_one_ship_placements;
+
+  const updateTurnStatus = prevState.turn === 'player_one' ? 'player_two' : 'player_one';
 
   return {
     ...prevState,
     myAttackPlacements: myAttacks,
     opponentAttackPlacements: opponentAttacks,
     // turn: updateTurnStatus,
-    status: status,
+    // status: status,
+    shipsCommitted: shipsCommitted,
+    opponentCommittedShips: opponentCommittedShips,
   };
 };
-
-// export const attack = (prevState, action) => {
-//   const { id, data } = action;
-//   const shipPlacements = prevState.shipPlacements;
-
-//   const myCurrentAttacks = prevState.myAttackPlacements;
-//   let myNewAttacks = { ...myCurrentAttacks };
-
-//   const opponentCurrentAttacks = prevState.opponentAttackPlacements;
-//   let opponentNewAttacks = { ...opponentCurrentAttacks };
-
-//   // console.log('here', action)
-
-//   if (id === initialState.uid) {
-//     data.forEach((coordinate) => {
-//       let row = coordinate[0];
-//       let col = coordinate[1];
-//       myNewAttacks = {
-//         ...myCurrentAttacks,
-//         [row]: {
-//           ...myCurrentAttacks[row]
-//         },
-//       };
-
-//       if (shipPlacements[row] && shipPlacements[row][col]) {
-//         myNewAttacks[row][col] = 'hit'
-//       } else {
-//         myNewAttacks[row][col] = 'miss';
-//       };
-//     });
-//   };
-
-//   return { ...prevState, myAttackPlacements: myNewAttacks };
-// };
 
 export const changeView = (prevState) => {
   const currentView = prevState.view;
@@ -173,4 +148,8 @@ export const changeView = (prevState) => {
 export const joinGame = (prevState, action) => {
   const matchID = action.matchID;
   return { ...prevState, matchID };
+};
+
+export const commitShips = (prevState) => {
+  return { ...prevState, shipsCommitted: true };
 };
