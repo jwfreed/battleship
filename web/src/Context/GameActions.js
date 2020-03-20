@@ -116,26 +116,32 @@ export const resetGame = () => {
 };
 
 export const updateContext = (prevState, action) => {
-  const { player_one, player_two, player_one_attack_placements, player_two_attack_placements, player_one_ship_placements, player_two_ship_placements } = action.data;
+  const { player_one, player_two, player_one_attack_placements, player_two_attack_placements, player_one_ship_placements, player_two_ship_placements, turn } = action.data;
 
   const playerId = initialState.uid;
+
+  const myPlayer = playerId === player_one ? 'player_one' : 'player_two';
 
   const myAttacks = player_one === playerId ? player_one_attack_placements : player_two_attack_placements;
   const opponentAttacks = myAttacks === player_one_attack_placements ? player_two_attack_placements : player_one_attack_placements;
 
   const shipsCommitted = player_one === playerId ? player_one_ship_placements : player_two_ship_placements;
-  const opponentCommittedShips = player_two !== playerId ? player_two_ship_placements : player_one_ship_placements;
+  const opponentCommittedShips = player_two === playerId ? player_one_ship_placements : player_two_ship_placements;
 
   const updateTurnStatus = prevState.turn === 'player_one' ? 'player_two' : 'player_one';
+
+
 
   return {
     ...prevState,
     myAttackPlacements: myAttacks,
     opponentAttackPlacements: opponentAttacks,
-    // turn: updateTurnStatus,
-    // status: status,
+    turn: updateTurnStatus,
+    // status: updateStatus,
     shipsCommitted: shipsCommitted,
-    opponentCommittedShips: opponentCommittedShips,
+    opponentShipsCommitted: opponentCommittedShips,
+    player: myPlayer,
+    turn, turn,
   };
 };
 

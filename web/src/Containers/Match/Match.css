@@ -4,3 +4,17 @@
   justify-content: space-evenly;
 }
 
+.match-info-container {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: center;
+}
+
+.match-info-text {
+  margin-right: 10px;;
+}
+
+.match-info-data {
+  text-decoration: underline;
+}
