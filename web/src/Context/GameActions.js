@@ -128,20 +128,14 @@ export const updateContext = (prevState, action) => {
   const shipsCommitted = player_one === playerId ? player_one_ship_placements : player_two_ship_placements;
   const opponentCommittedShips = player_two === playerId ? player_one_ship_placements : player_two_ship_placements;
 
-  const updateTurnStatus = prevState.turn === 'player_one' ? 'player_two' : 'player_one';
-
-
-
   return {
     ...prevState,
     myAttackPlacements: myAttacks,
     opponentAttackPlacements: opponentAttacks,
-    turn: updateTurnStatus,
-    // status: updateStatus,
+    turn: turn,
     shipsCommitted: shipsCommitted,
     opponentShipsCommitted: opponentCommittedShips,
     player: myPlayer,
-    turn, turn,
   };
 };
 

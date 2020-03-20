@@ -18,3 +18,7 @@
 .match-info-data {
   text-decoration: underline;
 }
+
+.turn-msg {
+  text-align: center;
+}

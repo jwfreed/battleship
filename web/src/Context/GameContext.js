@@ -35,7 +35,6 @@ export const initialState = {
   shipsCommitted: false,
   opponentShipsCommitted: false,
   turn: 'player_one',
-  status: null,
   player: null,
 };
 
