@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import GameContext from '../../Context/GameContext';
+import './CreateOrJoinGame.css';
 
 export const CreateOrJoinGame = () => {
   const { uid, dispatch } = useContext(GameContext);
@@ -18,21 +19,26 @@ export const CreateOrJoinGame = () => {
   };
 
   const joinGame = () => {
-    dispatch({ type: 'JOIN_GAME', matchID: joinMatch });
+    if (joinMatch !== '') {
+      dispatch({ type: 'JOIN_GAME', matchID: joinMatch });
+      return;
+    };
+    alert('enter a match Id to join a match');
   };
 
   return (
-    <div>
+    <div className="create-join-game">
       <label htmlFor="create-game-btn">
-        <button id="create-game-btn" onClick={createGame}>Create a New Game</button>
+        <button id="create-game-btn" onClick={createGame}>Create New Match</button>
       </label>
       <label htmlFor="join-game">
         <form onSubmit={joinGame}>
-          <button id="join-game-btn">Join a Game</button>
+          <button id="join-game-btn">Join Existing Match</button>
           <input
             id="join-game"
             type="text"
             value={joinMatch}
+            placeholder="Match ID"
             onChange={e => setJoinMatch(e.target.value)}
             onBlur={e => setJoinMatch(e.target.value)}
           />

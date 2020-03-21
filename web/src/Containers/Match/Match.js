@@ -6,6 +6,7 @@ import GameContext from '../../Context/GameContext';
 import { createAttacksObj } from '../../Containers/Match/matchService';
 import { FleetHealth } from '../../Components/FleetHealth/FleetHealth';
 import './Match.css';
+import { gameOver } from '../../Context/GameActions';
 
 export const Match = () => {
   const {
@@ -83,18 +84,24 @@ export const Match = () => {
         <h4 className="match-info-text">Turn: </h4>
         <p className="match-info-text match-info-data">{turn}</p>
       </div>
-      <h4 className="match-info-text turn-msg">{turn === player ? 'Man your battlestations!' : 'Brace for impact!'}</h4>
       <div className="reset-view-div">
         <button className="reset-btn" onClick={doResetGame}>Reset Game</button>
         <button className="view-btn" onClick={doChangeView}>{view === 'P' ? 'Attack View' : 'Fleet View'}</button>
         {!shipsCommitted && <button className="commit-ships-btn" onClick={doCommitShips}>Commit Ships</button>}
       </div>
-      <div>{view === 'P' ? <p className="view-text">Your Fleet</p> : <p className="view-text">Select Target Tile</p>}</div>
       <div className="board-info">
         <FleetHealth opponentAttacks={opponentAttacks} />
+        {
+          !gameOver &&
+          <div>
+            <h4 className="view-text">{turn === player ? 'Man your battlestations!' : 'Brace for impact!'}</h4>
+            <p className="view-text">{view === 'P' ? 'Your Fleet' : 'Select Attack Target'}</p>
+          </div>
+        }
+        {gameOver && <h1>Game Over!</h1>}
         <FleetHealth myAttacks={myAttacks} />
       </div>
-      <Board doAttackTile={doAttackTile} myAttacks={myAttacks} opponentAttacks={opponentAttacks} />
+      {!gameOver && <Board doAttackTile={doAttackTile} myAttacks={myAttacks} opponentAttacks={opponentAttacks} />}
     </div>
   );
 };

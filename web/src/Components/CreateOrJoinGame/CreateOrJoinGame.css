@@ -1,0 +1,15 @@
+.create-join-game {
+  display: flex;
+  flex-direction: row;
+  align-self: center;
+  margin: 165px;
+}
+
+#join-game-btn, #create-game-btn, #join-game {
+  padding: 7px;
+  font-size: 15px;
+}
+
+#create-game-btn {
+  margin-right: 5px;
+}

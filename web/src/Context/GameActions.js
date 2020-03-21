@@ -153,3 +153,7 @@ export const joinGame = (prevState, action) => {
 export const commitShips = (prevState) => {
   return { ...prevState, shipsCommitted: true };
 };
+
+export const gameOver = (prevState) => {
+  return { ...prevState, gameOver: true };
+};

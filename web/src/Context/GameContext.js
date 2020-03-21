@@ -14,8 +14,8 @@ const localRawState = localStorage.getItem('state');
 export const localState = localRawState && JSON.parse(localRawState);
 
 export const initialState = {
-  boardRows: Array(5).fill(null),
-  boardCols: Array(5).fill(null),
+  boardRows: Array(10).fill(null),
+  boardCols: Array(10).fill(null),
   shipPlacements: {},
   ships: [
     { name: 'Carrier', size: 5 },
@@ -36,6 +36,7 @@ export const initialState = {
   opponentShipsCommitted: false,
   turn: 'player_one',
   player: null,
+  gameOver: false,
 };
 
 export default React.createContext();
