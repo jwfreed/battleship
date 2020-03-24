@@ -77,31 +77,36 @@ export const Match = () => {
 
   return (
     <div className="game">
-      {view === 'P' && !shipsCommitted && <ShipSelect />}
       <div className="match-info-container">
         <h4 className="match-info-text">Match ID:</h4>
         <p className="match-info-text match-info-data">{matchID}</p>
         <h4 className="match-info-text">Turn: </h4>
         <p className="match-info-text match-info-data">{turn}</p>
       </div>
+      {view === 'P' && !shipsCommitted && <ShipSelect />}
       <div className="reset-view-div">
         <button className="reset-btn" onClick={doResetGame}>Reset Game</button>
-        <button className="view-btn" onClick={doChangeView}>{view === 'P' ? 'Attack View' : 'Fleet View'}</button>
+        {shipsCommitted && <button className="view-btn" onClick={doChangeView}>{view === 'P' ? 'Attack View' : 'Fleet View'}</button>}
         {!shipsCommitted && <button className="commit-ships-btn" onClick={doCommitShips}>Commit Ships</button>}
       </div>
       <div className="board-info">
         <FleetHealth opponentAttacks={opponentAttacks} />
         {
-          !gameOver &&
-          <div>
-            <h4 className="view-text">{turn === player ? 'Man your battlestations!' : 'Brace for impact!'}</h4>
-            <p className="view-text">{view === 'P' ? 'Your Fleet' : 'Select Attack Target'}</p>
-          </div>
+          shipsCommitted
+            ?
+            <div>
+              <h4 className="view-text">{turn === player ? 'Man your battlestations!' : 'Brace for impact!'}</h4>
+              <p className="view-text">{view === 'P' ? 'Your Fleet' : 'Select Attack Target'}</p>
+            </div>
+            :
+            <div>
+              <h4>Position your Fleet for Battle</h4>
+            </div>
         }
-        {gameOver && <h1>Game Over!</h1>}
+        {/* {gameOver && <h1>Game Over!</h1>} */}
         <FleetHealth myAttacks={myAttacks} />
       </div>
-      {!gameOver && <Board doAttackTile={doAttackTile} myAttacks={myAttacks} opponentAttacks={opponentAttacks} />}
+      <Board doAttackTile={doAttackTile} myAttacks={myAttacks} opponentAttacks={opponentAttacks} />
     </div>
   );
 };

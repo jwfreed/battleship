@@ -29,16 +29,16 @@ export const CreateOrJoinGame = () => {
   return (
     <div className="create-join-game">
       <label htmlFor="create-game-btn">
-        <button id="create-game-btn" onClick={createGame}>Create New Match</button>
+        <button id="create-game-btn" onClick={createGame}>Create a New Match</button>
       </label>
       <label htmlFor="join-game">
         <form onSubmit={joinGame}>
-          <button id="join-game-btn">Join Existing Match</button>
+          <button id="join-game-btn">Join an Existing Match</button>
           <input
             id="join-game"
             type="text"
             value={joinMatch}
-            placeholder="Match ID"
+            placeholder="Enter Match ID"
             onChange={e => setJoinMatch(e.target.value)}
             onBlur={e => setJoinMatch(e.target.value)}
           />

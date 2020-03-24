@@ -11,7 +11,10 @@ export const FleetHealth = memo((attacks) => {
   const hits = shipHits(attacks);
 
   const fleet = ships.map((ship, i) => {
-    return <li key={i} >{ship.name}: {ship.size - hits[ship.name]}</li>;
+    if (hits && hits[ship]) {
+      return <li key={i} >{ship.name}: {ship.size - hits[ship.name]}</li>;
+    };
+    return <li key={i} >{ship.name}: {ship.size}</li>;
   });
 
   const victory = useMemo(() => {
@@ -27,7 +30,7 @@ export const FleetHealth = memo((attacks) => {
   }, [victory, dispatch]);
 
   return (
-    <div>
+    <div className="fleet-div">
       {title}
       <ul className="fleet">
         {fleet}
