@@ -39,6 +39,7 @@ export const initialState = {
   player: null,
   gameOver: false,
   initialTurn: 'Player One',
+  lastMsg: '',
 };
 
 export default React.createContext();

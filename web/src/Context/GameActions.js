@@ -117,33 +117,37 @@ export const resetGame = () => {
 
 export const updateContext = (prevState, action) => {
   const { player_one, player_two, player_one_attack_placements, player_two_attack_placements, player_one_ship_placements, player_two_ship_placements } = action.data;
-  console.log(action.data)
-  const playerId = initialState.uid;
+  const lastMsg = prevState.lastMsg;
+  const newMsg = JSON.stringify(action.data);
 
-  const myPlayer = playerId === player_one ? 'Player One' : 'Player Two';
+  if (lastMsg !== newMsg) {
+    const playerId = initialState.uid;
 
-  const myAttacks = player_one === playerId ? player_one_attack_placements : player_two_attack_placements;
-  const opponentAttacks = myAttacks === player_one_attack_placements ? player_two_attack_placements : player_one_attack_placements;
+    const myPlayer = playerId === player_one ? 'Player One' : 'Player Two';
 
-  const shipsCommitted = player_one === playerId ? player_one_ship_placements : player_two_ship_placements;
-  const opponentCommittedShips = player_two !== playerId ? player_two_ship_placements : player_one_ship_placements;
+    const myAttacks = player_one === playerId ? player_one_attack_placements : player_two_attack_placements;
+    const opponentAttacks = myAttacks === player_one_attack_placements ? player_two_attack_placements : player_one_attack_placements;
 
-  const lastTurn = prevState.turn;
-  const startGame = shipsCommitted && opponentCommittedShips;
-  console.log(startGame)
-  // if startGame is true and if lastTurn is null then nextTurn is initialState.initialTurn 
-  // if startGame is true and if lastTurn is *something* 
-  const nextTurn = startGame ? lastTurn === null ? initialState.initialTurn : lastTurn === 'Player One' ? 'Player Two' : 'Player One' : null;
+    const shipsCommitted = player_one === playerId ? player_one_ship_placements : player_two_ship_placements;
+    const opponentCommittedShips = player_two !== playerId ? player_two_ship_placements : player_one_ship_placements;
 
-  return {
-    ...prevState,
-    myAttackPlacements: myAttacks,
-    opponentAttackPlacements: opponentAttacks,
-    turn: nextTurn,
-    shipsCommitted: shipsCommitted,
-    opponentShipsCommitted: opponentCommittedShips,
-    player: myPlayer,
-    gameStarted: startGame,
+    const lastTurn = prevState.turn;
+    const startGame = shipsCommitted && opponentCommittedShips;
+    const nextTurn = startGame ? lastTurn === null ? initialState.initialTurn : lastTurn === 'Player One' ? 'Player Two' : 'Player One' : null;
+
+    return {
+      ...prevState,
+      myAttackPlacements: myAttacks,
+      opponentAttackPlacements: opponentAttacks,
+      turn: nextTurn,
+      shipsCommitted: shipsCommitted,
+      opponentShipsCommitted: opponentCommittedShips,
+      player: myPlayer,
+      gameStarted: startGame,
+      lastMsg: newMsg,
+    };
+  } else {
+    return prevState;
   };
 };
 

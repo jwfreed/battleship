@@ -32,19 +32,19 @@ const MatchModel = {
     return pool.query(query, values).then(({ rows }) => rows[0]);
   },
 
-  updateAttempts: (matchId, player, attempts) => {
-    const query = `UPDATE matches SET ${player}_attack_placements = $1 WHERE id = $2 RETURNING *`;
-    const values = [JSON.stringify(attempts), matchId];
+  updateAttempts: (matchId, player, attempts, turn) => {
+    const query = `UPDATE matches SET ${player}_attack_placements = $1, turn = $2 WHERE id = $3 RETURNING *`;
+    const values = [JSON.stringify(attempts), turn, matchId];
 
     return pool.query(query, values).then(({ rows }) => rows[0]);
   },
 
-  updateTurn: (matchId, turn) => {
-    const query = 'UPDATE matches SET turn = $1 WHERE id = $2 RETURNING *';
-    const values = [turn, matchId];
+  // updateTurn: (matchId, turn) => {
+  //   const query = 'UPDATE matches SET turn = $1 WHERE id = $2 RETURNING *';
+  //   const values = [turn, matchId];
 
-    return pool.query(query, values).then(({ rows }) => rows[0]);
-  },
+  //   return pool.query(query, values).then(({ rows }) => rows[0]);
+  // },
 
   createMatchObject: (matchData) => {
     const { id, player_one, player_two, player_one_attack_placements, player_two_attack_placements, player_one_ship_placements, player_two_ship_placements, turn, game_started } = matchData;

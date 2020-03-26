@@ -62,7 +62,7 @@ const onMessage = async (matchId, connection, data) => {
   };
 
   if (data.action === 'ATTACK') {
-    const { row, col, uid } = data;
+    const { row, col, uid, turn } = data;
     const { player_one, player_two } = matchData;
     const player = (uid === player_one && 'player_one') || (uid === player_two && 'player_two');
     if (!player) return;
@@ -74,7 +74,7 @@ const onMessage = async (matchId, connection, data) => {
     const attempts = [];
     playerAttempts ? attempts.push(...playerAttempts, attempt) : attempts.push(attempt);
 
-    const match = await MatchModel.updateAttempts(matchId, player, attempts);
+    const match = await MatchModel.updateAttempts(matchId, player, attempts, turn);
     const response = MatchModel.createMatchObject(match);
     return MatchService.msgAllPlayers(connections, response);
   };
