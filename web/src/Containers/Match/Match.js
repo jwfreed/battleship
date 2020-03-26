@@ -66,7 +66,7 @@ export const Match = () => {
       alert('better take cover your adversary is about to attack!')
       return;
     };
-    const placeAttackMessage = JSON.stringify({ action: 'ATTACK', row: row, col: col, uid: uid });
+    const placeAttackMessage = JSON.stringify({ action: 'ATTACK', row: row, col: col, uid: uid, turn: turn });
     sendMessage(placeAttackMessage);
   };
 

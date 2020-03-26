@@ -51,12 +51,12 @@ const onMessage = async (matchId, connection, data) => {
   };
 
   if (data.action === 'SHIP_PLACEMENTS') {
-    const { uid, placements, turn, gameStarted } = data;
+    const { uid, placements, turn } = data;
     const { player_one, player_two } = matchData;
     const player = (uid === player_one && 'player_one') || (uid === player_two && 'player_two');
     if (!player) return;
 
-    const match = await MatchModel.updateShipPlacements(matchId, player, placements, turn, gameStarted);
+    const match = await MatchModel.updateShipPlacements(matchId, player, placements, turn);
     const response = MatchModel.createMatchObject(match);
     return MatchService.msgAllPlayers(connections, response);
   };
@@ -93,9 +93,8 @@ module.exports = (connection, req) => {
         return JSON.parse(rawMsg);
       } catch {
         return rawMsg;
-      }
+      };
     })();
-
     return onMessage(matchId, connection, parsedMsg);
   });
 };

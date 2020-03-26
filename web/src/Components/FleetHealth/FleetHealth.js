@@ -9,9 +9,8 @@ export const FleetHealth = memo((attacks) => {
   const title = (Object.keys(attacks).includes('myAttacks') && 'Opponent Fleet Health') || `${player} Fleet Health`;
 
   const hits = shipHits(attacks);
-
   const fleet = ships.map((ship, i) => {
-    if (hits && hits[ship]) {
+    if (hits && hits[ship.name]) {
       return <li key={i} >{ship.name}: {ship.size - hits[ship.name]}</li>;
     };
     return <li key={i} >{ship.name}: {ship.size}</li>;
