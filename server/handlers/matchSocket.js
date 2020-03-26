@@ -51,12 +51,12 @@ const onMessage = async (matchId, connection, data) => {
   };
 
   if (data.action === 'SHIP_PLACEMENTS') {
-    const { uid, placements } = data;
+    const { uid, placements, turn, gameStarted } = data;
     const { player_one, player_two } = matchData;
     const player = (uid === player_one && 'player_one') || (uid === player_two && 'player_two');
-    if (!player) return; ``
+    if (!player) return;
 
-    const match = await MatchModel.updateShipPlacements(matchId, player, placements);
+    const match = await MatchModel.updateShipPlacements(matchId, player, placements, turn, gameStarted);
     const response = MatchModel.createMatchObject(match);
     return MatchService.msgAllPlayers(connections, response);
   };

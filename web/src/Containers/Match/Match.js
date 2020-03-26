@@ -15,6 +15,7 @@ export const Match = () => {
     view,
     shipPlacements,
     ships,
+    shipsPlaced,
     shipsCommitted,
     myAttackPlacements,
     opponentAttackPlacements,
@@ -51,11 +52,13 @@ export const Match = () => {
   };
 
   const doCommitShips = () => {
-    if (Object.keys(shipPlacements).length === ships.length) {
-      const placeShipsMessage = JSON.stringify({ action: 'SHIP_PLACEMENTS', placements: shipPlacements, uid: uid });
+    const numberOfShipsPlaced = Object.keys(shipsPlaced).length;
+    if (numberOfShipsPlaced === ships.length) {
+      const placeShipsMessage = JSON.stringify({ action: 'SHIP_PLACEMENTS', placements: shipPlacements, uid: uid, turn: turn });
       sendMessage(placeShipsMessage);
+    } else {
+      alert('You must position all ships in your fleet.');
     };
-    return;
   };
 
   const doAttackTile = (row, col) => {
@@ -94,16 +97,16 @@ export const Match = () => {
         {
           shipsCommitted
             ?
-            <div>
+            (<div>
               <h4 className="view-text">{turn === player ? 'Man your battlestations!' : 'Brace for impact!'}</h4>
               <p className="view-text">{view === 'P' ? 'Your Fleet' : 'Select Attack Target'}</p>
-            </div>
+            </div>)
             :
-            <div>
+            (<div>
               <h4>Position your Fleet for Battle</h4>
-            </div>
+            </div>)
         }
-        {/* {gameOver && <h1>Game Over!</h1>} */}
+        {!gameOver && <h1>Game Over!</h1>}
         <FleetHealth myAttacks={myAttacks} />
       </div>
       <Board doAttackTile={doAttackTile} myAttacks={myAttacks} opponentAttacks={opponentAttacks} />

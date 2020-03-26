@@ -34,9 +34,11 @@ export const initialState = {
   matchID: null,
   shipsCommitted: false,
   opponentShipsCommitted: false,
-  turn: 'player_one',
+  turn: null,
+  gameStarted: false,
   player: null,
   gameOver: false,
+  initialTurn: 'Player One',
 };
 
 export default React.createContext();
