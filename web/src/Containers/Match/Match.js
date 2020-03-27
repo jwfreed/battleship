@@ -33,7 +33,7 @@ export const Match = () => {
 
   useEffect(() => {
     if (isConnected) {
-      const authMessage = JSON.stringify({ action: 'AUTH', uid: uid });
+      const authMessage = JSON.stringify({ action: 'AUTH', uid });
       sendMessage(authMessage);
     }
   }, [isConnected, sendMessage, uid]);
@@ -42,12 +42,13 @@ export const Match = () => {
     if (lastMessage && lastMessage.data) {
       const msg = JSON.parse(lastMessage.data);
       dispatch({ type: 'UPDATE_CONTEXT', data: msg });
-    };
-  }, [lastMessage, dispatch])
+    }
+  }, [lastMessage, dispatch]);
 
   const doResetGame = () => dispatch({ type: 'RESET_GAME' });
 
   const doChangeView = () => dispatch({ type: 'CHANGE_VIEW' })
+
 
   const doCommitShips = () => {
     const numberOfShipsPlaced = Object.keys(shipsPlaced).length;
