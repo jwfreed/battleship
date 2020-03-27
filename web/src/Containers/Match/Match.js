@@ -3,10 +3,9 @@ import useWebSocket from 'react-use-websocket';
 import Board from '../../Components/Board/Board';
 import ShipSelect from '../ShipSelect/ShipSelect';
 import GameContext from '../../Context/GameContext';
-import { createAttacksObj } from '../../Containers/Match/matchService';
+import { createAttacksObj } from './matchService';
 import { FleetHealth } from '../../Components/FleetHealth/FleetHealth';
 import './Match.css';
-import { gameOver } from '../../Context/GameActions';
 
 export const Match = () => {
   const {
@@ -18,20 +17,22 @@ export const Match = () => {
     shipsPlaced,
     shipsCommitted,
     myAttackPlacements,
+    opponentShipsCommitted,
     opponentAttackPlacements,
     player,
     turn,
-    dispatch
+    gameOver,
+    dispatch,
   } = useContext(GameContext);
 
-  const socketUrl = `ws://localhost:3001/match/${matchID}`;
+  const socketUrl = `${process.env.REACT_APP_SOCKET_URL}/${matchID}`;
   const [sendMessage, lastMessage, readyState] = useWebSocket(socketUrl);
 
   const isConnected = useMemo(() => readyState === 1, [readyState]);
 
   useEffect(() => {
     if (isConnected) {
-      const authMessage = JSON.stringify({ action: 'AUTH', uid: uid });
+      const authMessage = JSON.stringify({ action: 'AUTH', uid });
       sendMessage(authMessage);
     }
   }, [isConnected, sendMessage, uid]);
@@ -40,43 +41,38 @@ export const Match = () => {
     if (lastMessage && lastMessage.data) {
       const msg = JSON.parse(lastMessage.data);
       dispatch({ type: 'UPDATE_CONTEXT', data: msg });
-    };
-  }, [lastMessage, dispatch])
+    }
+  }, [lastMessage, dispatch]);
 
-  const doResetGame = () => {
-    dispatch({ type: 'RESET_GAME' });
-  };
+  const doResetGame = () => dispatch({ type: 'RESET_GAME' });
 
-  const doChangeView = () => {
-    dispatch({ type: 'CHANGE_VIEW' })
-  };
+  const doChangeView = () => dispatch({ type: 'CHANGE_VIEW' });
 
   const doCommitShips = () => {
     const numberOfShipsPlaced = Object.keys(shipsPlaced).length;
-    if (numberOfShipsPlaced === ships.length) {
-      const placeShipsMessage = JSON.stringify({ action: 'SHIP_PLACEMENTS', placements: shipPlacements, uid: uid, turn: turn });
-      sendMessage(placeShipsMessage);
-    } else {
-      alert('You must position all ships in your fleet.');
-    };
+    if (numberOfShipsPlaced < ships.length) {
+      return alert('You must position all ships in your fleet.'); // eslint-disable-line
+    }
+
+    const placeShipsMessage = JSON.stringify({ action: 'SHIP_PLACEMENTS', placements: shipPlacements, uid, turn });
+    return sendMessage(placeShipsMessage);
   };
 
   const doAttackTile = (row, col) => {
     if (player !== turn) {
-      alert('better take cover your adversary is about to attack!')
-      return;
-    };
-    const placeAttackMessage = JSON.stringify({ action: 'ATTACK', row: row, col: col, uid: uid, turn: turn });
-    sendMessage(placeAttackMessage);
+      return alert('it\'s not your turn'); // eslint-disable-line
+    }
+
+    const placeAttackMessage = JSON.stringify({ action: 'ATTACK', row, col, uid, turn });
+    return sendMessage(placeAttackMessage);
   };
 
-  const myAttacks = useMemo(() => {
-    return createAttacksObj(myAttackPlacements);
-  }, [myAttackPlacements]);
+  const myAttacks = useMemo(() => createAttacksObj(myAttackPlacements), [myAttackPlacements]);
 
-  const opponentAttacks = useMemo(() => {
-    return createAttacksObj(opponentAttackPlacements);
-  }, [opponentAttackPlacements]);
+  const opponentAttacks = useMemo(
+    () => createAttacksObj(opponentAttackPlacements),
+    [opponentAttackPlacements],
+  );
 
   return (
     <div className="game">
@@ -84,32 +80,53 @@ export const Match = () => {
         <h4 className="match-info-text">Match ID:</h4>
         <p className="match-info-text match-info-data">{matchID}</p>
         <h4 className="match-info-text">Turn: </h4>
-        <p className="match-info-text match-info-data">{turn}</p>
+        <p className="match-info-text match-info-data">
+          {
+            turn
+            || (!opponentShipsCommitted && 'Waiting for ships placements')
+            || 'Opponent placed his ships, waiting for you'
+          }
+        </p>
       </div>
       {view === 'P' && !shipsCommitted && <ShipSelect />}
       <div className="reset-view-div">
-        <button className="reset-btn" onClick={doResetGame}>Reset Game</button>
-        {shipsCommitted && <button className="view-btn" onClick={doChangeView}>{view === 'P' ? 'Attack View' : 'Fleet View'}</button>}
-        {!shipsCommitted && <button className="commit-ships-btn" onClick={doCommitShips}>Commit Ships</button>}
+        <button className="reset-btn" onClick={doResetGame}>
+          Reset Game
+        </button>
+        {shipsCommitted && (
+          <button className="view-btn" onClick={doChangeView}>
+            {view === 'P' ? 'Attack View' : 'Fleet View'}
+          </button>
+        )}
+        {!shipsCommitted && (
+          <button className="commit-ships-btn" onClick={doCommitShips}>
+            Commit Ships
+          </button>
+        )}
       </div>
       <div className="board-info">
         <FleetHealth opponentAttacks={opponentAttacks} />
-        {
-          shipsCommitted
-            ?
-            (<div>
-              <h4 className="view-text">{turn === player ? 'Man your battlestations!' : 'Brace for impact!'}</h4>
-              <p className="view-text">{view === 'P' ? 'Your Fleet' : 'Select Attack Target'}</p>
-            </div>)
-            :
-            (<div>
-              <h4>Position your Fleet for Battle</h4>
-            </div>)
-        }
-        {!gameOver && <h1>Game Over!</h1>}
+        {shipsCommitted && (
+          <div>
+            <h4 className="view-text">
+              {turn === player ? 'Man your battlestations!' : 'Brace for impact!'}
+            </h4>
+            <p className="view-text">
+              {view === 'P' ? 'Your Fleet' : 'Select Attack Target'}
+            </p>
+          </div>
+        )}
+        {!shipsCommitted && (
+          <div>
+            <h4>Position your Fleet for Battle</h4>
+          </div>
+        )}
+        {gameOver && <h1>Game Over!</h1>}
         <FleetHealth myAttacks={myAttacks} />
       </div>
       <Board doAttackTile={doAttackTile} myAttacks={myAttacks} opponentAttacks={opponentAttacks} />
     </div>
   );
 };
+
+export default Match;

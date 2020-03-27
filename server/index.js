@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const createMatchHandler = require('./handlers/createMatch');
 const matchSocketHandler = require('./handlers/matchSocket');
 
-const port = 3001;
+const port = process.env.PORT;
 const app = express();
 const ews = expressWs(app);
 
