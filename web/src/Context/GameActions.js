@@ -120,7 +120,11 @@ export const updateContext = (prevState, action) => {
   const lastMsg = prevState.lastMsg;
   const newMsg = JSON.stringify(action.data);
 
-  if (lastMsg !== newMsg) {
+  const playerOneShips = player_one_ship_placements || false;
+  const playerTwoShips = player_two_ship_placements || false;
+
+
+  if (!prevState.gameOver && lastMsg !== newMsg) {
     const playerId = initialState.uid;
 
     const myPlayer = playerId === player_one ? 'Player One' : 'Player Two';
@@ -128,12 +132,14 @@ export const updateContext = (prevState, action) => {
     const myAttacks = player_one === playerId ? player_one_attack_placements : player_two_attack_placements;
     const opponentAttacks = myAttacks === player_one_attack_placements ? player_two_attack_placements : player_one_attack_placements;
 
-    const shipsCommitted = player_one === playerId ? player_one_ship_placements : player_two_ship_placements;
-    const opponentCommittedShips = player_two !== playerId ? player_two_ship_placements : player_one_ship_placements;
+    const shipsCommitted = player_one === playerId ? playerOneShips : playerTwoShips;
+    const opponentCommittedShips = player_two !== playerId ? playerTwoShips : playerOneShips;
 
     const lastTurn = prevState.turn;
     const startGame = shipsCommitted && opponentCommittedShips;
     const nextTurn = startGame ? lastTurn === null ? initialState.initialTurn : lastTurn === 'Player One' ? 'Player Two' : 'Player One' : null;
+
+    const newView = (shipsCommitted && opponentCommittedShips && myPlayer === nextTurn && 'A') || 'P';
 
     return {
       ...prevState,
@@ -145,10 +151,10 @@ export const updateContext = (prevState, action) => {
       player: myPlayer,
       gameStarted: startGame,
       lastMsg: newMsg,
+      view: newView,
     };
-  } else {
-    return prevState;
-  };
+  }
+  return prevState;
 };
 
 export const changeView = (prevState) => {
@@ -167,5 +173,7 @@ export const commitShips = (prevState) => {
 };
 
 export const gameOver = (prevState) => {
-  return { ...prevState, gameOver: true };
+  const lastTurn = prevState.turn;
+  const winner = lastTurn === 'Player One' ? 'Player Two' : 'Player One';
+  return { ...prevState, gameOver: true, winner, turn: 'Game Over!' };
 };

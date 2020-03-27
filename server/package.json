@@ -5,7 +5,7 @@
   "author": "Jonathan Freed",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "env-cmd nodemon index.js"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -16,6 +16,7 @@
     "shortid": "^2.2.15"
   },
   "devDependencies": {
+    "env-cmd": "^10.1.0",
     "nodemon": "^2.0.2"
   }
 }

@@ -3,10 +3,15 @@
         "airbnb",
         "airbnb/hooks"
     ],
-    "globals": [
-        "alert"
-    ],
+    "globals": {
+        "document": "readonly",
+        "window": "readonly",
+        "localStorage": "readonly"
+    },
     "rules": {
+        "no-console": "off",
+        "object-curly-newline": "off",
+        "prefer-destructuring": "off",
         "react/jsx-filename-extension": [
             1,
             {
@@ -16,20 +21,12 @@
                 ]
             }
         ],
+        "react/jsx-one-expression-per-line": "off",
+        "react/prop-types": "off",
+        "react/jsx-props-no-spreading": "off",
         "react/button-has-type": "off",
         "react/require-default-props": "off",
-        "react/jsx-one-expression-per-line": "off",
         "react/forbid-prop-types": "off",
-        "react/no-array-index-key": "off",
-        "jsx-a11y/no-static-element-interactions": "off",
-        "jsx-a11y/click-events-have-key-events": "off",
-        "prefer-destructuring": "off",
-        "no-alert": "off",
-        "object-curly-newline": [
-            "error",
-            {
-                "consistent": true
-            }
-        ]
+        "import/no-extraneous-dependencies": "off"
     }
 }

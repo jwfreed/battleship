@@ -7,7 +7,7 @@ export const CreateOrJoinGame = () => {
   const [joinMatch, setJoinMatch] = useState('');
 
   const createGame = async () => {
-    const matchID = await fetch('http://localhost:3001/match', {
+    const matchID = await fetch(process.env.REACT_APP_API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
