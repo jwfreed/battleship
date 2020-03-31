@@ -1,4 +1,6 @@
 import { initialState } from './GameContext'
+import { toast, Flip, Zoom } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const selectShip = (prevState, action) => {
   const ship = action.ship;
@@ -22,19 +24,31 @@ export const placeShip = (prevState, action) => {
   let shipPlacementSuccessful = { ...prevState.shipsPlaced, [selectedShip.name]: placedShipRowColArr };
 
   if (prevState.shipsCommitted) {
-    alert('Ships already placed and committed');
+    toast.warn('Ships already placed and committed', {
+      transition: Flip,
+      autoClose: 2000,
+      position: "top-left",
+    })
     return prevState;
-  };
+  }
 
   if (!selectedShip.name && !prevState.shipsCommitted) { // if no selected ship
-    alert('Select a ship first');
+    toast.warn('Select a ship first', {
+      transition: Flip,
+      autoClose: 2000,
+      position: "top-left",
+    })
     return prevState;
-  };
+  }
 
   if (prevState.shipsPlaced[selectedShip.name] && !prevState.shipsCommitted) { // if ship is already on the board
-    alert('Ship is already on the board\nSelect another ship');
+    toast.warn('Ship is already on the board\nSelect another ship', {
+      transition: Flip,
+      autoClose: 2000,
+      position: "top-left",
+    })
     return prevState;
-  };
+  }
 
   const noOverflow = (rowOrCol) => {
     const shipLength = parseInt(selectedShip.size);
@@ -44,7 +58,12 @@ export const placeShip = (prevState, action) => {
   };
 
   const invalidMove = () => {
-    alert('cannot place ships off board or on occupied tile');
+    toast.warn('cannot place ships off board or on occupied tile', {
+      transition: Flip,
+      autoClose: 2000,
+      position: "top-left",
+    })
+
     newPlacements = { ...currentPlacements };
     shipPlacementSuccessful = { [selectedShip.name]: false };
     return prevState;
@@ -65,12 +84,12 @@ export const placeShip = (prevState, action) => {
         placedShipRowColArr.push([row, nextCol]);
         if (currentPlacements[row] && currentPlacements[row][nextCol]) {
           return invalidMove();
-        };
+        }
       };
-    } else {
-      return invalidMove();
-    };
-  };
+      return;
+    }
+    return invalidMove();
+  }
 
   if (prevState.placementOrientation === 'V') { // if orientation is set to vertical
     newPlacements = {
@@ -175,5 +194,9 @@ export const commitShips = (prevState) => {
 export const gameOver = (prevState) => {
   const lastTurn = prevState.turn;
   const winner = lastTurn === 'Player One' ? 'Player Two' : 'Player One';
+  toast.info(`${winner} Wins!`, {
+    autoClose: false,
+    transition: Zoom,
+  })
   return { ...prevState, gameOver: true, winner, turn: 'Game Over!' };
 };

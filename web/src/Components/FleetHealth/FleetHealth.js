@@ -4,7 +4,7 @@ import GameContext from '../../Context/GameContext';
 import { shipHits } from './fleetHealthService';
 import './FleetHealth.css';
 
-export const FleetHealth = memo((attacks) => {
+const FleetHealth = memo((attacks) => {
   const { ships, player, dispatch } = useContext(GameContext);
   const title = (Object.keys(attacks).includes('myAttacks') && 'Opponent Fleet Health') || `${player} Fleet Health`;
 
@@ -41,3 +41,5 @@ export const FleetHealth = memo((attacks) => {
 FleetHealth.propTypes = {
   attacks: PropTypes.object,
 };
+
+export default FleetHealth;

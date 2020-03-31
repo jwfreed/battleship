@@ -29,15 +29,14 @@ const Tile = ({ row, col, onClick, onAttack, myAttacks, opponentAttacks }) => {
 
   if (view === 'P') {
     return (
-      <button className="tile" onClick={doClick}>
-        {placedShip ? placedShip.name : '-'}
-        {opponentAttempts ? '*' : ''}
+      <button className="tile fleet-view" onClick={doClick}>
+        {(placedShip && placedShip.name) || (opponentAttempts && '*') || '-'}
       </button>
     );
   }
 
   return (
-    <button className="tile" onClick={doAttack}>
+    <button className="tile attack-view" onClick={doAttack}>
       {attackAttempts || '-'}
     </button>
   );

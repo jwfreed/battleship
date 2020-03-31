@@ -1,3 +1,7 @@
 .fleet {
   list-style-type: none;
+  border: 2px solid navy;
+  border-radius: 16px;
+  padding: 18px;
+  background: #00008017;
 }

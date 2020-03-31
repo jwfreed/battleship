@@ -16,6 +16,7 @@ body {
 .title {
   font-size: 60px;
   text-align: center;
+  font-family: 'Source Code Pro', monospace;
 }
 
 .reset-view-div {
@@ -25,15 +26,27 @@ body {
 
 .reset-btn, .view-btn, .commit-ships-btn {
   text-align: center;
-  font-size: 15px;
+  font-size: 17px;
   width: fit-content;
   height: auto;
+  border-style: outset;
 }
 
 .reset-btn {
-  color: crimson;
+  color: #ffffff;
+  background-color: crimson;
 }
 
 .view-text {
   text-align: center;
+}
+
+.view-btn {
+  color: navy;
+  border-color: navy;
+  background-color: #b8e5f8;
+}
+
+.view-btn, .reset-btn:hover {
+  cursor: pointer;
 }

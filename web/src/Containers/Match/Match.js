@@ -1,10 +1,12 @@
 import React, { useContext, useMemo, useEffect } from 'react';
 import useWebSocket from 'react-use-websocket';
+import { toast, Flip } from 'react-toastify';
 import Board from '../../Components/Board/Board';
 import ShipSelect from '../ShipSelect/ShipSelect';
 import GameContext from '../../Context/GameContext';
 import { createAttacksObj } from './matchService';
-import { FleetHealth } from '../../Components/FleetHealth/FleetHealth';
+import FleetHealth from '../../Components/FleetHealth/FleetHealth';
+import 'react-toastify/dist/ReactToastify.css';
 import './Match.css';
 
 export const Match = () => {
@@ -26,6 +28,11 @@ export const Match = () => {
     dispatch
   } = useContext(GameContext);
 
+  toast.configure({
+    transition: Flip,
+    autoClose: 1500,
+  });
+
   const socketUrl = `${process.env.REACT_APP_SOCKET_URL}/${matchID}`;
   const [sendMessage, lastMessage, readyState] = useWebSocket(socketUrl);
 
@@ -36,7 +43,9 @@ export const Match = () => {
       const authMessage = JSON.stringify({ action: 'AUTH', uid });
       sendMessage(authMessage);
     }
-  }, [isConnected, sendMessage, uid]);
+    if (isConnected && player) toast.info(`${player} Connected`);
+    if (!isConnected && !player) toast.error('Player disconnected')
+  }, [isConnected, sendMessage, player, uid]);
 
   useEffect(() => {
     if (lastMessage && lastMessage.data) {
@@ -53,16 +62,18 @@ export const Match = () => {
   const doCommitShips = () => {
     const numberOfShipsPlaced = Object.keys(shipsPlaced).length;
     if (numberOfShipsPlaced < ships.length) {
-      return alert('You must position all ships in your fleet.'); // eslint-disable-line
+      return toast.warn('You must position all ships in your fleet.')
     }
 
     const placeShipsMessage = JSON.stringify({ action: 'SHIP_PLACEMENTS', placements: shipPlacements, uid, turn });
+
+    toast.success('Ships Placed');
     return sendMessage(placeShipsMessage);
   };
 
   const doAttackTile = (row, col) => {
     if (player !== turn) {
-      return alert('it\'s not your turn'); // eslint-disable-line
+      return toast.warn('it\'s not your turn');
     }
 
     const placeAttackMessage = JSON.stringify({ action: 'ATTACK', row, col, uid, turn });
