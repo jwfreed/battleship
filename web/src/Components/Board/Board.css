@@ -1,6 +1,6 @@
 .board {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(1000px, 1fr));
+  grid-template-columns: repeat(auto-fit, 1fr);
   grid-gap: 0rem;
   align-self: center;
 }

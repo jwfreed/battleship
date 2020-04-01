@@ -106,12 +106,13 @@ export const placeShip = (prevState, action) => {
         placedShipRowColArr.push([nextRow, col]);
         if (currentPlacements[nextRow] && currentPlacements[nextRow][col]) {
           return invalidMove();
-        };
+        }
       };
-    } else {
+    }
+    if (!noOverflow(row)) {
       return invalidMove();
-    };
-  };
+    }
+  }
 
   return { ...prevState, shipPlacements: newPlacements, shipsPlaced: shipPlacementSuccessful };
 };
@@ -139,26 +140,33 @@ export const updateContext = (prevState, action) => {
   const lastMsg = prevState.lastMsg;
   const newMsg = JSON.stringify(action.data);
 
+  const playerId = initialState.uid;
+  const myPlayer = playerId === player_one ? 'Player One' : 'Player Two';
+
   const playerOneShips = player_one_ship_placements || false;
   const playerTwoShips = player_two_ship_placements || false;
+  console.log('p1ships', playerOneShips)
 
+  const myAttacks = player_one === playerId ? player_one_attack_placements : player_two_attack_placements;
+  const opponentAttacks = myAttacks === player_one_attack_placements ? player_two_attack_placements : player_one_attack_placements;
 
-  if (!prevState.gameOver && lastMsg !== newMsg) {
-    const playerId = initialState.uid;
+  const shipsCommitted = player_one === playerId ? playerOneShips : playerTwoShips;
+  const opponentCommittedShips = player_two === playerId ? playerOneShips : playerTwoShips;
 
-    const myPlayer = playerId === player_one ? 'Player One' : 'Player Two';
+  const startGame = shipsCommitted && opponentCommittedShips;
+  console.log('start', startGame)
+  const lastTurn = prevState.turn;
 
-    const myAttacks = player_one === playerId ? player_one_attack_placements : player_two_attack_placements;
-    const opponentAttacks = myAttacks === player_one_attack_placements ? player_two_attack_placements : player_one_attack_placements;
+  if (!prevState.gameOver && lastMsg !== newMsg && !startGame) {
+    console.log('no start')
+    return { ...prevState, shipsCommitted: shipsCommitted, opponentShipsCommitted: opponentCommittedShips, player: myPlayer, turn: lastTurn };
+  }
 
-    const shipsCommitted = player_one === playerId ? playerOneShips : playerTwoShips;
-    const opponentCommittedShips = player_two !== playerId ? playerTwoShips : playerOneShips;
+  if (!prevState.gameOver && lastMsg !== newMsg && startGame) {
+    console.log('start')
+    const nextTurn = lastTurn === 'Player One' ? 'Player Two' : 'Player One';
 
-    const lastTurn = prevState.turn;
-    const startGame = shipsCommitted && opponentCommittedShips;
-    const nextTurn = startGame ? lastTurn === null ? initialState.initialTurn : lastTurn === 'Player One' ? 'Player Two' : 'Player One' : null;
-
-    const newView = (shipsCommitted && opponentCommittedShips && myPlayer === nextTurn && 'A') || 'P';
+    const newView = myPlayer === nextTurn ? 'A' : 'P';
 
     return {
       ...prevState,
