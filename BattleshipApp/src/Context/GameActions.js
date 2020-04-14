@@ -1,6 +1,4 @@
 import { initialState } from './GameContext'
-import { toast, Flip, Zoom } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 export const selectShip = (prevState, action) => {
   const ship = action.ship;
@@ -24,29 +22,17 @@ export const placeShip = (prevState, action) => {
   let shipPlacementSuccessful = { ...prevState.shipsPlaced, [selectedShip.name]: placedShipRowColArr };
 
   if (prevState.shipsCommitted) {
-    toast.warn('Ships already placed and committed', {
-      transition: Flip,
-      autoClose: 2000,
-      position: "top-left",
-    })
+    alert('Ships already placed and committed');
     return prevState;
   }
 
   if (!selectedShip.name && !prevState.shipsCommitted) { // if no selected ship
-    toast.warn('Select a ship first', {
-      transition: Flip,
-      autoClose: 2000,
-      position: "top-left",
-    })
+    alert('Select a ship first');
     return prevState;
   }
 
   if (prevState.shipsPlaced[selectedShip.name] && !prevState.shipsCommitted) { // if ship is already on the board
-    toast.warn('Ship is already on the board\nSelect another ship', {
-      transition: Flip,
-      autoClose: 2000,
-      position: "top-left",
-    })
+    alert('Ship is already on the board\nSelect another ship');
     return prevState;
   }
 
@@ -58,11 +44,7 @@ export const placeShip = (prevState, action) => {
   };
 
   const invalidMove = () => {
-    toast.warn('cannot place ships off board or on occupied tile', {
-      transition: Flip,
-      autoClose: 2000,
-      position: "top-left",
-    })
+    alert('cannot place ships off board or on occupied tile');
 
     newPlacements = { ...currentPlacements };
     shipPlacementSuccessful = { [selectedShip.name]: false };
@@ -198,9 +180,6 @@ export const commitShips = (prevState) => {
 export const gameOver = (prevState) => {
   const lastTurn = prevState.turn;
   const winner = lastTurn === 'Player One' ? 'Player Two' : 'Player One';
-  toast.info(`${winner} Wins!`, {
-    autoClose: false,
-    transition: Zoom,
-  })
+  alert(`${winner} Wins!`);
   return { ...prevState, gameOver: true, winner, turn: 'Game Over!' };
 };

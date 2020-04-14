@@ -11,13 +11,13 @@
 }
 
 .fleet-view {
-  color: #ffffff;
+  color: navy;
   border-color: navy;
   background-color: #11a4de;
 }
 
 .fleet-view:hover {
-  border-color: rgb(60, 60, 255);
+  border-color: #ffffff;
   border-width: 2px;
   font-weight: 500;
 }

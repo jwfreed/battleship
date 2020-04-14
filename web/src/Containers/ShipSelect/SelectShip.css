@@ -1,8 +1,8 @@
 .main-ship-container {
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
   padding: 15px;
-  border: 1px solid #000000;
+  /* border: 1px solid #000000; */
   width: max-content;
   align-self: center;
   margin: 10px 0px 15px 0px;
@@ -18,6 +18,7 @@
   width: fit-content;
   font-size: 14px;
   margin-top: 4px;
+  border-style: outset;
 }
 
 .orientation-div {
@@ -27,5 +28,5 @@
 
 .current-orientation {
   margin: 10px;
-    font-size: 20px;
+  font-size: 20px;
 }

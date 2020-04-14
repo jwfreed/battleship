@@ -1,9 +1,14 @@
 import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import GameContext from '../../Context/GameContext';
-import './Ship.css';
 
-const Ship = ({ ship, selected, onClick }) => {
+import {
+  View,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
+
+const Ship = ({ ship, selected, onPress }) => {
   const { shipsPlaced, dispatch } = useContext(GameContext);
 
   const doResetShip = (ship) => {
@@ -16,23 +21,23 @@ const Ship = ({ ship, selected, onClick }) => {
   }, [ship.name, shipsPlaced]);
 
   return (
-    <div className="ship" >
-      <div onClick={() => onClick(ship)}>
-        <h4>
+    <View className="ship" >
+      <View onPress={() => onPress(ship)}>
+        <Text>
           {ship.name} {selected ? '*' : ''}
-        </h4>
-        <p>
+        </Text>
+        <Text>
           Boat Length: {ship.size} Tiles
-        </p>
-      </div>
-      {shipOnBoard && <button onClick={() => doResetShip(ship.name)}>Reset {ship.name}</button>}
-    </div>
+        </Text>
+      </View>
+      {shipOnBoard && <TouchableOpacity onPress={() => doResetShip(ship.name)}><Text>Reset {ship.name}</Text></TouchableOpacity>}
+    </View>
   )
 };
 
 Ship.propTypes = {
   ship: PropTypes.object.isRequired,
-  onClick: PropTypes.func.isRequired,
+  onPress: PropTypes.func.isRequired,
   selected: PropTypes.bool,
 };
 

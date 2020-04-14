@@ -4,4 +4,13 @@
   border-radius: 3px;
   width: fit-content;
   padding: 3px;
+  transition: .5s;
+  background-color: rgba(0, 0, 128, 0.5);
+  color: gold;
+}
+
+.ship:hover {
+  cursor: pointer;
+  background-color: gold;
+  color: navy;
 }
