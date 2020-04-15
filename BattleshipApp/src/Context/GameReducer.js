@@ -4,6 +4,7 @@ import { initialState } from './GameContext';
 const GameReducer = (prevState, action) => {
   switch (action.type) {
     case 'INITIALIZE':
+      console.log(1, action.data)
       return { ...action.data, initialized: true };
     case 'SELECT_SHIP':
       return GameActions.selectShip(prevState, action);

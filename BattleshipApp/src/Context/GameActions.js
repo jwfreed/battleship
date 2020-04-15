@@ -105,7 +105,7 @@ export const removeShip = (prevState, action) => {
 
   const removedShipPlacements = currentShipsPlaced[action.ship].forEach(arr => {
     if (currentPlacements[arr[0]] && currentPlacements[arr[0]][arr[1]]) {
-      currentPlacements[arr[0]][arr[1]] = undefined
+      currentPlacements[arr[0]][arr[1]] = undefined;
     }
   });
   const removedShipsPlaced = currentShipsPlaced[action.ship] = undefined;

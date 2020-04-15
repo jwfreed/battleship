@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect } from 'react';
+import React, { useReducer, useEffect, useContext } from 'react';
 import GameReducer from '../Context/GameReducer';
 import GameContext, { loadInitialState } from '../Context/GameContext';
 import CreateOrJoinGame from '../Components/CreateOrJoinGame/CreateOrJoinGame';
@@ -20,12 +20,11 @@ const Game = () => {
   const [state, dispatch] = useReducer(GameReducer, {});
 
   useEffect(() => {
-    loadInitialState()
+    loadInitialState
       .then(loadedState => dispatch({ type: 'INITIALIZE', data: loadedState }));
   }, []);
 
-  console.log(state);
-
+  console.log(2, state.initialized)
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -73,7 +72,7 @@ const styles = StyleSheet.create({
     color: Colors.dark,
   },
   highlight: {
-    fontWeight: '700',
+    fontWeight: '800',
   },
   footer: {
     color: Colors.dark,

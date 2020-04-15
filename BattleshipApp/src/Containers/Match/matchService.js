@@ -1,4 +1,5 @@
 export const createAttacksObj = (arr) => {
+  console.log(arr)
   const attacksObj = {};
   if (arr !== null) {
     arr.forEach((attack) => {

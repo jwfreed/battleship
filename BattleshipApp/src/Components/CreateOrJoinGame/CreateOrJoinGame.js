@@ -13,7 +13,7 @@ import {
 
 const CreateOrJoinGame = () => {
   const { uid, dispatch } = useContext(GameContext);
-  const [joinMatch, setJoinMatch] = useState('');
+  const [joinMatch, setJoinMatch] = useState();
 
   const createGame = async () => {
     const matchID = await fetch('http://localhost:3001/match', {
@@ -35,24 +35,24 @@ const CreateOrJoinGame = () => {
   };
 
   return (
-    <SafeAreaView className="create-join-game">
+    <SafeAreaView>
       <ScrollView>
         <View>
-          <TouchableOpacity id="create-game-btn" onPress={createGame}>
+          <TouchableOpacity onPress={createGame}>
             <Text>Create a New Match</Text>
           </TouchableOpacity>
         </View>
         <View>
-          <TouchableOpacity id="join-game-btn" onPress={joinGame}>
+          <TouchableOpacity onPress={joinGame}>
             <Text>Join an Existing Match</Text>
           </TouchableOpacity>
           <TextInput
-            id="join-game"
             type="text"
             value={joinMatch}
             placeholder="Enter Match ID"
-            onChange={text => setJoinMatch(text)}
+            onChange={(text) => setJoinMatch(text)}
             onBlur={Keyboard.dismiss}
+            returnKeyType='go'
           />
         </View>
       </ScrollView>

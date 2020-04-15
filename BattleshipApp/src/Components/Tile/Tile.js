@@ -5,14 +5,15 @@ import GameContext from '../../Context/GameContext';
 import {
   TouchableOpacity,
   Text,
+  StyleSheet,
 } from 'react-native';
 
-const Tile = ({ row, col, onClick, onAttack, myAttacks, opponentAttacks }) => {
+const Tile = ({ row, col, onPress, onAttack, myAttacks, opponentAttacks }) => {
   const { shipPlacements, view } = useContext(GameContext);
 
-  const doClick = useCallback(() => {
-    onClick(row, col);
-  }, [row, col, onClick]);
+  const doPress = useCallback(() => {
+    onPress(row, col);
+  }, [row, col, onPress]);
 
   const doAttack = useCallback(() => {
     onAttack(row, col);
@@ -33,7 +34,7 @@ const Tile = ({ row, col, onClick, onAttack, myAttacks, opponentAttacks }) => {
 
   if (view === 'P') {
     return (
-      <TouchableOpacity className="tile fleet-view" onClick={doClick}>
+      <TouchableOpacity style={styles.tile} onPress={doPress}>
         <Text>
           {(placedShip && placedShip.name) || (opponentAttempts && '*') || '-'}
         </Text>
@@ -42,7 +43,7 @@ const Tile = ({ row, col, onClick, onAttack, myAttacks, opponentAttacks }) => {
   }
 
   return (
-    <TouchableOpacity className="tile attack-view" onClick={doAttack}>
+    <TouchableOpacity className="tile attack-view" onPress={doAttack}>
       <Text>
         {attackAttempts || '-'}
       </Text>
@@ -50,12 +51,20 @@ const Tile = ({ row, col, onClick, onAttack, myAttacks, opponentAttacks }) => {
   );
 };
 
+const styles = StyleSheet.create({
+  tile: {
+    width: 40,
+    height: 40,
+    borderColor: "black",
+  }
+})
+
 Tile.propTypes = {
   row: PropTypes.number,
   col: PropTypes.number,
   myAttacks: PropTypes.object,
   opponentAttacks: PropTypes.object,
-  onClick: PropTypes.func.isRequired,
+  onPress: PropTypes.func.isRequired,
   onAttack: PropTypes.func.isRequired,
 };
 

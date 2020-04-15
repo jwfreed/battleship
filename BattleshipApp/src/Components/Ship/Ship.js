@@ -22,14 +22,14 @@ const Ship = ({ ship, selected, onPress }) => {
 
   return (
     <View className="ship" >
-      <View onPress={() => onPress(ship)}>
+      <TouchableOpacity onPress={() => onPress(ship)}>
         <Text>
           {ship.name} {selected ? '*' : ''}
         </Text>
         <Text>
           Boat Length: {ship.size} Tiles
         </Text>
-      </View>
+      </TouchableOpacity>
       {shipOnBoard && <TouchableOpacity onPress={() => doResetShip(ship.name)}><Text>Reset {ship.name}</Text></TouchableOpacity>}
     </View>
   )

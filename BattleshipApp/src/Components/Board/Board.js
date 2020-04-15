@@ -5,8 +5,9 @@ import GameContext from '../../Context/GameContext';
 
 import {
   SafeAreaView,
-  ScrollView,
+  Text,
   View,
+  StyleSheet,
 } from 'react-native';
 
 const Board = ({ doAttackTile, opponentAttacks, myAttacks }) => {
@@ -20,27 +21,23 @@ const Board = ({ doAttackTile, opponentAttacks, myAttacks }) => {
     doAttackTile(row, col);
   }, [doAttackTile]);
 
+  const tiles = () => boardRows.map((rv, rowIndex) => (
+    boardCols.map((cv, colIndex) => (
+      <Tile
+        key={`${rowIndex}-${colIndex}`}
+        row={rowIndex}
+        col={colIndex}
+        onPress={doPlaceShip}
+        onAttack={doAttack}
+        myAttacks={myAttacks}
+        opponentAttacks={opponentAttacks} />
+    ))
+  ));
+
   return (
-    <SafeAreaView className="board">
-      <ScrollView>
-        {
-          boardRows.map((rv, rowIndex) => (
-            <View key={`row-${rowIndex}`} className="boardRow">
-              {boardCols.map((cv, colIndex) => (
-                <Tile
-                  key={`${rowIndex}-${colIndex}`}
-                  row={rowIndex}
-                  col={colIndex}
-                  onClick={doPlaceShip}
-                  onAttack={doAttack}
-                  myAttacks={myAttacks}
-                  opponentAttacks={opponentAttacks} />
-              ))}
-            </View>
-          ))
-        }
-      </ScrollView>
-    </SafeAreaView>
+    <View style={styles.grid}>
+      {tiles()}
+    </View>
   );
 };
 
@@ -49,5 +46,14 @@ Board.propTypes = {
   opponentAttacks: PropTypes.object,
   myAttacks: PropTypes.object,
 };
+
+const styles = StyleSheet.create({
+  grid: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    flexWrap: "wrap",
+  }
+})
 
 export default Board;

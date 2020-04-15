@@ -36,8 +36,8 @@ const ShipSelect = () => {
       <View>
         {renderShips()}
       </View>
-      <View className="orientation-div">
-        <TouchableOpacity className="orientation-btn" onPress={doChangeShipOrientation}>
+      <View>
+        <TouchableOpacity onPress={doChangeShipOrientation}>
           <Text>
             Orientation
           </Text>

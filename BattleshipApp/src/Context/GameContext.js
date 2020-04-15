@@ -3,21 +3,13 @@ import AsyncStorage from '@react-native-community/async-storage';
 import shortid from 'shortid';
 
 const currentUID = (async () => {
-  const storedUID = await AsyncStorage.getItem('uid').catch(err => console.error(err));
+  const storedUID = await AsyncStorage.getItem('uid');
 
-  if (storedUID) {
-    return storedUID;
-  }
+  if (storedUID) return storedUID;
 
   const newUID = shortid.generate();
-  await AsyncStorage.setItem('uid', JSON.stringify(newUID));
+  await AsyncStorage.setItem('uid', newUID);
   return newUID
-})();
-
-
-const state = (async () => {
-  const storedState = await AsyncStorage.getItem('state').catch(err => console.error(err));
-  return storedState;
 })();
 
 export const initialState = {
@@ -48,21 +40,21 @@ export const initialState = {
   initialTurn: 'Player One',
   lastMsg: '',
   winner: null,
+  initialized: false,
 };
 
-export const loadInitialState = async () => {
+export const loadInitialState = (async () => {
   const storedState = await AsyncStorage.getItem('state', false);
   if (storedState) return JSON.parse(storedState);
+  console.log(storedState)
 
   const currentUID = await (async () => {
-    const storedUID = await AsyncStorage.getItem('uid').catch(err => console.error(err));
+    const storedUID = await AsyncStorage.getItem('uid');
 
-    if (storedUID) {
-      return storedUID;
-    }
+    if (storedUID) return storedUID;
 
     const newUID = shortid.generate();
-    await AsyncStorage.setItem('uid', JSON.stringify(newUID));
+    await AsyncStorage.setItem('uid', newUID);
     return newUID
   })();
 
@@ -94,7 +86,8 @@ export const loadInitialState = async () => {
     initialTurn: 'Player One',
     lastMsg: '',
     winner: null,
+    initialized: false,
   };
-};
+})();
 
 export default React.createContext();
