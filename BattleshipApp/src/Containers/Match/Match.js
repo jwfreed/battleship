@@ -8,9 +8,8 @@ import { createAttacksObj } from './matchService';
 
 import {
   SafeAreaView,
-  TouchableOpacity,
-  ScrollView,
   View,
+  Button,
   Text,
 } from 'react-native';
 
@@ -86,61 +85,59 @@ export const Match = () => {
 
   return (
     <SafeAreaView>
-      <ScrollView>
-        <View >
-          <Text >Match ID:</Text>
-          <Text >{matchID}</Text>
-          <Text>Turn: </Text>
-          <Text>
-            {
-              turn
-              || (!opponentShipsCommitted && 'Waiting for ships to be positioned')
-              || 'Opponent placed ships, waiting for you'
-            }
-          </Text>
-        </View>
-        {view === 'P' && !shipsCommitted && <ShipSelect />}
-        <View>
-          <TouchableOpacity onPress={doResetGame}>
-            <Text>Reset Game</Text>
-          </TouchableOpacity>
-          {shipsCommitted && (
-            <TouchableOpacity onPress={doChangeView}>
-              {view === 'P' ? 'Attack View' : 'Fleet View'}
-            </TouchableOpacity>
-          )}
-          {!shipsCommitted && (
-            <TouchableOpacity onPress={doCommitShips}>
-              <Text>Commit Ships</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-        <View>
-          {/* <FleetHealth opponentAttacks={opponentAttacks} /> */}
-          {shipsCommitted && !gameOver && (
-            <View>
-              <Text>
-                {turn === player ? `Man your battlestations, ${player}!` : `${player}, brace for impact!`}
-              </Text>
-              <Text>
-                {view === 'P' ? 'Your Fleet' : 'Select Attack Target'}
-              </Text>
-            </View>
-          )}
-          {!shipsCommitted && (
-            <View>
-              <Text>Position your Fleet for Battle</Text>
-            </View>
-          )}
-          <Text>
-            {gameOver && <h1>{winner} Wins!</h1>}
-          </Text>
-          {/* <FleetHealth myAttacks={myAttacks} /> */}
-        </View>
-        <Board doAttackTile={doAttackTile} myAttacks={myAttacks} opponentAttacks={opponentAttacks} />
-      </ScrollView>
+      <View >
+        <Text >Match ID: {matchID}</Text>
+        <Text>
+          Turn: {
+            turn
+            || (!opponentShipsCommitted && 'Waiting for ships to be positioned')
+            || 'Opponent placed ships, waiting for you'
+          }
+        </Text>
+      </View>
+      {view === 'P' && !shipsCommitted && <ShipSelect />}
+      <View>
+        <Button
+          onPress={doResetGame}
+          title="Reset Game"
+        />
+        {shipsCommitted && (
+          <Button
+            onPress={doChangeView}
+            title={view === 'P' ? 'Attack View' : 'Fleet View'}
+          />
+        )}
+        {!shipsCommitted && (
+          <Button onPress={doCommitShips}
+            title="Commit Ships"
+          />
+        )}
+      </View>
+      <View>
+        {shipsCommitted && !gameOver && (
+          <View>
+            <Text>
+              {turn === player ? `Man your battlestations, ${player}!` : `${player}, brace for impact!`}
+            </Text>
+            <Text>
+              {view === 'P' ? 'Your Fleet' : 'Select Attack Target'}
+            </Text>
+          </View>
+        )}
+        {!shipsCommitted && (
+          <View>
+            <Text>Position your Fleet for Battle</Text>
+          </View>
+        )}
+        <Text>
+          {gameOver && <h1>{winner} Wins!</h1>}
+        </Text>
+      </View>
+      <Board doAttackTile={doAttackTile} myAttacks={myAttacks} opponentAttacks={opponentAttacks} />
     </SafeAreaView>
   );
 };
+
+
 
 export default Match;

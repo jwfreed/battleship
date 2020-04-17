@@ -31,6 +31,7 @@ const Game = () => {
       <SafeAreaView>
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
+          snapToAlignment="center"
           style={styles.scrollView}>
           <View>
             {state.initialized && (

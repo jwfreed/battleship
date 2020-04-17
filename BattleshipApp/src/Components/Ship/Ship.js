@@ -6,6 +6,7 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Button,
 } from 'react-native';
 
 const Ship = ({ ship, selected, onPress }) => {
@@ -21,13 +22,10 @@ const Ship = ({ ship, selected, onPress }) => {
   }, [ship.name, shipsPlaced]);
 
   return (
-    <View className="ship" >
+    <View>
       <TouchableOpacity onPress={() => onPress(ship)}>
         <Text>
-          {ship.name} {selected ? '*' : ''}
-        </Text>
-        <Text>
-          Boat Length: {ship.size} Tiles
+          {ship.name} {selected ? '*' : ''} -  Length: {ship.size} Tiles
         </Text>
       </TouchableOpacity>
       {shipOnBoard && <TouchableOpacity onPress={() => doResetShip(ship.name)}><Text>Reset {ship.name}</Text></TouchableOpacity>}

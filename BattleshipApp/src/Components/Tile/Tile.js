@@ -3,13 +3,25 @@ import PropTypes from 'prop-types';
 import GameContext from '../../Context/GameContext';
 
 import {
+  Button,
   TouchableOpacity,
   Text,
   StyleSheet,
+  useWindowDimensions,
 } from 'react-native';
 
 const Tile = ({ row, col, onPress, onAttack, myAttacks, opponentAttacks }) => {
   const { shipPlacements, view } = useContext(GameContext);
+  const windowWidth = useWindowDimensions().width;
+
+  const styles = StyleSheet.create({
+    tile: {
+      width: windowWidth / 10,
+      height: windowWidth / 10,
+      borderColor: "black",
+      alignItems: "center",
+    }
+  });
 
   const doPress = useCallback(() => {
     onPress(row, col);
@@ -31,7 +43,6 @@ const Tile = ({ row, col, onPress, onAttack, myAttacks, opponentAttacks }) => {
     myAttacks[row] && myAttacks[row][col]
   ), [row, col, myAttacks]);
 
-
   if (view === 'P') {
     return (
       <TouchableOpacity style={styles.tile} onPress={doPress}>
@@ -43,7 +54,7 @@ const Tile = ({ row, col, onPress, onAttack, myAttacks, opponentAttacks }) => {
   }
 
   return (
-    <TouchableOpacity className="tile attack-view" onPress={doAttack}>
+    <TouchableOpacity style={styles.tile} onPress={doAttack}>
       <Text>
         {attackAttempts || '-'}
       </Text>
@@ -51,13 +62,6 @@ const Tile = ({ row, col, onPress, onAttack, myAttacks, opponentAttacks }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  tile: {
-    width: 40,
-    height: 40,
-    borderColor: "black",
-  }
-})
 
 Tile.propTypes = {
   row: PropTypes.number,

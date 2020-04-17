@@ -4,14 +4,27 @@ import PropTypes from 'prop-types';
 import GameContext from '../../Context/GameContext';
 
 import {
-  SafeAreaView,
-  Text,
   View,
+  SafeAreaView,
   StyleSheet,
+  useWindowDimensions,
 } from 'react-native';
 
 const Board = ({ doAttackTile, opponentAttacks, myAttacks }) => {
   const { boardRows, boardCols, dispatch } = useContext(GameContext);
+  const windowWidth = useWindowDimensions().width;
+
+  const styles = StyleSheet.create({
+    grid: {
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "center",
+      flexWrap: "wrap",
+      width: windowWidth,
+      // margin: 10,
+      // paddingHorizontal: 5
+    }
+  });
 
   const doPlaceShip = useCallback((row, col) => {
     dispatch({ type: 'PLACE_SHIP', row, col });
@@ -35,9 +48,9 @@ const Board = ({ doAttackTile, opponentAttacks, myAttacks }) => {
   ));
 
   return (
-    <View style={styles.grid}>
+    <SafeAreaView style={styles.grid}>
       {tiles()}
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -47,13 +60,5 @@ Board.propTypes = {
   myAttacks: PropTypes.object,
 };
 
-const styles = StyleSheet.create({
-  grid: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    flexWrap: "wrap",
-  }
-})
 
 export default Board;

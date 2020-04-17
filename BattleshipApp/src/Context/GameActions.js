@@ -68,9 +68,7 @@ export const placeShip = (prevState, action) => {
           return invalidMove();
         }
       };
-      return;
     }
-    return invalidMove();
   }
 
   if (prevState.placementOrientation === 'V') { // if orientation is set to vertical
@@ -113,7 +111,7 @@ export const removeShip = (prevState, action) => {
   return { ...prevState, shipsPlaced: { ...currentShipsPlaced, removedShipsPlaced }, shipPlacements: { ...currentShipsPlaced, removedShipPlacements } };
 };
 
-export const resetGame = () => {
+export const resetGame = (initialState) => {
   return initialState;
 };
 
@@ -122,7 +120,7 @@ export const updateContext = (prevState, action) => {
   const lastMsg = prevState.lastMsg;
   const newMsg = JSON.stringify(action.data);
 
-  const playerId = initialState.uid;
+  const playerId = prevState.uid;
   const myPlayer = playerId === player_one ? 'Player One' : 'Player Two';
 
   const playerOneShips = player_one_ship_placements || false;
