@@ -7,13 +7,15 @@ import {
   Text,
   ScrollView,
   View,
+  Button,
   TouchableOpacity,
   Keyboard,
+  StyleSheet,
 } from 'react-native';
 
 const CreateOrJoinGame = () => {
   const { uid, dispatch } = useContext(GameContext);
-  const [joinMatch, setJoinMatch] = useState();
+  const [joinMatch, setJoinMatch] = useState('');
 
   const createGame = async () => {
     const matchID = await fetch('http://localhost:3001/match', {
@@ -26,36 +28,41 @@ const CreateOrJoinGame = () => {
     dispatch({ type: 'JOIN_GAME', matchID });
   };
 
-  const joinGame = () => {
-    if (joinMatch !== '') {
-      dispatch({ type: 'JOIN_GAME', matchID: joinMatch });
-      return;
-    };
-    alert('enter a match Id to join a match');
-  };
+  const joinGame = () => dispatch({ type: 'JOIN_GAME', matchID: joinMatch });
+
+  const styles = StyleSheet.create({
+    buttonContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      marginVertical: 220,
+      backgroundColor: 'white',
+    },
+    input: {
+      height: 50,
+      textAlign: "center",
+      fontSize: 20
+    },
+  });
 
   return (
-    <SafeAreaView>
-      <ScrollView>
-        <View>
-          <TouchableOpacity onPress={createGame}>
-            <Text>Create a New Match</Text>
-          </TouchableOpacity>
-        </View>
-        <View>
-          <TouchableOpacity onPress={joinGame}>
-            <Text>Join an Existing Match</Text>
-          </TouchableOpacity>
-          <TextInput
-            type="text"
-            value={joinMatch}
-            placeholder="Enter Match ID"
-            onChange={(text) => setJoinMatch(text)}
-            onBlur={Keyboard.dismiss}
-            returnKeyType='go'
-          />
-        </View>
-      </ScrollView>
+    <SafeAreaView style={styles.buttonContainer}>
+      <Button
+        onPress={createGame}
+        title="Create a New Match"
+      />
+      <Button
+        onPress={joinGame}
+        title="Join an Existing Match"
+      />
+      <TextInput
+        type="text"
+        value={joinMatch}
+        placeholder="Enter Match ID"
+        onTextInput={(text) => setJoinMatch(text)}
+        onBlur={Keyboard.dismiss}
+        style={styles.input}
+        enablesReturnKeyAutomatically={true}
+      />
     </SafeAreaView >
   );
 };
