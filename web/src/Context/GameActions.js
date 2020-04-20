@@ -86,9 +86,7 @@ export const placeShip = (prevState, action) => {
           return invalidMove();
         }
       };
-      // return;
     }
-    // return invalidMove();
   }
 
   if (prevState.placementOrientation === 'V') { // if orientation is set to vertical
