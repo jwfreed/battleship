@@ -105,7 +105,7 @@ export const Match = () => {
         </button>
         {shipsCommitted && (
           <button className="view-btn" onClick={doChangeView}>
-            {view === 'P' ? 'Attack View' : 'Fleet View'}
+            {view === 'P' ? 'Attack' : 'View Fleet'}
           </button>
         )}
         {!shipsCommitted && (

@@ -22,3 +22,7 @@
 .turn-msg {
   text-align: center;
 }
+
+.commit-ships-btn, .view-btn:hover {
+  cursor: pointer;
+}
