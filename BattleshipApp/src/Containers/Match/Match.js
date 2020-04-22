@@ -4,7 +4,7 @@ import Board from '../../Components/Board/Board';
 import ShipSelect from '../ShipSelect/ShipSelect';
 import GameContext from '../../Context/GameContext';
 import { createAttacksObj } from './matchService';
-// import FleetHealth from '../../Components/FleetHealth/FleetHealth';
+import FleetHealth from '../../Components/FleetHealth/FleetHealth';
 
 import {
   SafeAreaView,
@@ -132,6 +132,10 @@ export const Match = () => {
         <Text>
           {gameOver && <h1>{winner} Wins!</h1>}
         </Text>
+      </View>
+      <View>
+        <FleetHealth myAttacks={myAttacks} />
+        <FleetHealth opponentAttacks={opponentAttacks} />
       </View>
       <Board doAttackTile={doAttackTile} myAttacks={myAttacks} opponentAttacks={opponentAttacks} />
     </SafeAreaView>

@@ -4,8 +4,6 @@ import GameContext from '../../Context/GameContext';
 import { shipHits } from './fleetHealthService';
 
 import {
-  ScrollView,
-  TouchableOpacity,
   View,
   Text,
 } from 'react-native';
@@ -17,9 +15,9 @@ const FleetHealth = memo((attacks) => {
   const hits = shipHits(attacks);
   const fleet = ships.map((ship, i) => {
     if (hits && hits[ship.name]) {
-      return <li key={i} >{ship.name}: {ship.size - hits[ship.name]}</li>;
+      return <Text key={i}>{ship.name}: {ship.size - hits[ship.name]}</Text>;
     };
-    return <li key={i} >{ship.name}: {ship.size}</li>;
+    return <Text key={i}>{ship.name}: {ship.size}</Text>;
   });
 
   const victory = useMemo(() => {
@@ -35,12 +33,12 @@ const FleetHealth = memo((attacks) => {
   }, [victory, dispatch]);
 
   return (
-    <ScrollView className="fleet-div">
+    <Text>
       {title}
-      <ul className="fleet">
+      <Text>
         {fleet}
-      </ul>
-    </ScrollView>
+      </Text>
+    </Text>
   );
 });
 

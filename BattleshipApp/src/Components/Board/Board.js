@@ -21,8 +21,6 @@ const Board = ({ doAttackTile, opponentAttacks, myAttacks }) => {
       justifyContent: "center",
       flexWrap: "wrap",
       width: windowWidth,
-      // margin: 10,
-      // paddingHorizontal: 5
     }
   });
 
