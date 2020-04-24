@@ -4,11 +4,7 @@ import GameContext from '../../Context/GameContext';
 import {
   SafeAreaView,
   TextInput,
-  Text,
-  ScrollView,
-  View,
   Button,
-  TouchableOpacity,
   Keyboard,
   StyleSheet,
 } from 'react-native';
@@ -28,21 +24,14 @@ const CreateOrJoinGame = () => {
     dispatch({ type: 'JOIN_GAME', matchID });
   };
 
-  const joinGame = () => dispatch({ type: 'JOIN_GAME', matchID: joinMatch });
-
-  const styles = StyleSheet.create({
-    buttonContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      marginVertical: 220,
-      backgroundColor: 'white',
-    },
-    input: {
-      height: 50,
-      textAlign: "center",
-      fontSize: 20
-    },
-  });
+  const joinGame = () => {
+    console.log('yo')
+    if (joinMatch !== '') {
+      dispatch({ type: 'JOIN_GAME', matchID: joinMatch });
+      return;
+    }
+    alert('enter a match Id to join a match');
+  };
 
   return (
     <SafeAreaView style={styles.buttonContainer}>
@@ -55,16 +44,27 @@ const CreateOrJoinGame = () => {
         title="Join an Existing Match"
       />
       <TextInput
-        type="text"
-        value={joinMatch}
-        placeholder="Enter Match ID"
-        onTextInput={(text) => setJoinMatch(text)}
-        onBlur={Keyboard.dismiss}
         style={styles.input}
-        enablesReturnKeyAutomatically={true}
+        value={joinMatch}
+        placeholder={"Enter Match ID"}
+        onChangeText={(text) => setJoinMatch(text)}
       />
     </SafeAreaView >
   );
 };
+
+const styles = StyleSheet.create({
+  buttonContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    marginVertical: 220,
+    backgroundColor: 'white',
+  },
+  input: {
+    height: 50,
+    textAlign: "center",
+    fontSize: 20
+  },
+});
 
 export default CreateOrJoinGame;
