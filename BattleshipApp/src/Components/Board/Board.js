@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import GameContext from '../../Context/GameContext';
 
 import {
-  View,
   SafeAreaView,
   StyleSheet,
   useWindowDimensions,

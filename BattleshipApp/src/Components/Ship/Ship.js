@@ -6,7 +6,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Button,
 } from 'react-native';
 
 const Ship = ({ ship, selected, onPress }) => {

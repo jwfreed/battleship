@@ -25,7 +25,6 @@ const CreateOrJoinGame = () => {
   };
 
   const joinGame = () => {
-    console.log('yo')
     if (joinMatch !== '') {
       dispatch({ type: 'JOIN_GAME', matchID: joinMatch });
       return;
@@ -48,6 +47,7 @@ const CreateOrJoinGame = () => {
         value={joinMatch}
         placeholder={"Enter Match ID"}
         onChangeText={(text) => setJoinMatch(text)}
+        onBlur={Keyboard.dismiss}
       />
     </SafeAreaView >
   );

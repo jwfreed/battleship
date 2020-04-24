@@ -24,7 +24,6 @@ const Game = () => {
       .then(loadedState => dispatch({ type: 'INITIALIZE', data: loadedState }));
   }, []);
 
-  console.log(2, state.initialized)
   return (
     <>
       <StatusBar barStyle="dark-content" />
