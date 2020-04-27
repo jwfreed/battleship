@@ -3,10 +3,17 @@ import PropTypes from 'prop-types';
 import GameContext from '../../Context/GameContext';
 
 import {
+  StyleSheet,
   View,
   Text,
   TouchableOpacity,
 } from 'react-native';
+
+const styles = StyleSheet.create({
+  shipName: {
+    fontSize: 20,
+  }
+});
 
 const Ship = ({ ship, selected, onPress }) => {
   const { shipsPlaced, dispatch } = useContext(GameContext);
@@ -23,7 +30,7 @@ const Ship = ({ ship, selected, onPress }) => {
   return (
     <View>
       <TouchableOpacity onPress={() => onPress(ship)}>
-        <Text>
+        <Text style={styles.shipName}>
           {ship.name} {selected ? '*' : ''} -  Length: {ship.size} Tiles
         </Text>
       </TouchableOpacity>
