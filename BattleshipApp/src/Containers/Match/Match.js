@@ -7,11 +7,20 @@ import { createAttacksObj } from './matchService';
 import FleetHealth from '../../Components/FleetHealth/FleetHealth';
 
 import {
+  StyleSheet,
   SafeAreaView,
   View,
   Button,
   Text,
 } from 'react-native';
+
+const styles = StyleSheet.create({
+  btns: {
+    display: "flex",
+    flexDirection: "row",
+    alignContent: "center",
+  }
+})
 
 export const Match = () => {
   const {
@@ -96,7 +105,7 @@ export const Match = () => {
         </Text>
       </View>
       {view === 'P' && !shipsCommitted && <ShipSelect />}
-      <View>
+      <View style={styles.btns}>
         <Button
           onPress={doResetGame}
           title="Reset Game"

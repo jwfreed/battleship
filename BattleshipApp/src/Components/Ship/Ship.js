@@ -11,8 +11,9 @@ import {
 
 const styles = StyleSheet.create({
   shipName: {
-    fontSize: 20,
-  }
+    fontSize: 17,
+    padding: 3,
+  },
 });
 
 const Ship = ({ ship, selected, onPress }) => {
@@ -34,7 +35,7 @@ const Ship = ({ ship, selected, onPress }) => {
           {ship.name} {selected ? '*' : ''} -  Length: {ship.size} Tiles
         </Text>
       </TouchableOpacity>
-      {shipOnBoard && <TouchableOpacity onPress={() => doResetShip(ship.name)}><Text>Reset {ship.name}</Text></TouchableOpacity>}
+      {shipOnBoard && <TouchableOpacity onPress={() => doResetShip(ship.name)}><Text style={styles.shipName}>Reset {ship.name}</Text></TouchableOpacity>}
     </View>
   )
 };

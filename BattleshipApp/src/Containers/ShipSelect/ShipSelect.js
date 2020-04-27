@@ -12,13 +12,17 @@ import {
 
 const styles = StyleSheet.create({
   orientationBtn: {
-    fontSize: 18,
+    fontSize: 17,
     color: "purple",
   },
   currentOrientation: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: "500",
-    textDecorationLine: "underline",
+  },
+  orientation: {
+    display: "flex",
+    flexDirection: "row",
+    padding: 3,
   }
 })
 
@@ -49,14 +53,14 @@ const ShipSelect = () => {
       <View>
         {renderShips()}
       </View>
-      <View>
+      <View style={styles.orientation}>
         <TouchableOpacity onPress={doChangeShipOrientation}>
           <Text style={styles.orientationBtn}>
-            Change Orientation
+            Orientation:
           </Text>
         </TouchableOpacity>
         <Text style={styles.currentOrientation}>
-          {placementOrientation === 'H' ? 'Horizontal' : 'Vertical'}
+          {placementOrientation === 'H' ? ' Horizontal' : ' Vertical'}
         </Text>
       </View>
     </SafeAreaView>
