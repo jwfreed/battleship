@@ -12,7 +12,8 @@ import {
 const styles = StyleSheet.create({
   shipName: {
     fontSize: 17,
-    padding: 3,
+    paddingHorizontal: 5,
+    paddingBottom: 2,
   },
 });
 

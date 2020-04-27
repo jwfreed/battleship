@@ -4,9 +4,17 @@ import GameContext from '../../Context/GameContext';
 import { shipHits } from './fleetHealthService';
 
 import {
+  StyleSheet,
   View,
   Text,
 } from 'react-native';
+
+const styles = StyleSheet.create({
+  container: {
+    display: "flex",
+    justifyContent: "space-between"
+  }
+})
 
 const FleetHealth = memo((attacks) => {
   const { ships, player, dispatch } = useContext(GameContext);
@@ -33,12 +41,14 @@ const FleetHealth = memo((attacks) => {
   }, [victory, dispatch]);
 
   return (
-    <Text>
-      {title}
+    <View style={styles.container}>
       <Text>
-        {fleet}
+        {title}
+        <Text>
+          {fleet}
+        </Text>
       </Text>
-    </Text>
+    </View>
   );
 });
 

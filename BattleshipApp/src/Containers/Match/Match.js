@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   btns: {
     display: "flex",
     flexDirection: "row",
-    alignContent: "center",
+    justifyContent: "space-around",
   }
 })
 
@@ -100,7 +100,7 @@ export const Match = () => {
           Turn: {
             turn
             || (!opponentShipsCommitted && 'Waiting for ships to be positioned')
-            || 'Opponent placed ships, waiting for you'
+            || (opponentShipsCommitted && 'Opponent placed ships, waiting for you')
           }
         </Text>
       </View>

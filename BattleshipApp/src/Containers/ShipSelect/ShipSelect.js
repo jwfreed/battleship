@@ -7,22 +7,19 @@ import {
   SafeAreaView,
   TouchableOpacity,
   View,
+  Button,
   Text,
 } from 'react-native';
 
 const styles = StyleSheet.create({
-  orientationBtn: {
-    fontSize: 17,
-    color: "purple",
-  },
   currentOrientation: {
-    fontSize: 17,
+    fontSize: 18,
     fontWeight: "500",
+    padding: 8,
   },
   orientation: {
     display: "flex",
     flexDirection: "row",
-    padding: 3,
   }
 })
 
@@ -54,13 +51,12 @@ const ShipSelect = () => {
         {renderShips()}
       </View>
       <View style={styles.orientation}>
-        <TouchableOpacity onPress={doChangeShipOrientation}>
-          <Text style={styles.orientationBtn}>
-            Orientation:
-          </Text>
-        </TouchableOpacity>
+        <Button
+          onPress={doChangeShipOrientation}
+          title="Orientation:"
+        />
         <Text style={styles.currentOrientation}>
-          {placementOrientation === 'H' ? ' Horizontal' : ' Vertical'}
+          {placementOrientation === 'H' ? 'Horizontal' : 'Vertical'}
         </Text>
       </View>
     </SafeAreaView>
