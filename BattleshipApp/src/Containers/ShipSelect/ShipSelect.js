@@ -3,11 +3,24 @@ import GameContext from '../../Context/GameContext';
 import Ship from '../../Components/Ship/Ship';
 
 import {
+  StyleSheet,
   SafeAreaView,
   TouchableOpacity,
   View,
   Text,
 } from 'react-native';
+
+const styles = StyleSheet.create({
+  orientationBtn: {
+    fontSize: 18,
+    color: "purple",
+  },
+  currentOrientation: {
+    fontSize: 18,
+    fontWeight: "500",
+    textDecorationLine: "underline",
+  }
+})
 
 const ShipSelect = () => {
   const { ships, selectedShip, placementOrientation, dispatch } = useContext(GameContext);
@@ -38,11 +51,11 @@ const ShipSelect = () => {
       </View>
       <View>
         <TouchableOpacity onPress={doChangeShipOrientation}>
-          <Text>
-            Orientation
+          <Text style={styles.orientationBtn}>
+            Change Orientation
           </Text>
         </TouchableOpacity>
-        <Text className="current-orientation">
+        <Text style={styles.currentOrientation}>
           {placementOrientation === 'H' ? 'Horizontal' : 'Vertical'}
         </Text>
       </View>
