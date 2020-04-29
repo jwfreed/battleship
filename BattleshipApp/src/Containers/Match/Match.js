@@ -19,7 +19,10 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-around",
-  }
+  },
+  text: {
+    fontWeight: "400"
+  },
 })
 
 export const Match = () => {
@@ -95,8 +98,8 @@ export const Match = () => {
   return (
     <SafeAreaView>
       <View >
-        <Text >Match ID: {matchID}</Text>
-        <Text>
+        <Text style={styles.text}>Match ID: {matchID}</Text>
+        <Text style={styles.text}>
           Turn: {
             turn
             || (!opponentShipsCommitted && 'Waiting for ships to be positioned')
@@ -125,20 +128,20 @@ export const Match = () => {
       <View>
         {shipsCommitted && !gameOver && (
           <View>
-            <Text>
+            <Text style={styles.text}>
               {turn === player ? `Man your battlestations, ${player}!` : `${player}, brace for impact!`}
             </Text>
-            <Text>
+            <Text style={styles.text}>
               {view === 'P' ? 'Your Fleet' : 'Select Attack Target'}
             </Text>
           </View>
         )}
         {!shipsCommitted && (
           <View>
-            <Text>Position your Fleet for Battle</Text>
+            <Text style={styles.text}>Position your Fleet for Battle</Text>
           </View>
         )}
-        <Text>
+        <Text style={styles.text}>
           {gameOver && <h1>{winner} Wins!</h1>}
         </Text>
       </View>
