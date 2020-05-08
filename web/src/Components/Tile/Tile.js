@@ -29,12 +29,12 @@ const Tile = ({ row, col, onClick, onAttack, myAttacks, opponentAttacks }) => {
   if (view === 'P') {
     const imgPath = (placedShip && process.env.PUBLIC_URL + '/assets/' + placedShip.img) || null;
     return (
-      (imgPath &&
-        <button className="tile fleet-view" onClick={doClick} style={{ backgroundImage: `url(${imgPath})` }}>
-          {opponentAttempts && '*'}
-        </button>)
-      ||
-      <button className="tile fleet-view" onClick={doClick}>
+      // (imgPath &&
+      //   <button className="tile fleet-view" onClick={doClick} >
+      //     {opponentAttempts && '*' || ''}
+      //   </button>)
+      // ||
+      <button className="tile fleet-view" onClick={doClick} style={{ backgroundImage: `url(${imgPath})` }}>
         -
       </button>
     );
