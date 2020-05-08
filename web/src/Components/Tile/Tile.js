@@ -30,10 +30,12 @@ const Tile = ({ row, col, onClick, onAttack, myAttacks, opponentAttacks }) => {
     const imgPath = (placedShip && process.env.PUBLIC_URL + '/assets/' + placedShip.img) || null;
     return (
       (imgPath &&
-        <button className="tile fleet-view" onClick={doClick} style={{ backgroundImage: `url(${imgPath})` }}></button>)
+        <button className="tile fleet-view" onClick={doClick} style={{ backgroundImage: `url(${imgPath})` }}>
+          {opponentAttempts && '*'}
+        </button>)
       ||
       <button className="tile fleet-view" onClick={doClick}>
-        {(opponentAttempts && '*') || '-'}
+        -
       </button>
     );
   }
