@@ -4,6 +4,8 @@
   border-style: outset;
   font-size:1rem;
   transition: .2s;
+  padding: 0px;
+  background-repeat: no-repeat;
 }
 
 .tile:hover {
@@ -24,8 +26,8 @@
 
 .attack-view {
   color: #73f970;
-  border-color: #33c82e;
-  background-color: #074000;
+  border-color: #074000;
+  background-color:  #33c82e;
 }
 
 .attack-view:hover {

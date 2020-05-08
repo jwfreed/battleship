@@ -4,7 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export const selectShip = (prevState, action) => {
   const ship = action.ship;
-  const selectedShip = { name: ship.name, size: ship.size };
+  const selectedShip = { name: ship.name, size: ship.size, img: ship.img };
   return { ...prevState, selectedShip };
 };
 
