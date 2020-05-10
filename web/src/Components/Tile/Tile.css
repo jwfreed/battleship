@@ -41,5 +41,6 @@
 }
 
 .miss {
-  background-color: darkgoldenrod;
+  background-image: url("./splash.svg");
+  background-size: 90px 90px;
 }
