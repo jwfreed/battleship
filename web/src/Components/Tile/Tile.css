@@ -25,13 +25,21 @@
 }
 
 .attack-view {
-  color: #73f970;
+  color: #074000;
   border-color: #074000;
   background-color:  #33c82e;
 }
 
 .attack-view:hover {
-  border-color: #09ff00;
+  border-color: #074000;
   border-width: 2px;
   font-weight: 500;
+}
+
+.hit {
+  background-color: crimson;
+}
+
+.miss {
+  background-color: darkgoldenrod;
 }

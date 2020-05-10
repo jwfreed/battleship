@@ -1,6 +1,10 @@
 .board {
   display: grid;
-  grid-template-columns: repeat(auto-fit, 1fr);
+  grid-template-columns: 900px;
   grid-gap: 0rem;
   align-self: center;
+}
+
+.boardRow {
+  max-height: 90px;
 }
