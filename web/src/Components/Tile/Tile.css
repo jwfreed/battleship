@@ -6,6 +6,7 @@
   transition: .2s;
   padding: 0px;
   background-repeat: no-repeat;
+  background-size: 90px 90px;
 }
 
 .tile:hover {
@@ -37,7 +38,8 @@
 }
 
 .hit {
-  background-color: crimson;
+  background-color: #FF0401;
+  background-size: 90px 90px;
 }
 
 .miss {
