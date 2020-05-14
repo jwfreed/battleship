@@ -3,6 +3,7 @@
   margin: 1px;
   border-radius: 3px;
   width: fit-content;
+  height: 125px;
   padding: 3px;
   transition: .5s;
 }

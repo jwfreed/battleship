@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import GameContext from '../../Context/GameContext';
 
 import {
-  Button,
   TouchableOpacity,
   Text,
   StyleSheet,

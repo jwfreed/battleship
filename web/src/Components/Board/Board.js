@@ -5,7 +5,7 @@ import GameContext from '../../Context/GameContext';
 import './Board.css';
 
 const Board = ({ doAttackTile, opponentAttacks, myAttacks }) => {
-  const { boardRows, boardCols, dispatch } = useContext(GameContext);
+  const { boardRows, boardCols, shipsPlaced, shipPlacements, dispatch } = useContext(GameContext);
 
   const doPlaceShip = useCallback((row, col) => {
     dispatch({ type: 'PLACE_SHIP', row, col });

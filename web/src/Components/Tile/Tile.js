@@ -4,7 +4,7 @@ import GameContext from '../../Context/GameContext';
 import './Tile.css';
 
 const Tile = ({ row, col, onClick, onAttack, myAttacks, opponentAttacks }) => {
-  const { shipPlacements, view } = useContext(GameContext);
+  const { shipPlacements, shipsPlaced, view } = useContext(GameContext);
 
   const doClick = useCallback(() => {
     onClick(row, col);
@@ -16,7 +16,7 @@ const Tile = ({ row, col, onClick, onAttack, myAttacks, opponentAttacks }) => {
 
   const placedShip = useMemo(() => (
     shipPlacements[row] && shipPlacements[row][col]
-  ), [row, col, shipPlacements]);
+  ), [row, col, shipPlacements, shipsPlaced]);
 
   const opponentAttempts = useMemo(() => (
     opponentAttacks[row] && opponentAttacks[row][col]
@@ -27,10 +27,13 @@ const Tile = ({ row, col, onClick, onAttack, myAttacks, opponentAttacks }) => {
   ), [row, col, myAttacks]);
 
   if (view === 'P') {
-    const imgPath = (placedShip && process.env.PUBLIC_URL + '/assets/' + placedShip.img) || null;
-    const attemptClass = (opponentAttempts && placedShip && 'hit') || (opponentAttempts && 'miss');
+    const imgPath = placedShip && process.env.PUBLIC_URL + '/assets/' + placedShip.img;
+    const attemptClass = (opponentAttempts && 'hit') || (opponentAttempts && 'miss') || 'tile';
     return (
-      <button className={`tile fleet-view ${attemptClass}`} onClick={doClick} style={imgPath && { backgroundImage: `url(${imgPath})` }}></button>
+      <button className="tile fleet-view" onClick={doClick} >
+        {(placedShip && <img className="tileImg" src={imgPath} alt={placedShip.name} />) || (opponentAttempts && '*') || '-'}
+        {/* {(placedShip && placedShip.name) || (opponentAttempts && '*') || '-'} */}
+      </button >
     );
   }
 
