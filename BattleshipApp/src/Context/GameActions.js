@@ -98,17 +98,19 @@ export const placeShip = (prevState, action) => {
 };
 
 export const removeShip = (prevState, action) => {
-  const currentShipsPlaced = prevState.shipsPlaced;
-  const currentPlacements = prevState.shipPlacements;
+  const shipToRemove = action.ship;
+  const currentShipPlacements = prevState.shipsPlaced[shipToRemove];
 
-  const removedShipPlacements = currentShipsPlaced[action.ship].forEach(arr => {
-    if (currentPlacements[arr[0]] && currentPlacements[arr[0]][arr[1]]) {
-      currentPlacements[arr[0]][arr[1]] = undefined;
-    }
-  });
-  const removedShipsPlaced = currentShipsPlaced[action.ship] = undefined;
+  const updatedPlacements = currentPlacements.reduce((acc, pos) => {
+    acc[pos[0]][pos[1]] = undefined;
+    return acc;
+  }, currentShipPlacements)
 
-  return { ...prevState, shipsPlaced: { ...currentShipsPlaced, removedShipsPlaced }, shipPlacements: { ...currentShipsPlaced, removedShipPlacements } };
+  return {
+    ...prevState,
+    currentShipPlacements: updatedPlacements,
+    shipsPlaced: { ...shipsPlaced, [shipToRemove]: undefined },
+  };
 };
 
 export const resetGame = (initialState) => {

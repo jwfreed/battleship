@@ -119,32 +119,16 @@ export const removeShip = (prevState, action) => {
   const shipToRemove = action.ship;
   const currentShipPlacements = prevState.shipsPlaced[shipToRemove];
 
-  const cleanedPlacements = currentShipPlacements.reduce((acc, pos) => {
+  const updatededPlacements = currentShipPlacements.reduce((acc, pos) => {
     acc[pos[0]][pos[1]] = undefined;
     return acc;
   }, prevState.shipPlacements);
 
   return {
     ...prevState,
-    shipPlacements: cleanedPlacements,
+    shipPlacements: updatededPlacements,
     shipsPlaced: { ...prevState.shipsPlaced, [shipToRemove]: undefined },
   };
-
-  // console.log(cleanedPlacements);
-
-  // const currentShipsPlaced = prevState.shipsPlaced;
-  // const currentPlacements = prevState.shipPlacements;
-
-  // console.log(action);
-
-  // const removedShipPlacements = currentShipsPlaced[action.ship].forEach(arr => {
-  //   if (currentPlacements[arr[0]] && currentPlacements[arr[0]][arr[1]]) {
-  //     currentPlacements[arr[0]][arr[1]] = undefined;
-  //   }
-  // });
-  // const removedShipsPlaced = currentShipsPlaced[action.ship] = undefined;
-
-  // return { ...prevState, shipsPlaced: { ...currentShipsPlaced, removedShipsPlaced }, shipPlacements: { ...currentShipsPlaced, removedShipPlacements } };
 };
 
 export const resetGame = () => {
