@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const createMatchHandler = require('./handlers/createMatch');
 const matchSocketHandler = require('./handlers/matchSocket');
 
-const port = process.env.PORT;
+const port = process.env.PORT || 3001;
 const app = express();
 const ews = expressWs(app);
 
@@ -17,3 +17,4 @@ app.post('/match', createMatchHandler);
 app.ws('/match/:id', matchSocketHandler);
 
 app.listen(port, () => console.log(`Battleship server listening on port ${port}!`));
+

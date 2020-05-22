@@ -58,15 +58,12 @@ export const Match = () => {
 
   const doChangeView = () => dispatch({ type: 'CHANGE_VIEW' })
 
-
   const doCommitShips = () => {
     const numberOfShipsPlaced = Object.keys(shipsPlaced).length;
     if (numberOfShipsPlaced < ships.length) {
       return toast.warn('You must position all ships in your fleet.')
     }
-
     const placeShipsMessage = JSON.stringify({ action: 'SHIP_PLACEMENTS', placements: shipPlacements, uid, turn });
-
     toast.success('Ships Placed');
     return sendMessage(placeShipsMessage);
   };
@@ -75,7 +72,6 @@ export const Match = () => {
     if (player !== turn) {
       return toast.warn('it\'s not your turn');
     }
-
     const placeAttackMessage = JSON.stringify({ action: 'ATTACK', row, col, uid, turn });
     return sendMessage(placeAttackMessage);
   };

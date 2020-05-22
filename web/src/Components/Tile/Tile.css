@@ -12,8 +12,8 @@
 }
 
 .tileImg {
-  max-height: 90px;
-  max-width: 90px;
+  height: 88px;
+  width: fit-content;
 }
 
 .fleet-view {
