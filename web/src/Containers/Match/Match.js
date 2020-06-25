@@ -80,12 +80,19 @@ export const Match = () => {
 
   const opponentAttacks = useMemo(() => createAttacksObj(opponentAttackPlacements), [opponentAttackPlacements]);
 
+  const doCopyMatchID = () => {
+    const id = document.getElementById('match-id');
+    id.innerText.toStr().select();
+    // console.log(id.innerText)
+    document.execCommand('copy');
+  };
+
   return (
     <div className="game">
-        <p className="ready-player">{`Ready ${player}`}</p>
+      <p className="ready-player">{`Ready ${player}`}</p>
       <div className="match-info-container">
         <h4 className="match-info-text">Match ID:</h4>
-        <p className="match-info-text match-info-data">{matchID}</p>
+        <p className="match-info-text match-info-data" id="match-id" onClick={doCopyMatchID}>{matchID}</p>
         <h4 className="match-info-text">Turn: </h4>
         <p className="match-info-text match-info-data">
           {
@@ -115,11 +122,11 @@ export const Match = () => {
         <div className="game-prompt">
           {!gameOver && (
             <div>
-              {opponentShipsCommitted && 
-              (<h4 className="view-text">
-                {turn === player ? `Man your battlestations, ${player}!` : `${player}, brace for impact!`}
-              </h4>) ||
-              <p className="view-text">The quiet before the storm...</p>
+              {shipsCommitted && opponentShipsCommitted &&
+                (<h4 className="view-text">
+                  {turn === player ? `Man your battlestations, ${player}!` : `${player}, brace for impact!`}
+                </h4>) ||
+                <p className="view-text">The quiet before the storm...</p>
               }
               <p className="view-text">
                 {view === 'P' ? 'Fleet View' : 'Select Attack Target'}
