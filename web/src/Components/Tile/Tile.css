@@ -26,6 +26,7 @@
   border-color: #007aff;
   border-width: 2px;
   font-weight: 500;
+  background-color: #11a4ded9;
 }
 
 .attack-view {
@@ -38,6 +39,7 @@
   border-color: #074000;
   border-width: 2px;
   font-weight: 500;
+  background-color:  #33c82ed1;
 }
 
 .hit {
