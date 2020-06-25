@@ -1,3 +1,11 @@
+ul {
+  display: flex;
+}
+
+li {
+  padding-right: 10px;
+}
+
 .my-fleet {
   list-style-type: none;
   border: 2px solid #074000;
@@ -16,4 +24,12 @@
 
 .fleet-title {
   font-style: italic;
+}
+
+.ship-health {
+  margin: 0px 3px;
+}
+
+.fleet-div {
+  margin: auto;
 }

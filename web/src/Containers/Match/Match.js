@@ -82,6 +82,7 @@ export const Match = () => {
 
   return (
     <div className="game">
+        <p className="ready-player">{`Ready ${player}`}</p>
       <div className="match-info-container">
         <h4 className="match-info-text">Match ID:</h4>
         <p className="match-info-text match-info-data">{matchID}</p>
@@ -89,7 +90,7 @@ export const Match = () => {
         <p className="match-info-text match-info-data">
           {
             turn
-            || (!opponentShipsCommitted && 'Waiting for ships to be positioned')
+            || (!opponentShipsCommitted && 'Awaiting all players to position ships')
             || 'Opponent placed ships, waiting for you'
           }
         </p>
@@ -111,24 +112,31 @@ export const Match = () => {
         )}
       </div>
       <div className="board-info">
-        <FleetHealth opponentAttacks={opponentAttacks} />
-        {shipsCommitted && !gameOver && (
-          <div>
-            <h4 className="view-text">
-              {turn === player ? `Man your battlestations, ${player}!` : `${player}, brace for impact!`}
-            </h4>
-            <p className="view-text">
-              {view === 'P' ? 'Your Fleet' : 'Select Attack Target'}
-            </p>
-          </div>
-        )}
-        {!shipsCommitted && (
-          <div>
-            <h4>Position your Fleet for Battle</h4>
-          </div>
-        )}
-        {gameOver && <h1>{winner} Wins!</h1>}
-        <FleetHealth myAttacks={myAttacks} />
+        <div className="game-prompt">
+          {!gameOver && (
+            <div>
+              {opponentShipsCommitted && 
+              (<h4 className="view-text">
+                {turn === player ? `Man your battlestations, ${player}!` : `${player}, brace for impact!`}
+              </h4>) ||
+              <p className="view-text">The quiet before the storm...</p>
+              }
+              <p className="view-text">
+                {view === 'P' ? 'Fleet View' : 'Select Attack Target'}
+              </p>
+            </div>
+          )}
+          {!shipsCommitted && (
+            <div>
+              <h4>Position your Fleet for Battle</h4>
+            </div>
+          )}
+          {gameOver && <h1>{winner} Wins!</h1>}
+        </div>
+        <div className="fleet-health-container">
+          <FleetHealth opponentAttacks={opponentAttacks} />
+          <FleetHealth myAttacks={myAttacks} />
+        </div>
       </div>
       <Board doAttackTile={doAttackTile} myAttacks={myAttacks} opponentAttacks={opponentAttacks} />
     </div>

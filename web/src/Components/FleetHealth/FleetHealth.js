@@ -12,7 +12,7 @@ const FleetHealth = memo((attacks) => {
   const hits = shipHits(attacks);
   const fleet = ships.map((ship, i) => {
     if (hits && hits[ship.name]) {
-      return <li key={i} >{ship.name}: {ship.size - hits[ship.name]}</li>;
+      return <li className="ship-health" key={i} >{ship.name}: {ship.size - hits[ship.name]}</li>;
     };
     return <li key={i} >{ship.name}: {ship.size}</li>;
   });

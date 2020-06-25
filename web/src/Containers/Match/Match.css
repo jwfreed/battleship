@@ -1,6 +1,6 @@
 .board-info { 
   display: flex;
-  flex-flow: row;
+  flex-flow: column;
   justify-content: space-evenly;
 }
 
@@ -25,4 +25,14 @@
 
 .commit-ships-btn, .view-btn:hover {
   cursor: pointer;
+}
+
+.fleet-health-container {
+  display: flex;
+  justify-content: center;
+}
+
+.ready-player {
+  text-align: center;
+  margin: 0px;
 }
