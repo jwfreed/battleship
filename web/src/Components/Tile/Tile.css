@@ -12,7 +12,7 @@
 }
 
 .tileImg {
-  height: 88px;
+  height: 86px;
   width: fit-content;
 }
 
@@ -23,7 +23,7 @@
 }
 
 .fleet-view:hover {
-  border-color: #ffffff;
+  border-color: #007aff;
   border-width: 2px;
   font-weight: 500;
 }

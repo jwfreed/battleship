@@ -7,6 +7,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.game-container {
+  max-width: 90%;
+  margin: auto;
+}
+
 .game {
   display: flex;
   justify-content: center;
@@ -22,6 +27,7 @@ body {
 .reset-view-div {
   display: flex;
   justify-content: space-evenly;
+  margin: 10px 0px;
 }
 
 .reset-btn, .view-btn, .commit-ships-btn {

@@ -14,7 +14,7 @@ const Game = () => {
   }, [state]);
 
   return (
-    <div className="game">
+    <div className="game game-container">
       <header className="title">BATTLESHIP</header>
       <GameContext.Provider value={{ ...state, dispatch }}>
         {state.matchID ? <Match /> : <CreateOrJoinGame />}
