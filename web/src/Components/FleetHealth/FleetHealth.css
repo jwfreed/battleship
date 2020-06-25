@@ -1,7 +1,15 @@
-.fleet {
+.my-fleet {
   list-style-type: none;
-  border: 2px solid navy;
+  border: 2px solid #074000;
   border-radius: 16px;
   padding: 18px;
-  background: #00008017;
+  background: #33c82e8c;
+}
+
+.opponent-fleet {
+  list-style-type: none;
+  border: 2px solid #ff0401;
+  border-radius: 16px;
+  padding: 18px;
+  background: #ff2d5580;
 }

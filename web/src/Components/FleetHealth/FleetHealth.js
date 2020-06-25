@@ -7,6 +7,7 @@ import './FleetHealth.css';
 const FleetHealth = memo((attacks) => {
   const { ships, player, dispatch } = useContext(GameContext);
   const title = (Object.keys(attacks).includes('myAttacks') && 'Opponent Fleet Health') || `${player} Fleet Health`;
+  const fleetClass = title === `${player} Fleet Health` && 'my' || 'opponent';
 
   const hits = shipHits(attacks);
   const fleet = ships.map((ship, i) => {
@@ -31,7 +32,7 @@ const FleetHealth = memo((attacks) => {
   return (
     <div className="fleet-div">
       {title}
-      <ul className="fleet">
+      <ul className={`${fleetClass}-fleet`}>
         {fleet}
       </ul>
     </div>
