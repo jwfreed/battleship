@@ -5,10 +5,12 @@ const MatchModel = {
   create: (playerOneId) => {
     const matchId = shortid.generate();
 
+    console.log(1, matchId);
+
     const query = 'INSERT INTO matches(id, player_one) VALUES($1, $2) RETURNING *';
     const values = [matchId, playerOneId];
-
-    return pool.query(query, values).then(({ rows }) => rows[0]);
+    console.log(11, query, values);
+    return pool.query(query, values).then((res) => rows[0]);
   },
 
   getById: (matchId) => {

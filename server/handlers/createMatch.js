@@ -2,8 +2,9 @@ const MatchModel = require('../models/match');
 
 module.exports = async (req, res) => {
   const userId = req.body.uid;
-
+  
   try {
+    console.log(userId)
     const match = await MatchModel.create(userId);
     return res.json({ success: true, data: match });
   } catch (e) {
