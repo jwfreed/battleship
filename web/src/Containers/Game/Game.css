@@ -8,7 +8,7 @@ body {
 }
 
 .game-container {
-  max-width: 90%;
+  max-width: 86%;
   margin: auto;
 }
 
@@ -19,9 +19,11 @@ body {
 }
 
 .title {
-  font-size: 60px;
+  font-size: 68px;
   text-align: center;
   font-family: 'Source Code Pro', monospace;
+  letter-spacing: 5px;
+  border-bottom: 1px solid #727272;
 }
 
 .reset-view-div {
