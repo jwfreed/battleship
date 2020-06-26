@@ -56,7 +56,7 @@ export const Match = () => {
 
   const doResetGame = () => dispatch({ type: 'RESET_GAME' });
 
-  const doChangeView = () => dispatch({ type: 'CHANGE_VIEW' })
+  const doChangeView = () => dispatch({ type: 'CHANGE_VIEW' });
 
   const doCommitShips = () => {
     const numberOfShipsPlaced = Object.keys(shipsPlaced).length;
@@ -121,21 +121,18 @@ export const Match = () => {
                 </h4>) ||
                 <p className="view-text">The quiet before the storm...</p>
               }
+              {shipsCommitted &&
+                <div className="fleet-health-container">
+                  <FleetHealth opponentAttacks={opponentAttacks} />
+                  <FleetHealth myAttacks={myAttacks} />
+                </div>
+              }
               <p className="view-text">
                 {view === 'P' ? 'Fleet View' : 'Select Attack Target'}
               </p>
             </div>
           )}
-          {!shipsCommitted && (
-            <div>
-              <h4>Position your Fleet for Battle</h4>
-            </div>
-          )}
           {gameOver && <h1>{winner} Wins!</h1>}
-        </div>
-        <div className="fleet-health-container">
-          <FleetHealth opponentAttacks={opponentAttacks} />
-          <FleetHealth myAttacks={myAttacks} />
         </div>
       </div>
       <Board doAttackTile={doAttackTile} myAttacks={myAttacks} opponentAttacks={opponentAttacks} />

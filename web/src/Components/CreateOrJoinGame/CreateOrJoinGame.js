@@ -17,7 +17,7 @@ export const CreateOrJoinGame = () => {
     
     dispatch({ type: 'JOIN_GAME', matchID });
     
-    // alert('share Match ID with your opponent');
+    alert('share Match ID with your opponent');
   };
 
   const joinGame = () => {
