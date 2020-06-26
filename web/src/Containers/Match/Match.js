@@ -80,19 +80,12 @@ export const Match = () => {
 
   const opponentAttacks = useMemo(() => createAttacksObj(opponentAttackPlacements), [opponentAttackPlacements]);
 
-  const doCopyMatchID = () => {
-    const id = document.getElementById('match-id');
-    id.innerText.toStr().select();
-    // console.log(id.innerText)
-    document.execCommand('copy');
-  };
-
   return (
     <div className="game">
       <p className="ready-player">{`Ready ${player}`}</p>
       <div className="match-info-container">
         <h4 className="match-info-text">Match ID:</h4>
-        <p className="match-info-text match-info-data" id="match-id" onClick={doCopyMatchID}>{matchID}</p>
+        <p className="match-info-text match-info-data" >{matchID}</p>
         <h4 className="match-info-text">Turn: </h4>
         <p className="match-info-text match-info-data">
           {

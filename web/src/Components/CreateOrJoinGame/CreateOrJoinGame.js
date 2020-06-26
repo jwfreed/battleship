@@ -14,8 +14,10 @@ export const CreateOrJoinGame = () => {
       },
       body: JSON.stringify({ uid: uid }),
     }).then((res) => res.json()).then((data) => data.data.id).catch(console.error);
-
+    
     dispatch({ type: 'JOIN_GAME', matchID });
+    
+    // alert('share Match ID with your opponent');
   };
 
   const joinGame = () => {
