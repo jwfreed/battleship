@@ -7,17 +7,35 @@ export const CreateOrJoinGame = () => {
   const [joinMatch, setJoinMatch] = useState('');
 
   const createGame = async () => {
-    const matchID = await fetch(process.env.REACT_APP_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ uid: uid }),
-    }).then((res) => res.json()).then((data) => data.data.id).catch(console.error);
-    
-    dispatch({ type: 'JOIN_GAME', matchID });
-    
-    alert('share Match ID with your opponent');
+    try {
+      console.log('Creating game with API URL:', import.meta.env.VITE_API_URL);
+      console.log('UID:', uid);
+      
+      const response = await fetch(import.meta.env.VITE_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ uid: uid }),
+      });
+      
+      console.log('Response status:', response.status);
+      const data = await response.json();
+      console.log('Response data:', data);
+      
+      const matchID = data.data.id;
+      console.log('Match ID:', matchID);
+      
+      if (matchID) {
+        dispatch({ type: 'JOIN_GAME', matchID });
+        alert('share Match ID with your opponent: ' + matchID);
+      } else {
+        throw new Error('No match ID returned from server');
+      }
+    } catch (error) {
+      console.error('Error creating game:', error);
+      alert('Error creating game: ' + error.message);
+    }
   };
 
   const joinGame = () => {

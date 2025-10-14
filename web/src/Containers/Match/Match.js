@@ -33,7 +33,7 @@ export const Match = () => {
     autoClose: 1500,
   });
 
-  const socketUrl = `${process.env.REACT_APP_SOCKET_URL}/${matchID}`;
+  const socketUrl = `${import.meta.env.VITE_SOCKET_URL}/${matchID}`;
   const [sendMessage, lastMessage, readyState] = useWebSocket(socketUrl);
 
   const isConnected = useMemo(() => readyState === 1, [readyState]);

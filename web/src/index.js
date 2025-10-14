@@ -1,5 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import Game from './Containers/Game/Game';
 
-ReactDOM.render(<Game />, document.getElementById('root'));
+const root = createRoot(document.getElementById('root'));
+root.render(<Game />);
