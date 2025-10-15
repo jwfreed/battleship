@@ -1,0 +1,105 @@
+/* Global Styles for Battleship Game - Clean Navy Theme */
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #2c3e50;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4a5f7f;
+  border: 1px solid #2c3e50;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3498db;
+}
+
+/* Selection styling */
+::selection {
+  background: #3498db;
+  color: #2c3e50;
+}
+
+::-moz-selection {
+  background: #3498db;
+  color: #2c3e50;
+}
+
+/* Focus visible for accessibility */
+*:focus-visible {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+}
+
+/* Smooth interactions */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Toast container customization */
+.Toastify__toast-container {
+  z-index: 9999;
+}
+
+.Toastify__toast {
+  background: #34495e !important;
+  border: 1px solid #4a5f7f !important;
+  font-weight: 600;
+  color: #ecf0f1 !important;
+  font-family: 'Courier New', monospace !important;
+}
+
+.Toastify__toast--info {
+  background: #34495e !important;
+  border-color: #3498db !important;
+  color: #3498db !important;
+}
+
+.Toastify__toast--success {
+  background: #34495e !important;
+  border-color: #27ae60 !important;
+  color: #27ae60 !important;
+}
+
+.Toastify__toast--warning {
+  background: #34495e !important;
+  border-color: #f39c12 !important;
+  color: #f39c12 !important;
+}
+
+.Toastify__toast--error {
+  background: #34495e !important;
+  border-color: #e74c3c !important;
+  color: #e74c3c !important;
+}
+
+.Toastify__progress-bar {
+  background: #3498db !important;
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  body {
+    background: #000;
+  }
+  
+  .tile {
+    border-width: 2px;
+  }
+}

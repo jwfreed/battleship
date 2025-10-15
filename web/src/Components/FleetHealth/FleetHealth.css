@@ -1,36 +1,96 @@
 ul {
   display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0.5rem 0;
 }
 
 li {
-  padding-right: 10px;
+  padding: 0.25rem 0.5rem;
+  background: #2c3e50;
+  border: 1px solid #4a5f7f;
+  font-weight: 600;
+  font-size: 0.75rem;
+  font-family: 'Courier New', monospace;
 }
 
 .my-fleet {
   list-style-type: none;
-  border: 2px solid #074000;
-  border-radius: 16px;
-  padding: 18px;
-  background: #33c82e8c;
+  border: 2px solid #27ae60;
+  padding: 1rem;
+  background: #34495e;
+  min-width: 240px;
+  flex: 1;
 }
 
 .opponent-fleet {
   list-style-type: none;
-  border: 2px solid #ff0401;
-  border-radius: 16px;
-  padding: 18px;
-  background: #ff2d5580;
+  border: 2px solid #e74c3c;
+  padding: 1rem;
+  background: #34495e;
+  min-width: 240px;
+  flex: 1;
 }
 
 .fleet-title {
-  font-style: italic;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 1rem;
+  color: #3498db;
+  margin-bottom: 0.75rem;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: 'Courier New', monospace;
 }
 
 .ship-health {
-  margin: 0px 3px;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  background: #2c3e50;
+  border: 1px solid #4a5f7f;
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: #ecf0f1;
+  font-family: 'Courier New', monospace;
 }
 
 .fleet-div {
-  transition: all 0.5s ease;
   margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .my-fleet, .opponent-fleet {
+    min-width: 200px;
+    padding: 0.875rem;
+  }
+  
+  ul {
+    gap: 0.375rem;
+  }
+  
+  li {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.6875rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .my-fleet, .opponent-fleet {
+    min-width: 100%;
+    padding: 0.75rem;
+    flex: none;
+  }
+  
+  .fleet-title {
+    font-size: 0.875rem;
+  }
 }

@@ -1,60 +1,145 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Courier New', 'Courier', monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #2c3e50;
+  min-height: 100vh;
+  color: #ecf0f1;
 }
 
 .game-container {
-  max-width: 86%;
-  margin: auto;
+  max-width: 1200px;
+  width: 95%;
+  margin: 0 auto;
+  padding: 0.5rem;
+}
+
+.game-container > p {
+  text-align: center;
+  color: #7b8794;
+  font-size: 0.75rem;
+  margin: 0.25rem 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.game-container > p a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+.game-container > p a:hover {
+  text-decoration: underline;
 }
 
 .game {
   display: flex;
   justify-content: center;
   flex-direction: column;
+  gap: 1rem;
 }
 
 .title {
-  font-size: 68px;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
   text-align: center;
-  font-family: 'Source Code Pro', monospace;
-  letter-spacing: 5px;
-  border-bottom: 1px solid #727272;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.2em;
+  font-weight: 700;
+  color: #ecf0f1;
+  margin: 0.5rem 0;
+  padding: 0.75rem;
+  text-transform: uppercase;
+  border-bottom: 2px solid #4a5f7f;
 }
 
 .reset-view-div {
   display: flex;
-  justify-content: space-evenly;
-  margin: 10px 0px;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 0.75rem 0;
+  flex-wrap: wrap;
 }
 
 .reset-btn, .view-btn, .commit-ships-btn {
-  text-align: center;
-  font-size: 17px;
-  width: fit-content;
-  height: auto;
-  border-style: outset;
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.625rem 1.25rem;
+  border: 2px solid;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  min-width: 120px;
 }
 
 .reset-btn {
-  color: #ffffff;
-  background-color: crimson;
+  color: #ef4444;
+  border-color: #ef4444;
+}
+
+.reset-btn:hover {
+  background: #ef4444;
+  color: #1a1f2e;
 }
 
 .view-text {
   text-align: center;
+  color: #e0e6ed;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0.5rem 0;
 }
 
 .view-btn {
-  color: navy;
-  border-color: navy;
-  background-color: #b8e5f8;
+  color: #4a9eff;
+  border-color: #4a9eff;
 }
 
-.view-btn, .reset-btn:hover {
-  cursor: pointer;
+.view-btn:hover {
+  background: #4a9eff;
+  color: #1a1f2e;
+}
+
+.commit-ships-btn {
+  color: #10b981;
+  border-color: #10b981;
+}
+
+.commit-ships-btn:hover {
+  background: #10b981;
+  color: #1a1f2e;
+}
+
+.commit-ships-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.commit-ships-btn:disabled:hover {
+  background: transparent;
+  color: #10b981;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .title {
+    font-size: 1.25rem;
+    letter-spacing: 0.15em;
+  }
+  
+  .reset-view-div {
+    gap: 0.5rem;
+  }
+  
+  .reset-btn, .view-btn, .commit-ships-btn {
+    font-size: 0.75rem;
+    padding: 0.5rem 1rem;
+    min-width: 100px;
+  }
 }

@@ -1,53 +1,130 @@
 .tile {
-  width: 90px;
-  height: 90px;
-  border-style: outset;
-  font-size:1rem;
-  transition: .2s;
-  padding: 0px;
+  width: 60px;
+  height: 60px;
+  border: 1px solid #2d3748;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
 }
 
 .tile:hover {
-  cursor: pointer;
+  background: #3d5a80;
+  border-color: #3498db;
 }
 
 .tileImg {
-  height: 86px;
-  width: fit-content;
+  height: 56px;
+  width: 56px;
+  object-fit: contain;
 }
 
 .fleet-view {
-  color: navy;
-  border-color: navy;
-  background-color: #11a4de;
+  color: #7b8794;
+  background: #1a1f2e;
 }
 
 .fleet-view:hover {
-  border-color: #007aff;
-  border-width: 2px;
-  font-weight: 500;
-  background-color: #11a4ded9;
+  background: #252d3d;
 }
 
 .attack-view {
-  color: #074000;
-  border-color: #074000;
-  background-color:  #33c82e;
+  color: #7b8794;
+  background: #1e3a3a;
 }
 
 .attack-view:hover {
-  border-color: #074000;
-  border-width: 2px;
-  font-weight: 500;
-  background-color:  #33c82ed1;
+  background: #2d4a4a;
 }
 
 .hit {
-  background-color: #FF0401;
-  background-size: 90px 90px;
+  background: #e74c3c;
+  border-color: #c0392b;
+}
+
+.hit::after {
+  content: 'X';
+  font-size: 1.75rem;
+  font-weight: 900;
 }
 
 .miss {
-  background-image: url("./splash.svg");
-  background-size: 90px 90px;
+  background: #34495e;
+  border-color: #95a5a6;
+}
+
+.miss::after {
+  content: 'O';
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* Responsive tile sizing */
+@media (max-width: 1024px) {
+  .tile {
+    width: 55px;
+    height: 55px;
+  }
+  
+  .tileImg {
+    height: 52px;
+    width: 52px;
+  }
+}
+
+@media (max-width: 768px) {
+  .tile {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .tileImg {
+    height: 42px;
+    width: 42px;
+  }
+  
+  .hit::after {
+    font-size: 1.5rem;
+  }
+  
+  .miss::after {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .tile {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .tileImg {
+    height: 32px;
+    width: 32px;
+  }
+  
+  .hit::after, .miss::after {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .tile {
+    width: 28px;
+    height: 28px;
+    font-size: 0.625rem;
+  }
+  
+  .tileImg {
+    height: 26px;
+    width: 26px;
+  }
+  
+  .hit::after, .miss::after {
+    font-size: 0.875rem;
+  }
 }

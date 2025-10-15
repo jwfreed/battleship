@@ -1,30 +1,93 @@
 .create-join-game {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-self: center;
-  margin: 165px;
+  margin: 2rem auto;
+  gap: 1.5rem;
+  max-width: 400px;
+  width: 90%;
+  background: #34495e;
+  border: 2px solid #4a5f7f;
+  padding: 2rem;
 }
 
 #join-game-btn, #create-game-btn {
-  padding: 7px;
-  font-size: 15px;
+  padding: 0.875rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  border: 2px solid;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: 'Courier New', monospace;
 }
 
 #join-game-btn {
-  background-color: crimson;
-  color: white;
+  border-color: #3498db;
+  color: #3498db;
+}
+
+#join-game-btn:hover {
+  background: #3498db;
+  color: #2c3e50;
 }
 
 #create-game-btn {
-  background-color: navy;
-  color: white;
+  border-color: #27ae60;
+  color: #27ae60;
+  margin-right: 0;
+}
+
+#create-game-btn:hover {
+  background: #27ae60;
+  color: #2c3e50;
 }
 
 #join-game {
-  padding: 6px;
-  font-size: 15px;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  border: 1px solid #4a5f7f;
+  background: #2c3e50;
+  color: #ecf0f1;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+  outline: none;
+  text-align: center;
+  transition: all 0.15s ease;
 }
 
-#create-game-btn {
-  margin-right: 12px;
+#join-game::placeholder {
+  color: #95a5a6;
+}
+
+#join-game:focus {
+  border-color: #3498db;
+}
+
+.create-join-game > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .create-join-game {
+    margin: 1.5rem auto;
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .create-join-game {
+    padding: 1.25rem;
+    gap: 1.25rem;
+  }
+  
+  #join-game-btn, #create-game-btn {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.8125rem;
+  }
 }
