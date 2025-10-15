@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import GameContext from '../../Context/GameContext';
 import './Tile.css';
 
-const Tile = ({ row, col, onClick, onAttack, myAttacks, opponentAttacks }) => {
+function Tile({ row, col, onClick, onAttack, myAttacks, opponentAttacks }) {
   const { shipPlacements, view } = useContext(GameContext);
 
   const doClick = useCallback(() => {
@@ -27,12 +27,12 @@ const Tile = ({ row, col, onClick, onAttack, myAttacks, opponentAttacks }) => {
   ), [row, col, myAttacks]);
 
   if (view === 'P') {
-    const imgPath = placedShip && process.env.PUBLIC_URL + '/assets/' + placedShip.img;
+    const imgPath = placedShip && `/assets/${placedShip.img}`;
     const attemptClass = (opponentAttempts && 'hit') || (opponentAttempts && 'miss') || 'tile';
     return (
-      <button className={`tile fleet-view ${attemptClass}`} onClick={doClick} >
+      <button className={`tile fleet-view ${attemptClass}`} onClick={doClick}>
         {(placedShip && <img className="tileImg" src={imgPath} alt={placedShip.name} />)}
-      </button >
+      </button>
     );
   }
 
@@ -41,7 +41,7 @@ const Tile = ({ row, col, onClick, onAttack, myAttacks, opponentAttacks }) => {
       {attackAttempts || '-'}
     </button>
   );
-};
+}
 
 Tile.propTypes = {
   row: PropTypes.number,

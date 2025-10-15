@@ -14,7 +14,23 @@ const onClose = (matchId, connection) => {
 
   if (connection.id) {
     const playerConnections = connections[connection.id] || [];
-    connections[connection.id] = playerConnections.filter(({ id }) => id !== connection.id);
+    // Filter out the closed connection by comparing the actual connection object
+    connections[connection.id] = playerConnections.filter((conn) => conn !== connection);
+    
+    // Clean up empty connection arrays
+    if (connections[connection.id].length === 0) {
+      delete connections[connection.id];
+    }
+
+    // Clean up match players if no connections remain
+    if (matchPlayers[matchId]) {
+      const allConnectionsClosed = !matchPlayers[matchId].some(
+        (playerId) => connections[playerId] && connections[playerId].length > 0
+      );
+      if (allConnectionsClosed) {
+        delete matchPlayers[matchId];
+      }
+    }
   }
 };
 
@@ -87,14 +103,26 @@ module.exports = (connection, req) => {
 
   connection.on('close', () => onClose(matchId, connection));
 
-  connection.on('message', (rawMsg) => {
-    const parsedMsg = (() => {
-      try {
-        return JSON.parse(rawMsg);
-      } catch {
-        return rawMsg;
-      };
-    })();
-    return onMessage(matchId, connection, parsedMsg);
+  connection.on('message', async (rawMsg) => {
+    try {
+      const parsedMsg = (() => {
+        try {
+          return JSON.parse(rawMsg);
+        } catch {
+          return rawMsg;
+        };
+      })();
+      await onMessage(matchId, connection, parsedMsg);
+    } catch (error) {
+      console.error(`Error handling message in match ${matchId}:`, error.message);
+      // Optionally send error back to client
+      if (connection.readyState === 1) {
+        try {
+          connection.send(JSON.stringify({ error: 'Failed to process message' }));
+        } catch (sendError) {
+          console.error('Failed to send error message to client:', sendError.message);
+        }
+      }
+    }
   });
 };

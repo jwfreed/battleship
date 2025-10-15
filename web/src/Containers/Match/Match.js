@@ -1,6 +1,6 @@
 import React, { useContext, useMemo, useEffect } from 'react';
 import useWebSocket from 'react-use-websocket';
-import { toast, Flip } from 'react-toastify';
+import { toast, ToastContainer, Flip } from 'react-toastify';
 import Board from '../../Components/Board/Board';
 import ShipSelect from '../ShipSelect/ShipSelect';
 import GameContext from '../../Context/GameContext';
@@ -28,13 +28,8 @@ export const Match = () => {
     dispatch
   } = useContext(GameContext);
 
-  toast.configure({
-    transition: Flip,
-    autoClose: 1500,
-  });
-
   const socketUrl = `${import.meta.env.VITE_SOCKET_URL}/${matchID}`;
-  const [sendMessage, lastMessage, readyState] = useWebSocket(socketUrl);
+  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
 
   const isConnected = useMemo(() => readyState === 1, [readyState]);
 
@@ -43,9 +38,18 @@ export const Match = () => {
       const authMessage = JSON.stringify({ action: 'AUTH', uid });
       sendMessage(authMessage);
     }
-    if (isConnected && player) toast.info(`${player} Connected`);
-    if (!isConnected && !player) toast.error('Player disconnected')
-  }, [isConnected, sendMessage, player, uid]);
+  }, [isConnected, sendMessage, uid]);
+
+  // Separate effect for connection status notifications
+  useEffect(() => {
+    if (isConnected && player) {
+      toast.info(`${player} Connected`);
+    }
+    // Only show disconnect if we previously had a player and connection
+    if (!isConnected && player) {
+      toast.error('Player disconnected');
+    }
+  }, [isConnected, player]);
 
   useEffect(() => {
     if (lastMessage && lastMessage.data) {
@@ -136,6 +140,18 @@ export const Match = () => {
         </div>
       </div>
       <Board doAttackTile={doAttackTile} myAttacks={myAttacks} opponentAttacks={opponentAttacks} />
+      <ToastContainer
+        transition={Flip}
+        autoClose={1500}
+        position="top-center"
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };
