@@ -1,41 +1,80 @@
 const shortid = require('shortid');
-const pool = require('../db');
+const supabase = require('../db');
 
 const MatchModel = {
-  create: (playerOneId) => {
+  create: async (playerOneId) => {
     const matchId = shortid.generate();
 
-    const query = 'INSERT INTO matches(id, player_one) VALUES($1, $2) RETURNING *';
-    const values = [matchId, playerOneId];
-    return pool.query(query, values).then(({ rows }) => rows[0]);
+    const { data, error } = await supabase
+      .from('matches')
+      .insert([
+        { 
+          id: matchId, 
+          player_one: playerOneId 
+        }
+      ])
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
   },
 
-  getById: (matchId) => {
-    const query = 'SELECT * FROM matches WHERE id=$1';
-    const values = [matchId];
+  getById: async (matchId) => {
+    const { data, error } = await supabase
+      .from('matches')
+      .select('*')
+      .eq('id', matchId)
+      .single();
 
-    return pool.query(query, values).then(({ rows }) => rows[0]);
+    if (error && error.code !== 'PGRST116') throw error; // PGRST116 is "not found"
+    return data;
   },
 
-  updatePlayerTwo: (matchId, playerTwoId) => {
-    const query = 'UPDATE matches SET player_two = $1 WHERE id = $2 RETURNING *';
-    const values = [playerTwoId, matchId];
+  updatePlayerTwo: async (matchId, playerTwoId) => {
+    const { data, error } = await supabase
+      .from('matches')
+      .update({ player_two: playerTwoId })
+      .eq('id', matchId)
+      .select()
+      .single();
 
-    return pool.query(query, values).then(({ rows }) => rows[0]);
+    if (error) throw error;
+    return data;
   },
 
-  updateShipPlacements: (matchId, player, placements, turn) => {
-    const query = `UPDATE matches SET ${player}_ship_placements = $1, turn =$2 WHERE id = $3 RETURNING *`;
-    const values = [placements, turn, matchId];
+  updateShipPlacements: async (matchId, player, placements, turn) => {
+    const updateData = {
+      [`${player}_ship_placements`]: placements,
+      turn: turn
+    };
 
-    return pool.query(query, values).then(({ rows }) => rows[0]);
+    const { data, error } = await supabase
+      .from('matches')
+      .update(updateData)
+      .eq('id', matchId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
   },
 
-  updateAttempts: (matchId, player, attempts, turn) => {
-    const query = `UPDATE matches SET ${player}_attack_placements = $1, turn = $2 WHERE id = $3 RETURNING *`;
-    const values = [JSON.stringify(attempts), turn, matchId];
+  updateAttempts: async (matchId, player, attempts, turn) => {
+    const updateData = {
+      [`${player}_attack_placements`]: attempts,
+      turn: turn
+    };
 
-    return pool.query(query, values).then(({ rows }) => rows[0]);
+    const { data, error } = await supabase
+      .from('matches')
+      .update(updateData)
+      .eq('id', matchId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
   },
 
   createMatchObject: (matchData) => {
