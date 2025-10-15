@@ -62,10 +62,11 @@ export const placeShip = (prevState, action) => {
   }
 
   const noOverflow = (rowOrCol) => {
-    const shipLength = parseInt(selectedShip.size);
-    const arg = parseInt(rowOrCol);
-    const boardLength = parseInt(initialState.boardCols.length);
+    const shipLength = parseInt(selectedShip.size, 10);
+    const arg = parseInt(rowOrCol, 10);
+    const boardLength = parseInt(initialState.boardCols.length, 10);
     if (boardLength - arg >= shipLength) return true;
+    return false;
   };
 
   const invalidMove = () => {
@@ -92,7 +93,7 @@ export const placeShip = (prevState, action) => {
     };
 
     if (noOverflow(col)) {
-      for (let i = 0; i < selectedShip.size; i++) {
+      for (let i = 0; i < selectedShip.size; i += 1) {
         const nextCol = col + i;
         newPlacements[row][nextCol] = selectedShip;
         placedShipRowColArr.push([row, nextCol]);
@@ -110,7 +111,7 @@ export const placeShip = (prevState, action) => {
     };
 
     if (noOverflow(row)) {
-      for (let i = 0; i < selectedShip.size; i++) {
+      for (let i = 0; i < selectedShip.size; i += 1) {
         const nextRow = row + i;
         newPlacements[nextRow] = {
           ...currentPlacements[nextRow],
@@ -150,10 +151,9 @@ export const removeShip = (prevState, action) => {
   };
 };
 
-export const resetGame = () => {
-  return initialState;
-};
+export const resetGame = () => initialState;
 
+/* eslint-disable camelcase */
 export const updateContext = (prevState, action) => {
   const {
     player_one,
@@ -163,6 +163,7 @@ export const updateContext = (prevState, action) => {
     player_one_ship_placements,
     player_two_ship_placements,
   } = action.data;
+
   const lastMsg = prevState.lastMsg;
   const newMsg = JSON.stringify(action.data);
 
@@ -172,19 +173,15 @@ export const updateContext = (prevState, action) => {
   const playerOneShips = player_one_ship_placements || false;
   const playerTwoShips = player_two_ship_placements || false;
 
-  const myAttacks =
-    player_one === playerId
-      ? player_one_attack_placements
-      : player_two_attack_placements;
-  const opponentAttacks =
-    myAttacks === player_one_attack_placements
-      ? player_two_attack_placements
-      : player_one_attack_placements;
+  const myAttacks = player_one === playerId
+    ? player_one_attack_placements
+    : player_two_attack_placements;
+  const opponentAttacks = myAttacks === player_one_attack_placements
+    ? player_two_attack_placements
+    : player_one_attack_placements;
 
-  const shipsCommitted =
-    player_one === playerId ? playerOneShips : playerTwoShips;
-  const opponentCommittedShips =
-    player_two === playerId ? playerOneShips : playerTwoShips;
+  const shipsCommitted = player_one === playerId ? playerOneShips : playerTwoShips;
+  const opponentCommittedShips = player_two === playerId ? playerOneShips : playerTwoShips;
 
   const startGame = shipsCommitted && opponentCommittedShips;
   const lastTurn = prevState.turn;
@@ -219,6 +216,7 @@ export const updateContext = (prevState, action) => {
   }
   return prevState;
 };
+/* eslint-enable camelcase */
 
 export const changeView = (prevState) => {
   const currentView = prevState.view;
@@ -231,9 +229,7 @@ export const joinGame = (prevState, action) => {
   return { ...prevState, matchID };
 };
 
-export const commitShips = (prevState) => {
-  return { ...prevState, shipsCommitted: true };
-};
+export const commitShips = (prevState) => ({ ...prevState, shipsCommitted: true });
 
 export const gameOver = (prevState) => {
   const lastTurn = prevState.turn;
