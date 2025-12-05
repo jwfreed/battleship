@@ -23,7 +23,11 @@ export const CreateOrJoinGame = () => {
       const data = await response.json();
       console.log('Response data:', data);
       
-      const matchID = data.data.id;
+      if (!data.success) {
+        throw new Error(data.message || 'Server reported failure');
+      }
+
+      const matchID = data.data?.id;
       console.log('Match ID:', matchID);
       
       if (matchID) {

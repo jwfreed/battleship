@@ -35,9 +35,14 @@ const onClose = (matchId, connection) => {
 };
 
 const onMessage = async (matchId, connection, data) => {
+  console.log('onMessage received:', { matchId, action: data.action, uid: data.uid });
+  
   const matchData = await MatchModel.getById(matchId);
 
-  if (!matchData) return;
+  if (!matchData) {
+    console.log('No match data found for', matchId);
+    return;
+  }
 
   if (data.action === 'AUTH') {
     const { uid } = data;
@@ -67,18 +72,23 @@ const onMessage = async (matchId, connection, data) => {
   };
 
   if (data.action === 'SHIP_PLACEMENTS') {
-    const { uid, placements, turn } = data;
+    const { uid, placements } = data;
     const { player_one, player_two } = matchData;
     const player = (uid === player_one && 'player_one') || (uid === player_two && 'player_two');
     if (!player) return;
 
-    const match = await MatchModel.updateShipPlacements(matchId, player, placements, turn);
+    let match = await MatchModel.updateShipPlacements(matchId, player, placements);
+
+    if (match.player_one_ship_placements && match.player_two_ship_placements && !match.turn) {
+      match = await MatchModel.updateTurn(matchId, 'player_one');
+    }
+
     const response = MatchModel.createMatchObject(match);
     return MatchService.msgAllPlayers(connections, response);
   };
 
   if (data.action === 'ATTACK') {
-    const { row, col, uid, turn } = data;
+    const { row, col, uid } = data;
     const { player_one, player_two } = matchData;
     const player = (uid === player_one && 'player_one') || (uid === player_two && 'player_two');
     if (!player) return;
@@ -90,8 +100,17 @@ const onMessage = async (matchId, connection, data) => {
     const attempts = [];
     playerAttempts ? attempts.push(...playerAttempts, attempt) : attempts.push(attempt);
 
-    const match = await MatchModel.updateAttempts(matchId, player, attempts, turn);
+    console.log(`Attack by ${player} at [${row}, ${col}], switching turn to ${opponent}`);
+    
+    let match = await MatchModel.updateAttempts(matchId, player, attempts);
+    
+    // Switch turn to opponent after attack
+    match = await MatchModel.updateTurn(matchId, opponent);
+    
+    console.log('Updated match turn:', match.turn);
+    
     const response = MatchModel.createMatchObject(match);
+    console.log('Sending response:', response);
     return MatchService.msgAllPlayers(connections, response);
   };
 };

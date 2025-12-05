@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const expressWs = require('express-ws');
 const cors = require('cors');
@@ -7,14 +8,17 @@ const matchSocketHandler = require('./handlers/matchSocket');
 
 const port = process.env.PORT || 3001;
 const app = express();
-const ews = expressWs(app);
 
 app.use(cors());
 app.use(bodyParser.json());
 
 app.post('/match', createMatchHandler);
 
-app.ws('/match/:id', matchSocketHandler);
+// Initialize express-ws and get the server instance
+const { app: wsApp, getWss } = expressWs(app);
 
+wsApp.ws('/match/:id', matchSocketHandler);
+
+// Use the app's built-in listen (express-ws attaches to this)
 app.listen(port, () => console.log(`Battleship server listening on port ${port}!`));
 

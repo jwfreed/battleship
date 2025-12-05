@@ -1,6 +1,6 @@
 export const createAttacksObj = (arr) => {
   const attacksObj = {};
-  if (arr !== null) {
+  if (arr && arr !== null) {
     arr.forEach((attack) => {
       const row = attack.row;
       const col = attack.col;

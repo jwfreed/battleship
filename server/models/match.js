@@ -3,7 +3,9 @@ const supabase = require('../db');
 
 const MatchModel = {
   create: async (playerOneId) => {
+    console.log('MatchModel.create called with playerOneId:', playerOneId);
     const matchId = shortid.generate();
+    console.log('Generated matchId:', matchId);
 
     const { data, error } = await supabase
       .from('matches')
@@ -46,7 +48,26 @@ const MatchModel = {
   updateShipPlacements: async (matchId, player, placements, turn) => {
     const updateData = {
       [`${player}_ship_placements`]: placements,
-      turn: turn
+    };
+
+    if (turn !== undefined) {
+      updateData.turn = turn;
+    }
+
+    const { data, error } = await supabase
+      .from('matches')
+      .update(updateData)
+      .eq('id', matchId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  updateAttempts: async (matchId, player, attempts) => {
+    const updateData = {
+      [`${player}_attack_placements`]: attempts,
     };
 
     const { data, error } = await supabase
@@ -60,15 +81,10 @@ const MatchModel = {
     return data;
   },
 
-  updateAttempts: async (matchId, player, attempts, turn) => {
-    const updateData = {
-      [`${player}_attack_placements`]: attempts,
-      turn: turn
-    };
-
+  updateTurn: async (matchId, turn) => {
     const { data, error } = await supabase
       .from('matches')
-      .update(updateData)
+      .update({ turn: turn })
       .eq('id', matchId)
       .select()
       .single();

@@ -162,12 +162,27 @@ export const updateContext = (prevState, action) => {
     player_two_attack_placements,
     player_one_ship_placements,
     player_two_ship_placements,
+    turn: serverTurn,
   } = action.data;
+
+  console.log('updateContext called with:', {
+    player_one,
+    player_two,
+    serverTurn,
+    prevState_player: prevState.player,
+    prevState_uid: prevState.uid,
+  });
 
   const lastMsg = prevState.lastMsg;
   const newMsg = JSON.stringify(action.data);
+  
+  console.log('Message comparison:', {
+    lastMsg,
+    newMsg,
+    areSame: lastMsg === newMsg,
+  });
 
-  const playerId = initialState.uid;
+  const playerId = prevState.uid;
   const myPlayer = playerId === player_one ? 'Player One' : 'Player Two';
 
   const playerOneShips = player_one_ship_placements || false;
@@ -184,28 +199,50 @@ export const updateContext = (prevState, action) => {
   const opponentCommittedShips = player_two === playerId ? playerOneShips : playerTwoShips;
 
   const startGame = shipsCommitted && opponentCommittedShips;
-  const lastTurn = prevState.turn;
+  
+  let currentTurn = prevState.turn;
+  if (serverTurn) {
+    if (serverTurn === 'player_one') currentTurn = 'Player One';
+    else if (serverTurn === 'player_two') currentTurn = 'Player Two';
+  }
+
+  console.log('Calculated state:', {
+    myPlayer,
+    shipsCommitted,
+    opponentCommittedShips,
+    startGame,
+    currentTurn,
+    serverTurn,
+  });
 
   if (!prevState.gameOver && lastMsg !== newMsg && !startGame) {
+    console.log('Returning state: game not started yet');
     return {
       ...prevState,
       shipsCommitted,
       opponentShipsCommitted: opponentCommittedShips,
       player: myPlayer,
-      turn: lastTurn,
+      turn: currentTurn,
+      lastMsg: newMsg,
     };
   }
 
   if (!prevState.gameOver && lastMsg !== newMsg && startGame) {
-    const nextTurn = lastTurn === 'Player One' ? 'Player Two' : 'Player One';
-
-    const newView = myPlayer === nextTurn ? 'A' : 'P';
+    const newView = myPlayer === currentTurn ? 'A' : 'P';
+    console.log('Returning state: game in progress', { 
+      newView, 
+      currentTurn, 
+      myPlayer,
+      comparison: `${myPlayer} === ${currentTurn} = ${myPlayer === currentTurn}`,
+      myAttacksLength: myAttacks?.length,
+      opponentAttacksLength: opponentAttacks?.length,
+    });
 
     return {
       ...prevState,
-      myAttackPlacements: myAttacks,
-      opponentAttackPlacements: opponentAttacks,
-      turn: nextTurn,
+      myAttackPlacements: myAttacks || [],
+      opponentAttackPlacements: opponentAttacks || [],
+      turn: currentTurn,
       shipsCommitted,
       opponentShipsCommitted: opponentCommittedShips,
       player: myPlayer,
@@ -214,6 +251,13 @@ export const updateContext = (prevState, action) => {
       view: newView,
     };
   }
+  
+  if (!prevState.gameOver && lastMsg === newMsg) {
+    console.log('Returning state: same message');
+    return prevState;
+  }
+  
+  console.log('Returning state: default fallback');
   return prevState;
 };
 /* eslint-enable camelcase */

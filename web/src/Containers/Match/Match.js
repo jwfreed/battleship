@@ -67,16 +67,18 @@ export const Match = () => {
     if (numberOfShipsPlaced < ships.length) {
       return toast.warn('You must position all ships in your fleet.')
     }
-    const placeShipsMessage = JSON.stringify({ action: 'SHIP_PLACEMENTS', placements: shipPlacements, uid, turn });
+    const placeShipsMessage = JSON.stringify({ action: 'SHIP_PLACEMENTS', placements: shipPlacements, uid });
     toast.success('Ships Placed');
     return sendMessage(placeShipsMessage);
   };
 
   const doAttackTile = (row, col) => {
+    console.log('doAttackTile called', { row, col, player, turn, comparison: player === turn });
     if (player !== turn) {
       return toast.warn('it\'s not your turn');
     }
-    const placeAttackMessage = JSON.stringify({ action: 'ATTACK', row, col, uid, turn });
+    const placeAttackMessage = JSON.stringify({ action: 'ATTACK', row, col, uid });
+    console.log('Sending attack message:', placeAttackMessage);
     return sendMessage(placeAttackMessage);
   };
 
@@ -84,9 +86,14 @@ export const Match = () => {
 
   const opponentAttacks = useMemo(() => createAttacksObj(opponentAttackPlacements), [opponentAttackPlacements]);
 
+  // Add defensive check to prevent blank screen
+  if (!matchID) {
+    return <div className="game">Loading match...</div>;
+  }
+
   return (
     <div className="game">
-      <p className="ready-player">{`Ready ${player}`}</p>
+      <p className="ready-player">{`Ready ${player || 'Loading...'}`}</p>
       <div className="match-info-container">
         <h4 className="match-info-text">Match ID:</h4>
         <p className="match-info-text match-info-data" >{matchID}</p>

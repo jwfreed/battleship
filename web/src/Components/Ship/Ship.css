@@ -1,9 +1,9 @@
 .ship {
   border: 1px solid #4a5f7f;
-  margin: 0.375rem;
+  margin: 0.2rem;
   width: fit-content;
-  min-width: 140px;
-  padding: 0.75rem;
+  min-width: 120px;
+  padding: 0.4rem;
   background: #34495e;
   cursor: pointer;
   transition: all 0.1s ease;
@@ -15,8 +15,8 @@
 }
 
 .ship h4 {
-  margin: 0.375rem 0;
-  font-size: 0.875rem;
+  margin: 0.25rem 0;
+  font-size: 0.8125rem;
   color: #ecf0f1;
   font-weight: 700;
   text-transform: uppercase;
@@ -24,8 +24,8 @@
 }
 
 .ship p {
-  margin: 0.25rem 0;
-  font-size: 0.75rem;
+  margin: 0.125rem 0;
+  font-size: 0.6875rem;
   color: #95a5a6;
 }
 
@@ -45,6 +45,17 @@
 .ship button:hover {
   background: #e74c3c;
   color: #2c3e50;
+}
+
+.ship-selected {
+  background: #3498db !important;
+  border-color: #2ecc71 !important;
+  box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+  transform: scale(1.02);
+}
+
+.ship-selected h4 {
+  color: #fff;
 }
 
 /* Responsive Design */

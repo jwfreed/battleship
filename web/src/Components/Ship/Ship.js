@@ -16,16 +16,26 @@ const Ship = ({ ship, selected, onClick }) => {
   }, [ship.name, shipsPlaced]);
 
   return (
-    <div className="ship" >
-      <div onClick={() => onClick(ship)}>
-        <h4>
-          {ship.name} {selected ? '*' : ''}
-        </h4>
-        <p>
-          Boat Length: {ship.size} Tiles
-        </p>
-      </div>
-      {shipOnBoard && <button onClick={() => doResetShip(ship.name)}>Reset {ship.name}</button>}
+    <div 
+      className={`ship ${selected ? 'ship-selected' : ''}`}
+      onClick={() => onClick(ship)}
+    >
+      <h4>
+        {ship.name}
+      </h4>
+      <p>
+        Boat Length: {ship.size} Tiles
+      </p>
+      {shipOnBoard && (
+        <button 
+          onClick={(e) => {
+            e.stopPropagation();
+            doResetShip(ship.name);
+          }}
+        >
+          Reset {ship.name}
+        </button>
+      )}
     </div>
   )
 };
