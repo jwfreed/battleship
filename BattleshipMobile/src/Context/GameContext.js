@@ -9,18 +9,18 @@ import Destroyer from '../assets/Destroyer.svg';
 import Sub from '../assets/sub.svg';
 
 export const initialState = {
-  boardRows: Array(10).fill(null),
-  boardCols: Array(10).fill(null),
+  boardRows: Array.from({length: 10}),
+  boardCols: Array.from({length: 10}),
   shipPlacements: {},
   ships: [
-    { name: 'Carrier', size: 5, img: Carrier },
-    { name: 'Battleship', size: 4, img: Battleship },
-    { name: 'Cruiser', size: 3, img: Cruiser },
-    { name: 'Submarine', size: 3, img: Sub },
-    { name: 'Destroyer', size: 2, img: Destroyer },
+    {name: 'Carrier', size: 5, img: Carrier},
+    {name: 'Battleship', size: 4, img: Battleship},
+    {name: 'Cruiser', size: 3, img: Cruiser},
+    {name: 'Submarine', size: 3, img: Sub},
+    {name: 'Destroyer', size: 2, img: Destroyer},
   ],
   shipsPlaced: {},
-  selectedShip: { name: null, size: null },
+  selectedShip: {name: null, size: null},
   placementOrientation: 'H', // H or V
   view: 'P', // P or A
   myAttackPlacements: [],

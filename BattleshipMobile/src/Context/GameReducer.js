@@ -1,10 +1,10 @@
 import * as GameActions from './GameActions';
-import { initialState } from './GameContext';
+import {initialState} from './GameContext';
 
 const GameReducer = (prevState, action) => {
   switch (action.type) {
     case 'INITIALIZE':
-      return { ...prevState, ...action.data };
+      return {...prevState, ...action.data};
     case 'SELECT_SHIP':
       return GameActions.selectShip(prevState, action);
     case 'CHANGE_SHIP_ORIENTATION':

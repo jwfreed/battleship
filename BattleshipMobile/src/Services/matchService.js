@@ -1,4 +1,4 @@
-export const createMatch = async (uid) => {
+export const createMatch = async uid => {
   const options = {
     method: 'POST',
     headers: {

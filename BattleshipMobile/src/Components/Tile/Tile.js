@@ -1,9 +1,10 @@
-import React, { useContext, useCallback, useMemo } from 'react';
-import { TouchableOpacity, StyleSheet, View, Text } from 'react-native';
+import React, {useContext, useCallback, useMemo} from 'react';
+import {TouchableOpacity, StyleSheet, View} from 'react-native';
 import GameContext from '../../Context/GameContext';
+import {theme} from '../../theme';
 
-const Tile = ({ row, col, onClick, onAttack, myAttacks, opponentAttacks }) => {
-  const { shipPlacements, view } = useContext(GameContext);
+const Tile = ({row, col, onClick, onAttack, myAttacks, opponentAttacks}) => {
+  const {shipPlacements, view} = useContext(GameContext);
 
   const doClick = useCallback(() => {
     onClick(row, col);
@@ -13,58 +14,74 @@ const Tile = ({ row, col, onClick, onAttack, myAttacks, opponentAttacks }) => {
     onAttack(row, col);
   }, [row, col, onAttack]);
 
-  const placedShip = useMemo(() => (
-    shipPlacements[row] && shipPlacements[row][col]
-  ), [row, col, shipPlacements]);
+  const placedShip = useMemo(
+    () => shipPlacements[row] && shipPlacements[row][col],
+    [row, col, shipPlacements],
+  );
 
-  const opponentAttempts = useMemo(() => (
-    opponentAttacks[row] && opponentAttacks[row][col]
-  ), [row, col, opponentAttacks]);
+  const opponentAttempts = useMemo(
+    () => opponentAttacks[row] && opponentAttacks[row][col],
+    [row, col, opponentAttacks],
+  );
 
-  const attackAttempts = useMemo(() => (
-    myAttacks[row] && myAttacks[row][col]
-  ), [row, col, myAttacks]);
+  const attackAttempts = useMemo(
+    () => myAttacks[row] && myAttacks[row][col],
+    [row, col, myAttacks],
+  );
 
   if (view === 'P') {
     const ShipIcon = placedShip ? placedShip.img : null;
-    const isHit = opponentAttempts === 'hit' || (opponentAttempts && opponentAttempts !== 'miss');
+    const isHit =
+      opponentAttempts === 'hit' ||
+      (opponentAttempts && opponentAttempts !== 'miss');
     const isMiss = opponentAttempts === 'miss';
-    
+
     return (
-      <TouchableOpacity 
+      <TouchableOpacity
         style={[
-          styles.tile, 
-          isHit && styles.hit, 
-          isMiss && styles.miss
-        ]} 
+          styles.tile,
+          placedShip && styles.hasShip,
+          isHit && styles.hit,
+          isMiss && styles.miss,
+        ]}
         onPress={doClick}
-      >
+        activeOpacity={0.7}>
         {ShipIcon && (
           <View style={styles.shipContainer}>
-             <ShipIcon width="100%" height="100%" fill={isHit ? "red" : "black"} />
+            <ShipIcon
+              width="100%"
+              height="100%"
+              fill={isHit ? theme.colors.hit : theme.colors.shipPlaced}
+            />
           </View>
         )}
+        {isMiss && <View style={styles.missMarker} />}
+        {isHit && <View style={styles.hitMarker} />}
       </TouchableOpacity>
     );
   }
 
-  const isHit = attackAttempts === 'hit' || (attackAttempts && attackAttempts !== 'miss');
+  const isHit =
+    attackAttempts === 'hit' || (attackAttempts && attackAttempts !== 'miss');
   const isMiss = attackAttempts === 'miss';
+  const isUntouched = !attackAttempts;
 
   return (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={[
-        styles.tile, 
-        isHit && styles.hit, 
-        isMiss && styles.miss
-      ]} 
+        styles.tile,
+        isUntouched && styles.attackable,
+        isHit && styles.hit,
+        isMiss && styles.miss,
+      ]}
       onPress={doAttack}
-    >
-      {attackAttempts && (
-        <Text style={styles.attackText}>
-          {isHit ? 'X' : 'O'}
-        </Text>
+      activeOpacity={0.7}>
+      {isHit && (
+        <View style={styles.hitMarker}>
+          <View style={styles.hitInner} />
+        </View>
       )}
+      {isMiss && <View style={styles.missMarker} />}
     </TouchableOpacity>
   );
 };
@@ -74,26 +91,51 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderWidth: 0.5,
-    borderColor: '#ccc',
+    borderColor: theme.colors.gridLine,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#e6f2ff',
+    backgroundColor: theme.colors.water,
+  },
+  hasShip: {
+    backgroundColor: theme.colors.waterLight,
+  },
+  attackable: {
+    backgroundColor: theme.colors.water,
   },
   hit: {
-    backgroundColor: '#ffcccc',
+    backgroundColor: theme.colors.hitGlow,
   },
   miss: {
-    backgroundColor: '#cccccc',
+    backgroundColor: theme.colors.waterDark,
   },
   shipContainer: {
     width: '100%',
     height: '100%',
-    padding: 2,
+    padding: 3,
   },
-  attackText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  }
+  hitMarker: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: theme.colors.hit,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: theme.colors.explosion,
+  },
+  hitInner: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: theme.colors.gold,
+  },
+  missMarker: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: theme.colors.miss,
+    opacity: 0.6,
+  },
 });
 
 export default Tile;

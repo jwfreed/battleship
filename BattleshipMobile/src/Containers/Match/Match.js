@@ -1,11 +1,19 @@
-import React, { useContext, useMemo, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
+import React, {useContext, useMemo, useEffect} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  SafeAreaView,
+} from 'react-native';
 import useWebSocket from '../../hooks/useWebSocket';
 import Board from '../../Components/Board/Board';
 import ShipSelect from '../ShipSelect/ShipSelect';
 import GameContext from '../../Context/GameContext';
-import { createAttacksObj } from '../../Context/GameActions';
-import { SOCKET_URL } from '../../constants';
+import {createAttacksObj} from '../../Context/GameActions';
+import {SOCKET_URL} from '../../constants';
+import {theme} from '../../theme';
 
 const Match = () => {
   const {
@@ -23,17 +31,17 @@ const Match = () => {
     turn,
     gameOver,
     winner,
-    dispatch
+    dispatch,
   } = useContext(GameContext);
 
   const socketUrl = `${SOCKET_URL}/${matchID}`;
-  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
+  const {sendMessage, lastMessage, readyState} = useWebSocket(socketUrl);
 
   const isConnected = useMemo(() => readyState === 1, [readyState]);
 
   useEffect(() => {
     if (isConnected) {
-      const authMessage = JSON.stringify({ action: 'AUTH', uid });
+      const authMessage = JSON.stringify({action: 'AUTH', uid});
       sendMessage(authMessage);
     }
   }, [isConnected, sendMessage, uid]);
@@ -41,67 +49,127 @@ const Match = () => {
   useEffect(() => {
     if (lastMessage && lastMessage.data) {
       const msg = JSON.parse(lastMessage.data);
-      dispatch({ type: 'UPDATE_CONTEXT', data: msg });
+      dispatch({type: 'UPDATE_CONTEXT', data: msg});
     }
   }, [lastMessage, dispatch]);
 
-  const doResetGame = () => dispatch({ type: 'RESET_GAME' });
+  const doResetGame = () => dispatch({type: 'RESET_GAME'});
 
-  const doChangeView = () => dispatch({ type: 'CHANGE_VIEW' });
+  const doChangeView = () => dispatch({type: 'CHANGE_VIEW'});
 
   const doCommitShips = () => {
     const numberOfShipsPlaced = Object.keys(shipsPlaced).length;
     if (numberOfShipsPlaced < ships.length) {
-      return Alert.alert('Warning', 'You must position all ships in your fleet.');
+      return Alert.alert(
+        'Warning',
+        'You must position all ships in your fleet.',
+      );
     }
-    const placeShipsMessage = JSON.stringify({ action: 'SHIP_PLACEMENTS', placements: shipPlacements, uid, turn });
+    const placeShipsMessage = JSON.stringify({
+      action: 'SHIP_PLACEMENTS',
+      placements: shipPlacements,
+      uid,
+      turn,
+    });
     Alert.alert('Success', 'Ships Placed');
     return sendMessage(placeShipsMessage);
   };
 
   const doAttackTile = (row, col) => {
     if (player !== turn) {
-      return Alert.alert('Warning', 'It\'s not your turn');
+      return Alert.alert('Warning', "It's not your turn");
     }
-    const placeAttackMessage = JSON.stringify({ action: 'ATTACK', row, col, uid, turn });
+    const placeAttackMessage = JSON.stringify({
+      action: 'ATTACK',
+      row,
+      col,
+      uid,
+      turn,
+    });
     return sendMessage(placeAttackMessage);
   };
 
-  const myAttacks = useMemo(() => createAttacksObj(myAttackPlacements), [myAttackPlacements]);
+  const myAttacks = useMemo(
+    () => createAttacksObj(myAttackPlacements),
+    [myAttackPlacements],
+  );
 
-  const opponentAttacks = useMemo(() => createAttacksObj(opponentAttackPlacements), [opponentAttackPlacements]);
+  const opponentAttacks = useMemo(
+    () => createAttacksObj(opponentAttackPlacements),
+    [opponentAttackPlacements],
+  );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Match ID: {matchID}</Text>
-        <Text style={styles.headerText}>Player: {player}</Text>
-        <Text style={styles.headerText}>Turn: {turn || 'Waiting...'}</Text>
+    <SafeAreaView style={styles.container}>
+      {/* Status Bar */}
+      <View style={styles.statusBar}>
+        <View style={styles.statusItem}>
+          <Text style={styles.statusLabel}>MATCH</Text>
+          <Text style={styles.statusValue}>{matchID}</Text>
+        </View>
+        <View style={styles.connectionIndicator}>
+          <View
+            style={[styles.connectionDot, isConnected && styles.connected]}
+          />
+          <Text style={styles.connectionText}>
+            {isConnected ? 'LIVE' : 'CONNECTING'}
+          </Text>
+        </View>
       </View>
 
-      <Board
-        doAttackTile={doAttackTile}
-        myAttacks={myAttacks}
-        opponentAttacks={opponentAttacks}
-      />
+      {/* Turn Indicator */}
+      <View style={styles.turnContainer}>
+        <View
+          style={[styles.turnIndicator, turn === player && styles.yourTurn]}>
+          <Text style={styles.turnLabel}>
+            {!turn
+              ? 'WAITING FOR OPPONENT'
+              : turn === player
+              ? '⚔️ YOUR TURN'
+              : "⏳ OPPONENT'S TURN"}
+          </Text>
+        </View>
+        <View style={styles.playerBadge}>
+          <Text style={styles.playerText}>{player || 'JOINING...'}</Text>
+        </View>
+      </View>
 
+      {/* Game Board */}
+      <View style={styles.boardSection}>
+        <View style={styles.viewLabel}>
+          <Text style={styles.viewLabelText}>
+            {view === 'P' ? '🚢 YOUR FLEET' : '🎯 ATTACK MAP'}
+          </Text>
+        </View>
+        <Board
+          doAttackTile={doAttackTile}
+          myAttacks={myAttacks}
+          opponentAttacks={opponentAttacks}
+        />
+      </View>
+
+      {/* Action Controls */}
       <View style={styles.controls}>
-        {!shipsCommitted && (
-          <TouchableOpacity style={styles.button} onPress={doCommitShips}>
-            <Text style={styles.buttonText}>Commit Ships</Text>
+        {!shipsCommitted ? (
+          <TouchableOpacity
+            style={[styles.button, styles.commitButton]}
+            onPress={doCommitShips}>
+            <Text style={styles.buttonText}>🚀 DEPLOY FLEET</Text>
           </TouchableOpacity>
-        )}
-        
-        {shipsCommitted && (
-          <TouchableOpacity style={styles.button} onPress={doChangeView}>
+        ) : (
+          <TouchableOpacity
+            style={[styles.button, styles.viewButton]}
+            onPress={doChangeView}>
             <Text style={styles.buttonText}>
-              View: {view === 'P' ? 'My Fleet' : 'Attacks'}
+              {view === 'P' ? '🎯 ATTACK VIEW' : '🚢 FLEET VIEW'}
             </Text>
           </TouchableOpacity>
         )}
 
-        <TouchableOpacity style={[styles.button, styles.resetButton]} onPress={doResetGame}>
-          <Text style={styles.buttonText}>Reset Game</Text>
+        <TouchableOpacity
+          style={[styles.button, styles.resetButton]}
+          onPress={doResetGame}>
+          <Text style={styles.resetButtonText}>↺</Text>
         </TouchableOpacity>
       </View>
 
@@ -110,43 +178,162 @@ const Match = () => {
           <ShipSelect />
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+    backgroundColor: theme.colors.background,
   },
-  header: {
-    marginBottom: 10,
+  statusBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: theme.spacing.m,
+    paddingVertical: theme.spacing.s,
+    backgroundColor: theme.colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.border,
   },
-  headerText: {
-    fontSize: 16,
-    marginBottom: 5,
+  statusItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  statusLabel: {
+    color: theme.colors.textMuted,
+    fontSize: 10,
+    fontWeight: 'bold',
+    letterSpacing: 1,
+    marginRight: theme.spacing.s,
+  },
+  statusValue: {
+    color: theme.colors.text,
+    fontSize: 12,
+    fontWeight: 'bold',
+    letterSpacing: 1,
+  },
+  connectionIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  connectionDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: theme.colors.error,
+    marginRight: theme.spacing.xs,
+  },
+  connected: {
+    backgroundColor: theme.colors.success,
+  },
+  connectionText: {
+    color: theme.colors.textSecondary,
+    fontSize: 10,
+    fontWeight: 'bold',
+    letterSpacing: 1,
+  },
+  turnContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: theme.spacing.m,
+    paddingVertical: theme.spacing.s,
+  },
+  turnIndicator: {
+    flex: 1,
+    backgroundColor: theme.colors.surfaceLight,
+    paddingVertical: theme.spacing.s,
+    paddingHorizontal: theme.spacing.m,
+    borderRadius: theme.layout.borderRadiusSmall,
+    marginRight: theme.spacing.s,
+  },
+  yourTurn: {
+    backgroundColor: theme.colors.primaryDark,
+  },
+  turnLabel: {
+    color: theme.colors.text,
+    fontSize: 12,
+    fontWeight: 'bold',
+    letterSpacing: 1,
+    textAlign: 'center',
+  },
+  playerBadge: {
+    backgroundColor: theme.colors.secondary,
+    paddingVertical: theme.spacing.s,
+    paddingHorizontal: theme.spacing.m,
+    borderRadius: theme.layout.borderRadiusSmall,
+  },
+  playerText: {
+    color: theme.colors.text,
+    fontSize: 10,
+    fontWeight: 'bold',
+    letterSpacing: 1,
+  },
+  boardSection: {
+    alignItems: 'center',
+    paddingVertical: theme.spacing.s,
+  },
+  viewLabel: {
+    marginBottom: theme.spacing.s,
+  },
+  viewLabelText: {
+    color: theme.colors.textSecondary,
+    fontSize: 12,
+    fontWeight: 'bold',
+    letterSpacing: 2,
   },
   controls: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginVertical: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: theme.spacing.m,
+    paddingVertical: theme.spacing.s,
+    gap: theme.spacing.s,
   },
   button: {
-    backgroundColor: '#007AFF',
-    padding: 10,
-    borderRadius: 5,
-    minWidth: 100,
+    paddingVertical: theme.spacing.m,
+    paddingHorizontal: theme.spacing.l,
+    borderRadius: theme.layout.borderRadius,
     alignItems: 'center',
+    justifyContent: 'center',
+    ...theme.shadows.small,
+  },
+  commitButton: {
+    flex: 1,
+    backgroundColor: theme.colors.success,
+  },
+  viewButton: {
+    flex: 1,
+    backgroundColor: theme.colors.primary,
   },
   resetButton: {
-    backgroundColor: '#ff3b30',
+    backgroundColor: theme.colors.surfaceLight,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
   },
   buttonText: {
-    color: 'white',
+    color: theme.colors.background,
+    fontWeight: 'bold',
+    fontSize: 14,
+    letterSpacing: 1,
+  },
+  resetButtonText: {
+    color: theme.colors.text,
+    fontSize: 20,
     fontWeight: 'bold',
   },
   shipSelectContainer: {
     flex: 1,
+    backgroundColor: theme.colors.surface,
+    borderTopLeftRadius: theme.layout.borderRadiusLarge,
+    borderTopRightRadius: theme.layout.borderRadiusLarge,
+    borderTopWidth: 1,
+    borderTopColor: theme.colors.border,
   },
 });
 
