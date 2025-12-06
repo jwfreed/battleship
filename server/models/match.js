@@ -37,18 +37,30 @@ const MatchModel = {
     });
   },
 
-  // Find active match for a player (not ended)
+  // Find active match for a player (not ended - no winner determined yet)
+  // A match is considered active if it exists and doesn't have a full set of attacks indicating game over
   findActiveMatchByPlayer: async (playerId) => {
     const { data, error } = await supabase
       .from('matches')
       .select('*')
       .or(`player_one.eq.${playerId},player_two.eq.${playerId}`)
-      .is('winner', null)
       .order('created_at', { ascending: false })
       .limit(1)
       .single();
 
     if (error && error.code !== 'PGRST116') throw error;
+    
+    // Check if game is over (one player has sunk all 5 ships = 17 hits)
+    if (data) {
+      const p1Hits = (data.player_one_attack_placements || []).filter(a => a.hit).length;
+      const p2Hits = (data.player_two_attack_placements || []).filter(a => a.hit).length;
+      const gameOver = p1Hits >= 17 || p2Hits >= 17;
+      
+      if (gameOver) {
+        return null; // Game is finished
+      }
+    }
+    
     return data || null;
   },
 
