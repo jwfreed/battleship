@@ -1,11 +1,17 @@
 const MatchModel = require('../models/match');
 const MatchService = require('../services/matchServices');
+const { checkWsRateLimit } = require('../middleware/rateLimiter');
 
-const connections = {};
-const matchPlayers = {};
+// Use Map for O(1) lookups instead of plain objects
+const connections = new Map();
+const matchPlayers = new Map();
 
-const onConnect = (matchId) => {
+const onConnect = (matchId, connection) => {
   console.log(`new connection to match: ${matchId}`);
+  
+  // Set up heartbeat
+  connection.isAlive = true;
+  connection.on('pong', () => { connection.isAlive = true; });
 };
 
 const onClose = (matchId, connection) => {
@@ -13,25 +19,36 @@ const onClose = (matchId, connection) => {
   console.log('close', connection.id);
 
   if (connection.id) {
-    const playerConnections = connections[connection.id] || [];
+    const playerConnections = connections.get(connection.id) || [];
     // Filter out the closed connection by comparing the actual connection object
-    connections[connection.id] = playerConnections.filter((conn) => conn !== connection);
+    const filteredConnections = playerConnections.filter((conn) => conn !== connection);
     
-    // Clean up empty connection arrays
-    if (connections[connection.id].length === 0) {
-      delete connections[connection.id];
+    if (filteredConnections.length === 0) {
+      connections.delete(connection.id);
+    } else {
+      connections.set(connection.id, filteredConnections);
     }
 
     // Clean up match players if no connections remain
-    if (matchPlayers[matchId]) {
-      const allConnectionsClosed = !matchPlayers[matchId].some(
-        (playerId) => connections[playerId] && connections[playerId].length > 0
+    const players = matchPlayers.get(matchId);
+    if (players) {
+      const allConnectionsClosed = !players.some(
+        (playerId) => connections.has(playerId) && connections.get(playerId).length > 0
       );
       if (allConnectionsClosed) {
-        delete matchPlayers[matchId];
+        matchPlayers.delete(matchId);
       }
     }
   }
+};
+
+// Helper to get connections object for MatchService compatibility
+const getConnectionsObject = () => {
+  const obj = {};
+  for (const [key, value] of connections.entries()) {
+    obj[key] = value;
+  }
+  return obj;
 };
 
 const onMessage = async (matchId, connection, data) => {
@@ -54,21 +71,21 @@ const onMessage = async (matchId, connection, data) => {
     };
 
     connection.id = uid;
-    const playerConnections = connections[uid] || [];
-    connections[uid] = [...playerConnections, connection];  //  { uid: [{connecion1}, {connection2}, {connection3},...] };
+    const playerConnections = connections.get(uid) || [];
+    connections.set(uid, [...playerConnections, connection]);  //  Map: uid => [{connection1}, {connection2}, ...]
 
-    const currentMatchPlayers = (matchPlayers[matchId] || []).filter(id => id !== uid);
-    matchPlayers[matchId] = [...currentMatchPlayers, uid];  //   { matchId: [player_one, player_two] };
+    const currentMatchPlayers = (matchPlayers.get(matchId) || []).filter(id => id !== uid);
+    matchPlayers.set(matchId, [...currentMatchPlayers, uid]);  //   Map: matchId => [player_one, player_two]
 
     if (uid !== player_one && !player_two) {
       const updatedMatch = await MatchModel.updatePlayerTwo(matchId, uid);
 
       const response = MatchModel.createMatchObject(updatedMatch);
-      return MatchService.msgAllPlayers(connections, response);
+      return MatchService.msgAllPlayers(getConnectionsObject(), response);
     };
 
     const response = MatchModel.createMatchObject(matchData);
-    return MatchService.msgAllPlayers(connections, response);
+    return MatchService.msgAllPlayers(getConnectionsObject(), response);
   };
 
   if (data.action === 'SHIP_PLACEMENTS') {
@@ -84,7 +101,7 @@ const onMessage = async (matchId, connection, data) => {
     }
 
     const response = MatchModel.createMatchObject(match);
-    return MatchService.msgAllPlayers(connections, response);
+    return MatchService.msgAllPlayers(getConnectionsObject(), response);
   };
 
   if (data.action === 'ATTACK') {
@@ -111,7 +128,7 @@ const onMessage = async (matchId, connection, data) => {
     
     const response = MatchModel.createMatchObject(match);
     console.log('Sending response:', response);
-    return MatchService.msgAllPlayers(connections, response);
+    return MatchService.msgAllPlayers(getConnectionsObject(), response);
   };
 };
 
@@ -131,6 +148,16 @@ module.exports = (connection, req) => {
           return rawMsg;
         };
       })();
+      
+      // Rate limit WebSocket messages
+      if (connection.id && !checkWsRateLimit(connection.id)) {
+        console.warn(`Rate limit exceeded for user ${connection.id}`);
+        if (connection.readyState === 1) {
+          connection.send(JSON.stringify({ error: 'Rate limit exceeded' }));
+        }
+        return;
+      }
+      
       await onMessage(matchId, connection, parsedMsg);
     } catch (error) {
       console.error(`Error handling message in match ${matchId}:`, error.message);

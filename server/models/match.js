@@ -1,5 +1,6 @@
 const shortid = require('shortid');
 const supabase = require('../db');
+const MatchCache = require('../services/matchCache');
 
 const MatchModel = {
   create: async (playerOneId) => {
@@ -19,18 +20,21 @@ const MatchModel = {
       .single();
 
     if (error) throw error;
+    MatchCache.set(matchId, data);
     return data;
   },
 
   getById: async (matchId) => {
-    const { data, error } = await supabase
-      .from('matches')
-      .select('*')
-      .eq('id', matchId)
-      .single();
+    return MatchCache.getOrFetch(matchId, async () => {
+      const { data, error } = await supabase
+        .from('matches')
+        .select('*')
+        .eq('id', matchId)
+        .single();
 
-    if (error && error.code !== 'PGRST116') throw error; // PGRST116 is "not found"
-    return data;
+      if (error && error.code !== 'PGRST116') throw error; // PGRST116 is "not found"
+      return data;
+    });
   },
 
   updatePlayerTwo: async (matchId, playerTwoId) => {
@@ -42,6 +46,7 @@ const MatchModel = {
       .single();
 
     if (error) throw error;
+    MatchCache.set(matchId, data);
     return data;
   },
 
@@ -62,6 +67,7 @@ const MatchModel = {
       .single();
 
     if (error) throw error;
+    MatchCache.set(matchId, data);
     return data;
   },
 
@@ -78,6 +84,7 @@ const MatchModel = {
       .single();
 
     if (error) throw error;
+    MatchCache.set(matchId, data);
     return data;
   },
 
@@ -90,6 +97,7 @@ const MatchModel = {
       .single();
 
     if (error) throw error;
+    MatchCache.set(matchId, data);
     return data;
   },
 
