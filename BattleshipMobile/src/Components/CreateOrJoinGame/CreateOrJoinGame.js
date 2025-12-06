@@ -7,7 +7,10 @@ import {
   StyleSheet,
   Alert,
   Dimensions,
+  ScrollView,
+  Share,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import GameContext from '../../Context/GameContext';
 import {API_URL} from '../../constants';
 import {theme} from '../../theme';
@@ -17,6 +20,9 @@ const {width} = Dimensions.get('window');
 const CreateOrJoinGame = () => {
   const {uid, dispatch} = useContext(GameContext);
   const [joinMatch, setJoinMatch] = useState('');
+  const [showRejoin, setShowRejoin] = useState(false);
+  const [rejoinMatch, setRejoinMatch] = useState('');
+  const [rejoinUid, setRejoinUid] = useState('');
 
   const createGame = async () => {
     console.log('Creating game with UID:', uid);
@@ -59,51 +65,150 @@ const CreateOrJoinGame = () => {
     Alert.alert('Warning', 'Enter a match Id to join a match');
   };
 
+  const copyUid = async () => {
+    try {
+      await Share.share({
+        message: uid,
+      });
+    } catch (error) {
+      Alert.alert('Player ID', uid);
+    }
+  };
+
+  const handleRejoinFromOtherDevice = async () => {
+    if (!rejoinMatch || !rejoinUid) {
+      Alert.alert('Error', 'Enter both Match ID and your Player ID');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/match/${rejoinMatch}/rejoin`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({uid: rejoinUid}),
+      });
+
+      const data = await response.json();
+
+      if (!data.success) {
+        Alert.alert('Error', data.message || 'Failed to rejoin match');
+        return;
+      }
+
+      // Store the UID from the other device
+      await AsyncStorage.setItem('uid', rejoinUid);
+
+      // Rejoin with the restored state
+      dispatch({type: 'REJOIN_MATCH', data: data.data});
+    } catch (error) {
+      console.error('Error rejoining match:', error);
+      Alert.alert('Error', 'Error rejoining match: ' + error.message);
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      {/* Decorative radar circles */}
-      <View style={styles.radarContainer}>
-        <View style={[styles.radarCircle, styles.radarCircle1]} />
-        <View style={[styles.radarCircle, styles.radarCircle2]} />
-        <View style={[styles.radarCircle, styles.radarCircle3]} />
-      </View>
-
-      <View style={styles.titleContainer}>
-        <Text style={styles.titleIcon}>⚓</Text>
-        <Text style={styles.title}>BATTLESHIP</Text>
-        <Text style={styles.subtitle}>COMMAND YOUR FLEET</Text>
-      </View>
-
-      <View style={styles.card}>
-        <TouchableOpacity style={styles.button} onPress={createGame}>
-          <Text style={styles.buttonText}>CREATE NEW MATCH</Text>
-        </TouchableOpacity>
-
-        <View style={styles.divider}>
-          <View style={styles.line} />
-          <Text style={styles.orText}>OR</Text>
-          <View style={styles.line} />
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.container}>
+        {/* Decorative radar circles */}
+        <View style={styles.radarContainer}>
+          <View style={[styles.radarCircle, styles.radarCircle1]} />
+          <View style={[styles.radarCircle, styles.radarCircle2]} />
+          <View style={[styles.radarCircle, styles.radarCircle3]} />
         </View>
 
-        <View style={styles.joinContainer}>
-          <TextInput
-            style={styles.input}
-            value={joinMatch}
-            placeholder="Enter Match ID"
-            placeholderTextColor={theme.colors.textSecondary}
-            onChangeText={setJoinMatch}
-            autoCapitalize="none"
-          />
-          <TouchableOpacity style={styles.secondaryButton} onPress={joinGame}>
-            <Text style={styles.secondaryButtonText}>JOIN MATCH</Text>
+        <View style={styles.titleContainer}>
+          <Text style={styles.titleIcon}>⚓</Text>
+          <Text style={styles.title}>BATTLESHIP</Text>
+          <Text style={styles.subtitle}>COMMAND YOUR FLEET</Text>
+        </View>
+
+        <View style={styles.card}>
+          {/* Player ID Section */}
+          <View style={styles.playerIdSection}>
+            <Text style={styles.playerIdLabel}>YOUR PLAYER ID</Text>
+            <View style={styles.playerIdRow}>
+              <Text style={styles.playerId} numberOfLines={1}>
+                {uid}
+              </Text>
+              <TouchableOpacity style={styles.copyBtn} onPress={copyUid}>
+                <Text style={styles.copyBtnText}>📋</Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.playerIdHint}>
+              Save this to rejoin from another device
+            </Text>
+          </View>
+
+          <TouchableOpacity style={styles.button} onPress={createGame}>
+            <Text style={styles.buttonText}>CREATE NEW MATCH</Text>
           </TouchableOpacity>
+
+          <View style={styles.divider}>
+            <View style={styles.line} />
+            <Text style={styles.orText}>OR</Text>
+            <View style={styles.line} />
+          </View>
+
+          <View style={styles.joinContainer}>
+            <TextInput
+              style={styles.input}
+              value={joinMatch}
+              placeholder="Enter Match ID"
+              placeholderTextColor={theme.colors.textSecondary}
+              onChangeText={setJoinMatch}
+              autoCapitalize="none"
+            />
+            <TouchableOpacity style={styles.secondaryButton} onPress={joinGame}>
+              <Text style={styles.secondaryButtonText}>JOIN MATCH</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Rejoin from another device */}
+          <TouchableOpacity
+            style={styles.rejoinToggle}
+            onPress={() => setShowRejoin(!showRejoin)}>
+            <Text style={styles.rejoinToggleText}>
+              {showRejoin ? '▼ Hide' : '▶ Rejoin from another device'}
+            </Text>
+          </TouchableOpacity>
+
+          {showRejoin && (
+            <View style={styles.rejoinContainer}>
+              <TextInput
+                style={styles.input}
+                value={rejoinMatch}
+                placeholder="Match ID"
+                placeholderTextColor={theme.colors.textSecondary}
+                onChangeText={setRejoinMatch}
+                autoCapitalize="none"
+              />
+              <TextInput
+                style={styles.input}
+                value={rejoinUid}
+                placeholder="Player ID from other device"
+                placeholderTextColor={theme.colors.textSecondary}
+                onChangeText={setRejoinUid}
+                autoCapitalize="none"
+              />
+              <TouchableOpacity
+                style={styles.rejoinButton}
+                onPress={handleRejoinFromOtherDevice}>
+                <Text style={styles.rejoinButtonText}>REJOIN MATCH</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -169,6 +274,46 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.border,
     ...theme.shadows.large,
   },
+  playerIdSection: {
+    alignItems: 'center',
+    padding: theme.spacing.m,
+    backgroundColor: theme.colors.surfaceLight,
+    borderRadius: theme.layout.borderRadius,
+    marginBottom: theme.spacing.m,
+  },
+  playerIdLabel: {
+    color: theme.colors.textSecondary,
+    fontSize: 10,
+    letterSpacing: 2,
+    marginBottom: theme.spacing.xs,
+  },
+  playerIdRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing.s,
+  },
+  playerId: {
+    color: theme.colors.primary,
+    fontSize: 14,
+    fontWeight: 'bold',
+    fontFamily: 'monospace',
+    maxWidth: width * 0.5,
+  },
+  copyBtn: {
+    padding: theme.spacing.xs,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    borderRadius: 4,
+  },
+  copyBtnText: {
+    fontSize: 16,
+  },
+  playerIdHint: {
+    color: theme.colors.textMuted,
+    fontSize: 10,
+    fontStyle: 'italic',
+    marginTop: theme.spacing.xs,
+  },
   button: {
     backgroundColor: theme.colors.primary,
     padding: theme.spacing.m,
@@ -227,6 +372,34 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     color: theme.colors.primary,
     fontSize: 16,
+    fontWeight: 'bold',
+    letterSpacing: 2,
+  },
+  rejoinToggle: {
+    marginTop: theme.spacing.l,
+    paddingTop: theme.spacing.m,
+    borderTopWidth: 1,
+    borderTopColor: theme.colors.border,
+  },
+  rejoinToggleText: {
+    color: theme.colors.textSecondary,
+    fontSize: 12,
+  },
+  rejoinContainer: {
+    marginTop: theme.spacing.m,
+  },
+  rejoinButton: {
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: theme.colors.warning,
+    padding: theme.spacing.m,
+    borderRadius: theme.layout.borderRadius,
+    width: '100%',
+    alignItems: 'center',
+  },
+  rejoinButtonText: {
+    color: theme.colors.warning,
+    fontSize: 14,
     fontWeight: 'bold',
     letterSpacing: 2,
   },

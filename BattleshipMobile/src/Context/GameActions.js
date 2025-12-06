@@ -139,10 +139,14 @@ export const updateContext = (prevState, action) => {
     player_two_attack_placements,
     player_one_ship_placements,
     player_two_ship_placements,
+    my_ship_placements,
   } = action.data;
 
+  // Exclude my_ship_placements from comparison since it's only sent on AUTH
+  const msgForComparison = {...action.data};
+  delete msgForComparison.my_ship_placements;
   const lastMsg = prevState.lastMsg;
-  const newMsg = JSON.stringify(action.data);
+  const newMsg = JSON.stringify(msgForComparison);
 
   const playerId = prevState.uid; // Changed from initialState.uid
   const myPlayer = playerId === player_one ? 'Player One' : 'Player Two';
@@ -164,12 +168,35 @@ export const updateContext = (prevState, action) => {
   const opponentCommittedShips =
     player_two === playerId ? playerOneShips : playerTwoShips;
 
+  // If we received ship placements from server (on rejoin), restore them
+  let shipPlacements = prevState.shipPlacements;
+  let shipsPlaced = prevState.shipsPlaced;
+
+  if (my_ship_placements && Object.keys(prevState.shipPlacements).length === 0) {
+    shipPlacements = my_ship_placements;
+    shipsPlaced = {};
+    // Reconstruct shipsPlaced from placements
+    Object.keys(my_ship_placements).forEach(row => {
+      Object.keys(my_ship_placements[row]).forEach(col => {
+        const ship = my_ship_placements[row][col];
+        if (ship && ship.name) {
+          if (!shipsPlaced[ship.name]) {
+            shipsPlaced[ship.name] = [];
+          }
+          shipsPlaced[ship.name].push([parseInt(row, 10), parseInt(col, 10)]);
+        }
+      });
+    });
+  }
+
   const startGame = shipsCommitted && opponentCommittedShips;
   const lastTurn = prevState.turn;
 
   if (!prevState.gameOver && lastMsg !== newMsg && !startGame) {
     return {
       ...prevState,
+      shipPlacements,
+      shipsPlaced,
       shipsCommitted,
       opponentShipsCommitted: opponentCommittedShips,
       player: myPlayer,
@@ -225,6 +252,8 @@ export const updateContext = (prevState, action) => {
 
     return {
       ...prevState,
+      shipPlacements,
+      shipsPlaced,
       myAttackPlacements: myAttacks,
       opponentAttackPlacements: opponentAttacks,
       turn: nextTurn,
@@ -262,6 +291,92 @@ export const changeView = prevState => {
 export const joinGame = (prevState, action) => {
   const matchID = action.matchID;
   return {...prevState, matchID};
+};
+
+export const rejoinMatch = (prevState, action) => {
+  const {
+    match,
+    player_one,
+    player_two,
+    player_one_ship_placements,
+    player_two_ship_placements,
+    player_one_attack_placements,
+    player_two_attack_placements,
+    turn: serverTurn,
+    my_ship_placements,
+  } = action.data;
+
+  const playerId = prevState.uid;
+  const myPlayer = playerId === player_one ? 'Player One' : 'Player Two';
+
+  const shipsCommitted =
+    playerId === player_one ? player_one_ship_placements : player_two_ship_placements;
+  const opponentCommittedShips =
+    playerId === player_two ? player_one_ship_placements : player_two_ship_placements;
+
+  const myAttacks =
+    player_one === playerId
+      ? player_one_attack_placements
+      : player_two_attack_placements;
+  const opponentAttacks =
+    myAttacks === player_one_attack_placements
+      ? player_two_attack_placements
+      : player_one_attack_placements;
+
+  let currentTurn = null;
+  if (serverTurn) {
+    if (serverTurn === 'player_one') currentTurn = 'Player One';
+    else if (serverTurn === 'player_two') currentTurn = 'Player Two';
+  }
+
+  const startGame = shipsCommitted && opponentCommittedShips;
+
+  // Reconstruct shipsPlaced from my_ship_placements
+  let shipPlacements = {};
+  let shipsPlaced = {};
+
+  if (my_ship_placements) {
+    shipPlacements = my_ship_placements;
+    // Reconstruct shipsPlaced from placements
+    Object.keys(my_ship_placements).forEach(row => {
+      Object.keys(my_ship_placements[row]).forEach(col => {
+        const ship = my_ship_placements[row][col];
+        if (ship && ship.name) {
+          if (!shipsPlaced[ship.name]) {
+            shipsPlaced[ship.name] = [];
+          }
+          shipsPlaced[ship.name].push([parseInt(row, 10), parseInt(col, 10)]);
+        }
+      });
+    });
+  }
+
+  console.log('Rejoining match:', {
+    match,
+    myPlayer,
+    shipsCommitted,
+    opponentCommittedShips,
+    currentTurn,
+    shipPlacements,
+    shipsPlaced,
+  });
+
+  Alert.alert('Welcome Back', 'Rejoined active match!');
+
+  return {
+    ...prevState,
+    matchID: match,
+    player: myPlayer,
+    shipPlacements,
+    shipsPlaced,
+    shipsCommitted: !!shipsCommitted,
+    opponentShipsCommitted: !!opponentCommittedShips,
+    myAttackPlacements: myAttacks || [],
+    opponentAttackPlacements: opponentAttacks || [],
+    turn: currentTurn,
+    gameStarted: startGame,
+    view: startGame ? (myPlayer === currentTurn ? 'A' : 'P') : 'P',
+  };
 };
 
 export const commitShips = prevState => ({...prevState, shipsCommitted: true});

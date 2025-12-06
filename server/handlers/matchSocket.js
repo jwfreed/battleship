@@ -84,6 +84,11 @@ const onMessage = async (matchId, connection, data) => {
       return MatchService.msgAllPlayers(getConnectionsObject(), response);
     };
 
+    // Send player-specific data (includes their ship placements for rejoin)
+    const playerResponse = MatchModel.createPlayerMatchObject(matchData, uid);
+    connection.send(JSON.stringify(playerResponse));
+    
+    // Also broadcast general match state to all players
     const response = MatchModel.createMatchObject(matchData);
     return MatchService.msgAllPlayers(getConnectionsObject(), response);
   };

@@ -72,6 +72,127 @@
   gap: 0.75rem;
 }
 
+/* Player ID Section */
+.player-id-section {
+  text-align: center;
+  padding: 1rem;
+  background: #2c3e50;
+  border: 1px solid #4a5f7f;
+  border-radius: 4px;
+}
+
+.player-id-label {
+  color: #95a5a6;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 0.5rem 0;
+}
+
+.player-id-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.player-id {
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+  color: #3498db;
+  background: #1a252f;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+}
+
+.copy-btn {
+  background: transparent;
+  border: 1px solid #4a5f7f;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.copy-btn:hover {
+  background: #4a5f7f;
+}
+
+.player-id-hint {
+  color: #7f8c8d;
+  font-size: 0.7rem;
+  margin: 0.5rem 0 0 0;
+  font-style: italic;
+}
+
+/* Rejoin Section */
+.rejoin-section {
+  margin-top: 1rem;
+  border-top: 1px solid #4a5f7f;
+  padding-top: 1rem;
+}
+
+.toggle-rejoin-btn {
+  background: transparent;
+  border: none;
+  color: #95a5a6;
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 0.5rem;
+  width: 100%;
+  text-align: left;
+  transition: color 0.15s ease;
+}
+
+.toggle-rejoin-btn:hover {
+  color: #ecf0f1;
+}
+
+.rejoin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.rejoin-form input {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  border: 1px solid #4a5f7f;
+  background: #2c3e50;
+  color: #ecf0f1;
+  font-family: 'Courier New', monospace;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.rejoin-form input::placeholder {
+  color: #95a5a6;
+}
+
+.rejoin-form input:focus {
+  border-color: #e67e22;
+}
+
+.rejoin-btn {
+  padding: 0.75rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 2px solid #e67e22;
+  background: transparent;
+  color: #e67e22;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: 'Courier New', monospace;
+}
+
+.rejoin-btn:hover {
+  background: #e67e22;
+  color: #2c3e50;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .create-join-game {

@@ -21,6 +21,8 @@ const GameReducer = (prevState, action) => {
       return GameActions.updateContext(prevState, action);
     case 'JOIN_GAME':
       return GameActions.joinGame(prevState, action);
+    case 'REJOIN_MATCH':
+      return GameActions.rejoinMatch(prevState, action);
     case 'VICTORY':
       return GameActions.gameOver(prevState, action);
     case 'APPLY_PENDING_VIEW':

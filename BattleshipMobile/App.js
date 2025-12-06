@@ -8,6 +8,7 @@ import GameReducer from './src/Context/GameReducer';
 import Match from './src/Containers/Match/Match';
 import CreateOrJoinGame from './src/Components/CreateOrJoinGame/CreateOrJoinGame';
 import {theme} from './src/theme';
+import {API_URL} from './src/constants';
 
 const App = () => {
   const [state, dispatch] = useReducer(GameReducer, initialState);
@@ -17,6 +18,22 @@ const App = () => {
     const init = async () => {
       const loadedState = await loadInitialState();
       dispatch({type: 'INITIALIZE', data: loadedState});
+      
+      // Check for active match if not already in one
+      if (!loadedState.matchID && loadedState.uid) {
+        try {
+          const response = await fetch(`${API_URL}/match/active/${loadedState.uid}`);
+          const data = await response.json();
+          
+          if (data.success && data.data) {
+            console.log('Found active match, rejoining:', data.data);
+            dispatch({type: 'REJOIN_MATCH', data: data.data});
+          }
+        } catch (error) {
+          console.error('Error checking for active match:', error);
+        }
+      }
+      
       setLoading(false);
     };
     init();

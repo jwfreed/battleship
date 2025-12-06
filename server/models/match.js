@@ -37,6 +37,21 @@ const MatchModel = {
     });
   },
 
+  // Find active match for a player (not ended)
+  findActiveMatchByPlayer: async (playerId) => {
+    const { data, error } = await supabase
+      .from('matches')
+      .select('*')
+      .or(`player_one.eq.${playerId},player_two.eq.${playerId}`)
+      .is('winner', null)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (error && error.code !== 'PGRST116') throw error;
+    return data || null;
+  },
+
   updatePlayerTwo: async (matchId, playerTwoId) => {
     const { data, error } = await supabase
       .from('matches')
@@ -112,6 +127,27 @@ const MatchModel = {
       player_one_attack_placements: player_one_attack_placements,
       player_two_attack_placements: player_two_attack_placements,
       turn: turn,
+    };
+  },
+
+  // Create a player-specific match object that includes their own ship placements for rejoin
+  createPlayerMatchObject: (matchData, playerId) => {
+    const { id, player_one, player_two, player_one_attack_placements, player_two_attack_placements, player_one_ship_placements, player_two_ship_placements, turn } = matchData;
+    
+    const isPlayerOne = playerId === player_one;
+    const myShipPlacements = isPlayerOne ? player_one_ship_placements : player_two_ship_placements;
+    
+    return {
+      match: id,
+      player_one: player_one,
+      player_two: player_two,
+      player_one_ship_placements: (player_one_ship_placements && true),
+      player_two_ship_placements: (player_two_ship_placements && true),
+      player_one_attack_placements: player_one_attack_placements,
+      player_two_attack_placements: player_two_attack_placements,
+      turn: turn,
+      // Include the player's own ship placements for state restoration
+      my_ship_placements: myShipPlacements || null,
     };
   },
 };
