@@ -4,29 +4,35 @@ import GameContext from '../../Context/GameContext';
 import { shipHits } from './fleetHealthService';
 import './FleetHealth.css';
 
-const FleetHealth = memo((attacks) => {
+const FleetHealth = memo(({ myAttacks, opponentAttacks }) => {
   const { ships, player, dispatch } = useContext(GameContext);
-  const title = (Object.keys(attacks).includes('myAttacks') && 'Opponent Fleet Health') || `${player} Fleet Health`;
-  const fleetClass = (title === `${player} Fleet Health`) && 'my' || 'opponent';
+  
+  // Determine which attacks to use based on props
+  const attacks = myAttacks !== undefined ? { myAttacks } : { opponentAttacks };
+  const title = myAttacks !== undefined ? 'Opponent Fleet Health' : `${player} Fleet Health`;
+  const fleetClass = myAttacks !== undefined ? 'opponent' : 'my';
 
-  const hits = shipHits(attacks);
-  const fleet = ships.map((ship, i) => {
-    if (hits && hits[ship.name]) {
-      return <li className="ship-health" key={i} >{ship.name}: {ship.size - hits[ship.name]}</li>;
-    };
-    return <li key={i} >{ship.name}: {ship.size}</li>;
-  });
+  const hits = useMemo(() => shipHits(attacks), [attacks]);
+  
+  const fleet = useMemo(() => (
+    ships.map((ship, i) => {
+      if (hits && hits[ship.name]) {
+        return <li className="ship-health" key={ship.name}>{ship.name}: {ship.size - hits[ship.name]}</li>;
+      }
+      return <li key={ship.name}>{ship.name}: {ship.size}</li>;
+    })
+  ), [ships, hits]);
 
   const victory = useMemo(() => {
-    const defeatedShips = [];
-    ships.forEach((ship) => {
-      defeatedShips.push(ship.size - hits[ship.name] === 0);
-    });
-    return !defeatedShips.includes(false)
+    if (!hits) return false;
+    const defeatedShips = ships.map((ship) => ship.size - (hits[ship.name] || 0) === 0);
+    return defeatedShips.every(Boolean);
   }, [hits, ships]);
 
   useEffect(() => {
-    victory && dispatch({ type: 'VICTORY' });
+    if (victory) {
+      dispatch({ type: 'VICTORY' });
+    }
   }, [victory, dispatch]);
 
   return (
@@ -41,8 +47,11 @@ const FleetHealth = memo((attacks) => {
   );
 });
 
+FleetHealth.displayName = 'FleetHealth';
+
 FleetHealth.propTypes = {
-  attacks: PropTypes.object,
+  myAttacks: PropTypes.object,
+  opponentAttacks: PropTypes.object,
 };
 
 export default FleetHealth;

@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useEffect } from 'react';
+import React, { useContext, useMemo, useEffect, useCallback, memo } from 'react';
 import useWebSocket from 'react-use-websocket';
 import { toast, ToastContainer, Flip } from 'react-toastify';
 import Board from '../../Components/Board/Board';
@@ -9,7 +9,7 @@ import FleetHealth from '../../Components/FleetHealth/FleetHealth';
 import 'react-toastify/dist/ReactToastify.css';
 import './Match.css';
 
-export const Match = () => {
+export const Match = memo(() => {
   const {
     uid,
     matchID,
@@ -25,6 +25,7 @@ export const Match = () => {
     turn,
     gameOver,
     winner,
+    pendingViewChange,
     dispatch
   } = useContext(GameContext);
 
@@ -58,11 +59,21 @@ export const Match = () => {
     }
   }, [lastMessage, dispatch]);
 
-  const doResetGame = () => dispatch({ type: 'RESET_GAME' });
+  // Handle delayed view change after attack results are shown
+  useEffect(() => {
+    if (pendingViewChange) {
+      const timer = setTimeout(() => {
+        dispatch({ type: 'APPLY_PENDING_VIEW' });
+      }, 2000); // 2 second delay to see attack result
+      return () => clearTimeout(timer);
+    }
+  }, [pendingViewChange, dispatch]);
 
-  const doChangeView = () => dispatch({ type: 'CHANGE_VIEW' });
+  const doResetGame = useCallback(() => dispatch({ type: 'RESET_GAME' }), [dispatch]);
 
-  const doCommitShips = () => {
+  const doChangeView = useCallback(() => dispatch({ type: 'CHANGE_VIEW' }), [dispatch]);
+
+  const doCommitShips = useCallback(() => {
     const numberOfShipsPlaced = Object.keys(shipsPlaced).length;
     if (numberOfShipsPlaced < ships.length) {
       return toast.warn('You must position all ships in your fleet.')
@@ -70,9 +81,9 @@ export const Match = () => {
     const placeShipsMessage = JSON.stringify({ action: 'SHIP_PLACEMENTS', placements: shipPlacements, uid });
     toast.success('Ships Placed');
     return sendMessage(placeShipsMessage);
-  };
+  }, [shipsPlaced, ships, shipPlacements, uid, sendMessage]);
 
-  const doAttackTile = (row, col) => {
+  const doAttackTile = useCallback((row, col) => {
     console.log('doAttackTile called', { row, col, player, turn, comparison: player === turn });
     if (player !== turn) {
       return toast.warn('it\'s not your turn');
@@ -80,7 +91,7 @@ export const Match = () => {
     const placeAttackMessage = JSON.stringify({ action: 'ATTACK', row, col, uid });
     console.log('Sending attack message:', placeAttackMessage);
     return sendMessage(placeAttackMessage);
-  };
+  }, [player, turn, uid, sendMessage]);
 
   const myAttacks = useMemo(() => createAttacksObj(myAttackPlacements), [myAttackPlacements]);
 
@@ -161,6 +172,8 @@ export const Match = () => {
       />
     </div>
   );
-};
+});
+
+Match.displayName = 'Match';
 
 export default Match;

@@ -229,6 +229,10 @@ export const updateContext = (prevState, action) => {
 
   if (!prevState.gameOver && lastMsg !== newMsg && startGame) {
     const newView = myPlayer === currentTurn ? 'A' : 'P';
+    const wasMyTurn = prevState.turn === myPlayer;
+    const isNowMyTurn = currentTurn === myPlayer;
+    const turnChanged = wasMyTurn !== isNowMyTurn;
+    
     console.log('Returning state: game in progress', { 
       newView, 
       currentTurn, 
@@ -236,7 +240,46 @@ export const updateContext = (prevState, action) => {
       comparison: `${myPlayer} === ${currentTurn} = ${myPlayer === currentTurn}`,
       myAttacksLength: myAttacks?.length,
       opponentAttacksLength: opponentAttacks?.length,
+      turnChanged,
+      wasMyTurn,
+      isNowMyTurn,
     });
+
+    // Check if an attack just happened and show result
+    if (turnChanged && prevState.gameStarted) {
+      // If it was my turn and now it's not, I just attacked
+      if (wasMyTurn && !isNowMyTurn && myAttacks?.length > 0) {
+        const lastAttack = myAttacks[myAttacks.length - 1];
+        const hitResult = lastAttack.hit ? `🎯 HIT! You struck their ${lastAttack.hit.name}!` : '💨 Miss! Shot went wide.';
+        setTimeout(() => {
+          toast.info(hitResult, {
+            autoClose: 2000,
+            transition: Flip,
+          });
+        }, 0);
+      }
+      // If it wasn't my turn and now it is, opponent just attacked me
+      if (!wasMyTurn && isNowMyTurn && opponentAttacks?.length > 0) {
+        const lastAttack = opponentAttacks[opponentAttacks.length - 1];
+        const hitResult = lastAttack.hit ? `💥 INCOMING! They hit your ${lastAttack.hit.name}!` : '🌊 Enemy missed! They hit nothing but water.';
+        setTimeout(() => {
+          toast.info(hitResult, {
+            autoClose: 2000,
+            transition: Flip,
+          });
+        }, 0);
+      }
+    }
+
+    // Delay view switch to let player see the result
+    const delayedView = turnChanged && prevState.gameStarted ? prevState.view : newView;
+
+    // Schedule the view change after a delay if turn changed
+    if (turnChanged && prevState.gameStarted && delayedView !== newView) {
+      setTimeout(() => {
+        // This will be handled by the component re-rendering with pendingViewChange
+      }, 2000);
+    }
 
     return {
       ...prevState,
@@ -248,7 +291,8 @@ export const updateContext = (prevState, action) => {
       player: myPlayer,
       gameStarted: startGame,
       lastMsg: newMsg,
-      view: newView,
+      view: delayedView,
+      pendingViewChange: turnChanged && prevState.gameStarted ? newView : null,
     };
   }
   
@@ -265,7 +309,14 @@ export const updateContext = (prevState, action) => {
 export const changeView = (prevState) => {
   const currentView = prevState.view;
   const view = currentView === 'P' ? 'A' : 'P';
-  return { ...prevState, view };
+  return { ...prevState, view, pendingViewChange: null };
+};
+
+export const applyPendingViewChange = (prevState) => {
+  if (prevState.pendingViewChange) {
+    return { ...prevState, view: prevState.pendingViewChange, pendingViewChange: null };
+  }
+  return prevState;
 };
 
 export const joinGame = (prevState, action) => {

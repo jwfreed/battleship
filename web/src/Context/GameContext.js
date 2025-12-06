@@ -41,6 +41,7 @@ export const initialState = {
   initialTurn: 'Player One',
   lastMsg: '',
   winner: null,
+  pendingViewChange: null,
 };
 
 export default React.createContext();

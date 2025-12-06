@@ -1,9 +1,9 @@
-import React, { useContext, useCallback, useMemo } from 'react';
+import React, { useContext, useCallback, useMemo, memo } from 'react';
 import PropTypes from 'prop-types';
 import GameContext from '../../Context/GameContext';
 import './Tile.css';
 
-function Tile({ row, col, onClick, onAttack, myAttacks, opponentAttacks }) {
+const Tile = memo(function Tile({ row, col, onClick, onAttack, myAttacks, opponentAttacks }) {
   const { shipPlacements, view } = useContext(GameContext);
 
   const doClick = useCallback(() => {
@@ -31,7 +31,7 @@ function Tile({ row, col, onClick, onAttack, myAttacks, opponentAttacks }) {
     const attemptClass = (opponentAttempts && 'hit') || (opponentAttempts && 'miss') || 'tile';
     return (
       <button className={`tile fleet-view ${attemptClass}`} onClick={doClick}>
-        {(placedShip && <img className="tileImg" src={imgPath} alt={placedShip.name} />)}
+        {(placedShip && <img className="tileImg" src={imgPath} alt={placedShip.name} loading="lazy" />)}
       </button>
     );
   }
@@ -41,7 +41,19 @@ function Tile({ row, col, onClick, onAttack, myAttacks, opponentAttacks }) {
       {attackAttempts || '-'}
     </button>
   );
-}
+}, (prevProps, nextProps) => {
+  // Custom comparison for better performance - only re-render if these change
+  return (
+    prevProps.row === nextProps.row &&
+    prevProps.col === nextProps.col &&
+    prevProps.myAttacks === nextProps.myAttacks &&
+    prevProps.opponentAttacks === nextProps.opponentAttacks &&
+    prevProps.onClick === nextProps.onClick &&
+    prevProps.onAttack === nextProps.onAttack
+  );
+});
+
+Tile.displayName = 'Tile';
 
 Tile.propTypes = {
   row: PropTypes.number,

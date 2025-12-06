@@ -1,10 +1,10 @@
-import React, { useContext, useCallback } from 'react';
+import React, { useContext, useCallback, memo } from 'react';
 import Tile from '../Tile/Tile';
 import PropTypes from 'prop-types';
 import GameContext from '../../Context/GameContext';
 import './Board.css';
 
-const Board = ({ doAttackTile, opponentAttacks, myAttacks }) => {
+const Board = memo(({ doAttackTile, opponentAttacks, myAttacks }) => {
   const { boardRows, boardCols, dispatch } = useContext(GameContext);
 
   const doPlaceShip = useCallback((row, col) => {
@@ -35,7 +35,9 @@ const Board = ({ doAttackTile, opponentAttacks, myAttacks }) => {
       }
     </div>
   );
-};
+});
+
+Board.displayName = 'Board';
 
 Board.propTypes = {
   doAttackTile: PropTypes.func.isRequired,

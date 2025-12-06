@@ -1,14 +1,23 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useMemo, useCallback, memo } from 'react';
 import PropTypes from 'prop-types';
 import GameContext from '../../Context/GameContext';
 import './Ship.css';
 
-const Ship = ({ ship, selected, onClick }) => {
+const Ship = memo(({ ship, selected, onClick }) => {
   const { shipsPlaced, dispatch } = useContext(GameContext);
 
-  const doResetShip = (ship) => {
-    dispatch({ type: 'REMOVE_SHIP', ship });
-  };
+  const doResetShip = useCallback((shipName) => {
+    dispatch({ type: 'REMOVE_SHIP', ship: shipName });
+  }, [dispatch]);
+
+  const handleClick = useCallback(() => {
+    onClick(ship);
+  }, [onClick, ship]);
+
+  const handleResetClick = useCallback((e) => {
+    e.stopPropagation();
+    doResetShip(ship.name);
+  }, [doResetShip, ship.name]);
 
   const shipOnBoard = useMemo(() => {
     const shipPlacement = shipsPlaced[ship.name];
@@ -18,7 +27,7 @@ const Ship = ({ ship, selected, onClick }) => {
   return (
     <div 
       className={`ship ${selected ? 'ship-selected' : ''}`}
-      onClick={() => onClick(ship)}
+      onClick={handleClick}
     >
       <h4>
         {ship.name}
@@ -27,18 +36,15 @@ const Ship = ({ ship, selected, onClick }) => {
         Boat Length: {ship.size} Tiles
       </p>
       {shipOnBoard && (
-        <button 
-          onClick={(e) => {
-            e.stopPropagation();
-            doResetShip(ship.name);
-          }}
-        >
+        <button onClick={handleResetClick}>
           Reset {ship.name}
         </button>
       )}
     </div>
   )
-};
+});
+
+Ship.displayName = 'Ship';
 
 Ship.propTypes = {
   ship: PropTypes.object.isRequired,

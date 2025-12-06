@@ -1,35 +1,31 @@
-import React, { useContext, useCallback } from 'react';
+import React, { useContext, useCallback, memo } from 'react';
 import GameContext from '../../Context/GameContext';
 import Ship from '../../Components/Ship/Ship';
 
 import './SelectShip.css';
 
-const ShipSelect = () => {
+const ShipSelect = memo(() => {
   const { ships, selectedShip, placementOrientation, dispatch } = useContext(GameContext);
 
   const doSelectShip = useCallback((ship) => {
     dispatch({ type: 'SELECT_SHIP', ship });
   }, [dispatch]);
 
-  const doChangeShipOrientation = () => {
+  const doChangeShipOrientation = useCallback(() => {
     dispatch({ type: 'CHANGE_SHIP_ORIENTATION' });
-  };
-
-  const renderShips = useCallback(() => (
-    ships.map((ship) => (
-      <Ship
-        key={ship.name}
-        ship={ship}
-        selected={selectedShip && ship.name === selectedShip.name}
-        onClick={doSelectShip}
-      />
-    ))
-  ), [ships, selectedShip, doSelectShip]);
+  }, [dispatch]);
 
   return (
     <div className="main-ship-container">
       <div className="select-ship-container">
-        {renderShips()}
+        {ships.map((ship) => (
+          <Ship
+            key={ship.name}
+            ship={ship}
+            selected={selectedShip && ship.name === selectedShip.name}
+            onClick={doSelectShip}
+          />
+        ))}
       </div>
       <div className="orientation-div">
         <button className="orientation-btn" onClick={doChangeShipOrientation}>
@@ -41,6 +37,8 @@ const ShipSelect = () => {
       </div>
     </div>
   );
-};
+});
+
+ShipSelect.displayName = 'ShipSelect';
 
 export default ShipSelect;

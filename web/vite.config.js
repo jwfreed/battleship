@@ -22,5 +22,31 @@ export default defineConfig({
   },
   build: {
     outDir: 'build',
+    // Production optimizations
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
+    rollupOptions: {
+      output: {
+        // Code splitting for better caching
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          websocket: ['react-use-websocket'],
+          toast: ['react-toastify'],
+        },
+      },
+    },
+    // Enable source maps for debugging (optional)
+    sourcemap: false,
+    // Chunk size warning limit
+    chunkSizeWarningLimit: 500,
+  },
+  // Preview server compression
+  preview: {
+    port: 3000,
   },
 });
