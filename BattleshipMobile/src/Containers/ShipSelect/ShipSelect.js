@@ -1,4 +1,4 @@
-import React, {useContext, useCallback} from 'react';
+import React, {useContext, useCallback, memo} from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import GameContext from '../../Context/GameContext';
 import Ship from '../../Components/Ship/Ship';
 import {theme} from '../../theme';
 
-const ShipSelect = () => {
+const ShipSelect = memo(() => {
   const {ships, selectedShip, placementOrientation, shipsPlaced, dispatch} =
     useContext(GameContext);
 
@@ -24,9 +24,9 @@ const ShipSelect = () => {
     [dispatch],
   );
 
-  const doChangeShipOrientation = () => {
+  const doChangeShipOrientation = useCallback(() => {
     dispatch({type: 'CHANGE_SHIP_ORIENTATION'});
-  };
+  }, [dispatch]);
 
   return (
     <View style={styles.container}>

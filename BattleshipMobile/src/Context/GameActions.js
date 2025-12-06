@@ -179,8 +179,49 @@ export const updateContext = (prevState, action) => {
 
   if (!prevState.gameOver && lastMsg !== newMsg && startGame) {
     const nextTurn = lastTurn === 'Player One' ? 'Player Two' : 'Player One';
+    const isMyTurn = myPlayer === nextTurn;
 
-    const newView = myPlayer === nextTurn ? 'A' : 'P';
+    // Check if there was a new attack (compare attack counts)
+    const prevMyAttackCount = prevState.myAttackPlacements?.length || 0;
+    const prevOpponentAttackCount = prevState.opponentAttackPlacements?.length || 0;
+    const newMyAttackCount = myAttacks?.length || 0;
+    const newOpponentAttackCount = opponentAttacks?.length || 0;
+
+    let lastAttackResult = null;
+    let pendingViewChange = null;
+
+    // I just attacked (my attack count increased)
+    if (newMyAttackCount > prevMyAttackCount && myAttacks?.length > 0) {
+      const lastAttack = myAttacks[myAttacks.length - 1];
+      const wasHit = lastAttack.hit && lastAttack.hit.name;
+      lastAttackResult = {
+        type: 'my_attack',
+        hit: wasHit,
+        shipName: wasHit ? lastAttack.hit.name : null,
+      };
+      // Show result, then switch to fleet view after delay
+      pendingViewChange = 'P';
+      Alert.alert(
+        wasHit ? '💥 HIT!' : '💦 MISS',
+        wasHit ? `You hit their ${lastAttack.hit.name}!` : 'Your shot missed.',
+      );
+    }
+    // Opponent just attacked me (opponent attack count increased)
+    else if (newOpponentAttackCount > prevOpponentAttackCount && opponentAttacks?.length > 0) {
+      const lastAttack = opponentAttacks[opponentAttacks.length - 1];
+      const wasHit = lastAttack.hit && lastAttack.hit.name;
+      lastAttackResult = {
+        type: 'opponent_attack',
+        hit: wasHit,
+        shipName: wasHit ? lastAttack.hit.name : null,
+      };
+      // Show result, then switch to attack view after delay
+      pendingViewChange = 'A';
+      Alert.alert(
+        wasHit ? '🚨 HIT!' : '💨 MISS',
+        wasHit ? `They hit your ${lastAttack.hit.name}!` : 'Their shot missed.',
+      );
+    }
 
     return {
       ...prevState,
@@ -192,7 +233,21 @@ export const updateContext = (prevState, action) => {
       player: myPlayer,
       gameStarted: startGame,
       lastMsg: newMsg,
-      view: newView,
+      lastAttackResult,
+      pendingViewChange,
+      // Keep current view - will change after delay via APPLY_PENDING_VIEW
+    };
+  }
+  return prevState;
+};
+
+export const applyPendingView = prevState => {
+  if (prevState.pendingViewChange) {
+    return {
+      ...prevState,
+      view: prevState.pendingViewChange,
+      pendingViewChange: null,
+      lastAttackResult: null,
     };
   }
   return prevState;

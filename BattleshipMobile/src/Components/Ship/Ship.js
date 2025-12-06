@@ -1,14 +1,17 @@
-import React, {useContext, useMemo} from 'react';
+import React, {useContext, useMemo, useCallback, memo} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import GameContext from '../../Context/GameContext';
 import {theme} from '../../theme';
 
-const Ship = ({ship, selected, onClick}) => {
+const Ship = memo(({ship, selected, onClick}) => {
   const {shipsPlaced, dispatch} = useContext(GameContext);
 
-  const doResetShip = shipName => {
-    dispatch({type: 'REMOVE_SHIP', ship: shipName});
-  };
+  const doResetShip = useCallback(
+    shipName => {
+      dispatch({type: 'REMOVE_SHIP', ship: shipName});
+    },
+    [dispatch],
+  );
 
   const shipOnBoard = useMemo(() => {
     const shipPlacement = shipsPlaced[ship.name];
@@ -82,7 +85,7 @@ const Ship = ({ship, selected, onClick}) => {
       )}
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

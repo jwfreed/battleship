@@ -1,4 +1,4 @@
-import React, {useContext, useMemo, useEffect} from 'react';
+import React, {useContext, useMemo, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,8 @@ import GameContext from '../../Context/GameContext';
 import {createAttacksObj} from '../../Context/GameActions';
 import {SOCKET_URL} from '../../constants';
 import {theme} from '../../theme';
+
+const ATTACK_RESULT_DELAY = 2000; // 2 seconds
 
 const Match = () => {
   const {
@@ -31,8 +33,11 @@ const Match = () => {
     turn,
     gameOver,
     winner,
+    pendingViewChange,
     dispatch,
   } = useContext(GameContext);
+
+  const pendingViewTimeoutRef = useRef(null);
 
   const socketUrl = `${SOCKET_URL}/${matchID}`;
   const {sendMessage, lastMessage, readyState} = useWebSocket(socketUrl);
@@ -52,6 +57,26 @@ const Match = () => {
       dispatch({type: 'UPDATE_CONTEXT', data: msg});
     }
   }, [lastMessage, dispatch]);
+
+  // Handle delayed view change after attack result
+  useEffect(() => {
+    if (pendingViewChange) {
+      // Clear any existing timeout
+      if (pendingViewTimeoutRef.current) {
+        clearTimeout(pendingViewTimeoutRef.current);
+      }
+
+      pendingViewTimeoutRef.current = setTimeout(() => {
+        dispatch({type: 'APPLY_PENDING_VIEW'});
+      }, ATTACK_RESULT_DELAY);
+    }
+
+    return () => {
+      if (pendingViewTimeoutRef.current) {
+        clearTimeout(pendingViewTimeoutRef.current);
+      }
+    };
+  }, [pendingViewChange, dispatch]);
 
   const doResetGame = () => dispatch({type: 'RESET_GAME'});
 

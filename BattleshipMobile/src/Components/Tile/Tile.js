@@ -1,9 +1,9 @@
-import React, {useContext, useCallback, useMemo} from 'react';
+import React, {useContext, useCallback, useMemo, memo} from 'react';
 import {TouchableOpacity, StyleSheet, View} from 'react-native';
 import GameContext from '../../Context/GameContext';
 import {theme} from '../../theme';
 
-const Tile = ({row, col, onClick, onAttack, myAttacks, opponentAttacks}) => {
+const Tile = memo(({row, col, onClick, onAttack, myAttacks, opponentAttacks}) => {
   const {shipPlacements, view} = useContext(GameContext);
 
   const doClick = useCallback(() => {
@@ -84,7 +84,7 @@ const Tile = ({row, col, onClick, onAttack, myAttacks, opponentAttacks}) => {
       {isMiss && <View style={styles.missMarker} />}
     </TouchableOpacity>
   );
-};
+});
 
 const styles = StyleSheet.create({
   tile: {

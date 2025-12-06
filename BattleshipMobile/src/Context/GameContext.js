@@ -36,6 +36,8 @@ export const initialState = {
   initialTurn: 'Player One',
   lastMsg: '',
   winner: null,
+  pendingViewChange: null,
+  lastAttackResult: null,
 };
 
 export const loadInitialState = async () => {

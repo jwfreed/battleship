@@ -1,4 +1,4 @@
-import React, {useContext, useCallback} from 'react';
+import React, {useContext, useCallback, memo} from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import Tile from '../Tile/Tile';
 import GameContext from '../../Context/GameContext';
@@ -6,7 +6,7 @@ import {theme} from '../../theme';
 
 const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
 
-const Board = ({doAttackTile, opponentAttacks, myAttacks}) => {
+const Board = memo(({doAttackTile, opponentAttacks, myAttacks}) => {
   const {boardRows, boardCols, dispatch} = useContext(GameContext);
 
   const doPlaceShip = useCallback(
@@ -60,7 +60,7 @@ const Board = ({doAttackTile, opponentAttacks, myAttacks}) => {
       </View>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   boardWrapper: {

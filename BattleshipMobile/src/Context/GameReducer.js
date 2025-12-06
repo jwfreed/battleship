@@ -23,6 +23,8 @@ const GameReducer = (prevState, action) => {
       return GameActions.joinGame(prevState, action);
     case 'VICTORY':
       return GameActions.gameOver(prevState, action);
+    case 'APPLY_PENDING_VIEW':
+      return GameActions.applyPendingView(prevState);
     default:
       return prevState;
   }
