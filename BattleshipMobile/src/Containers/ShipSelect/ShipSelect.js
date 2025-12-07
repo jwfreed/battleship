@@ -77,7 +77,7 @@ const ShipSelect = memo(() => {
       </ScrollView>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

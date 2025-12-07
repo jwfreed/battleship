@@ -139,6 +139,7 @@ export const updateContext = (prevState, action) => {
     player_two_attack_placements,
     player_one_ship_placements,
     player_two_ship_placements,
+    turn: serverTurn,
     my_ship_placements,
   } = action.data;
 
@@ -190,7 +191,12 @@ export const updateContext = (prevState, action) => {
   }
 
   const startGame = shipsCommitted && opponentCommittedShips;
-  const lastTurn = prevState.turn;
+  
+  // Parse server turn to display format
+  let currentTurn = prevState.turn;
+  if (serverTurn) {
+    currentTurn = serverTurn === 'player_one' ? 'Player One' : 'Player Two';
+  }
 
   if (!prevState.gameOver && lastMsg !== newMsg && !startGame) {
     return {
@@ -200,13 +206,12 @@ export const updateContext = (prevState, action) => {
       shipsCommitted,
       opponentShipsCommitted: opponentCommittedShips,
       player: myPlayer,
-      turn: lastTurn,
+      turn: currentTurn,
     };
   }
 
   if (!prevState.gameOver && lastMsg !== newMsg && startGame) {
-    const nextTurn = lastTurn === 'Player One' ? 'Player Two' : 'Player One';
-    const isMyTurn = myPlayer === nextTurn;
+    const isMyTurn = myPlayer === currentTurn;
 
     // Check if there was a new attack (compare attack counts)
     const prevMyAttackCount = prevState.myAttackPlacements?.length || 0;
@@ -216,6 +221,9 @@ export const updateContext = (prevState, action) => {
 
     let lastAttackResult = null;
     let pendingViewChange = null;
+    
+    // Determine if this is the first update after both players committed (game just started)
+    const gameJustStarted = !prevState.gameStarted && startGame;
 
     // I just attacked (my attack count increased)
     if (newMyAttackCount > prevMyAttackCount && myAttacks?.length > 0) {
@@ -249,6 +257,9 @@ export const updateContext = (prevState, action) => {
         wasHit ? `They hit your ${lastAttack.hit.name}!` : 'Their shot missed.',
       );
     }
+    
+    // Set initial view when game starts: attack view if it's my turn
+    const initialView = gameJustStarted ? (isMyTurn ? 'A' : 'P') : prevState.view;
 
     return {
       ...prevState,
@@ -256,7 +267,7 @@ export const updateContext = (prevState, action) => {
       shipsPlaced,
       myAttackPlacements: myAttacks,
       opponentAttackPlacements: opponentAttacks,
-      turn: nextTurn,
+      turn: currentTurn,
       shipsCommitted,
       opponentShipsCommitted: opponentCommittedShips,
       player: myPlayer,
@@ -264,7 +275,7 @@ export const updateContext = (prevState, action) => {
       lastMsg: newMsg,
       lastAttackResult,
       pendingViewChange,
-      // Keep current view - will change after delay via APPLY_PENDING_VIEW
+      view: pendingViewChange ? prevState.view : initialView,
     };
   }
   return prevState;

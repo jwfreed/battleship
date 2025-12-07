@@ -1,4 +1,4 @@
-import React, {useContext, useMemo, useEffect, useRef} from 'react';
+import React, {useContext, useMemo, useEffect, useRef, useCallback} from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Alert,
   SafeAreaView,
+  Clipboard,
 } from 'react-native';
 import useWebSocket from '../../hooks/useWebSocket';
 import Board from '../../Components/Board/Board';
@@ -82,6 +83,11 @@ const Match = () => {
 
   const doChangeView = () => dispatch({type: 'CHANGE_VIEW'});
 
+  const copyToClipboard = useCallback((text, label) => {
+    Clipboard.setString(text);
+    Alert.alert('Copied', `${label} copied to clipboard`);
+  }, []);
+
   const doCommitShips = () => {
     const numberOfShipsPlaced = Object.keys(shipsPlaced).length;
     if (numberOfShipsPlaced < ships.length) {
@@ -128,10 +134,14 @@ const Match = () => {
     <SafeAreaView style={styles.container}>
       {/* Status Bar */}
       <View style={styles.statusBar}>
-        <View style={styles.statusItem}>
-          <Text style={styles.statusLabel}>MATCH</Text>
+        <TouchableOpacity style={styles.statusItem} onPress={() => copyToClipboard(matchID, 'Match ID')}>
+          <Text style={styles.statusLabel}>MATCH ID</Text>
           <Text style={styles.statusValue}>{matchID}</Text>
-        </View>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.statusItem} onPress={() => copyToClipboard(uid, 'Player ID')}>
+          <Text style={styles.statusLabel}>PLAYER ID</Text>
+          <Text style={styles.statusValue}>{uid}</Text>
+        </TouchableOpacity>
         <View style={styles.connectionIndicator}>
           <View
             style={[styles.connectionDot, isConnected && styles.connected]}
@@ -194,7 +204,7 @@ const Match = () => {
         <TouchableOpacity
           style={[styles.button, styles.resetButton]}
           onPress={doResetGame}>
-          <Text style={styles.resetButtonText}>↺</Text>
+          <Text style={styles.resetButtonText}>🚪 EXIT</Text>
         </TouchableOpacity>
       </View>
 
@@ -334,12 +344,12 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.primary,
   },
   resetButton: {
-    backgroundColor: theme.colors.surfaceLight,
-    width: 50,
-    height: 50,
+    backgroundColor: '#7f1d1d',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     borderRadius: 25,
     borderWidth: 1,
-    borderColor: theme.colors.border,
+    borderColor: '#991b1b',
   },
   buttonText: {
     color: theme.colors.background,
@@ -348,8 +358,8 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   resetButtonText: {
-    color: theme.colors.text,
-    fontSize: 20,
+    color: '#fecaca',
+    fontSize: 14,
     fontWeight: 'bold',
   },
   shipSelectContainer: {

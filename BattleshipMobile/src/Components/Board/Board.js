@@ -1,8 +1,12 @@
 import React, {useContext, useCallback, memo} from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text, Dimensions} from 'react-native';
 import Tile from '../Tile/Tile';
 import GameContext from '../../Context/GameContext';
 import {theme} from '../../theme';
+
+const {width: screenWidth} = Dimensions.get('window');
+const TILE_SIZE = Math.min(Math.floor((screenWidth - 60) / 10), 36);
+const LABEL_WIDTH = 24;
 
 const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
 
@@ -76,18 +80,18 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   cornerCell: {
-    width: 20,
-    height: 16,
+    width: LABEL_WIDTH,
+    height: 20,
   },
   labelCell: {
-    width: 30,
-    height: 16,
+    width: TILE_SIZE,
+    height: 20,
     justifyContent: 'center',
     alignItems: 'center',
   },
   labelText: {
     color: theme.colors.textSecondary,
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: 'bold',
   },
   gridContainer: {
@@ -99,8 +103,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   rowLabelCell: {
-    width: 20,
-    height: 30,
+    width: LABEL_WIDTH,
+    height: TILE_SIZE,
     justifyContent: 'center',
     alignItems: 'center',
   },

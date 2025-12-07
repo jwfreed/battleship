@@ -1,3 +1,4 @@
+/* CreateOrJoinGame - Mobile Theme */
 .create-join-game {
   display: flex;
   flex-direction: column;
@@ -6,17 +7,19 @@
   gap: 1.5rem;
   max-width: 400px;
   width: 90%;
-  background: #34495e;
-  border: 2px solid #4a5f7f;
+  background: #0f172a;
+  border: 2px solid #22d3ee;
+  border-radius: 12px;
   padding: 2rem;
+  box-shadow: 0 4px 20px rgba(34, 211, 238, 0.15);
 }
 
 #join-game-btn, #create-game-btn {
-  padding: 0.875rem 1.5rem;
+  padding: 1rem 1.5rem;
   font-size: 0.875rem;
   font-weight: 700;
-  border: 2px solid;
-  background: transparent;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.15s ease;
   text-transform: uppercase;
@@ -25,32 +28,32 @@
 }
 
 #join-game-btn {
-  border-color: #3498db;
-  color: #3498db;
+  background: #22d3ee;
+  color: #0a0f1a;
 }
 
 #join-game-btn:hover {
-  background: #3498db;
-  color: #2c3e50;
+  box-shadow: 0 4px 15px rgba(34, 211, 238, 0.4);
+  transform: translateY(-1px);
 }
 
 #create-game-btn {
-  border-color: #27ae60;
-  color: #27ae60;
-  margin-right: 0;
+  background: #22c55e;
+  color: #0a0f1a;
 }
 
 #create-game-btn:hover {
-  background: #27ae60;
-  color: #2c3e50;
+  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+  transform: translateY(-1px);
 }
 
 #join-game {
-  padding: 0.75rem 1rem;
+  padding: 0.875rem 1rem;
   font-size: 0.875rem;
-  border: 1px solid #4a5f7f;
-  background: #2c3e50;
-  color: #ecf0f1;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  background: #1e293b;
+  color: #f1f5f9;
   font-weight: 600;
   font-family: 'Courier New', monospace;
   outline: none;
@@ -59,11 +62,12 @@
 }
 
 #join-game::placeholder {
-  color: #95a5a6;
+  color: #64748b;
 }
 
 #join-game:focus {
-  border-color: #3498db;
+  border-color: #22d3ee;
+  box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.2);
 }
 
 .create-join-game > div {
@@ -76,17 +80,18 @@
 .player-id-section {
   text-align: center;
   padding: 1rem;
-  background: #2c3e50;
-  border: 1px solid #4a5f7f;
-  border-radius: 4px;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 8px;
 }
 
 .player-id-label {
-  color: #95a5a6;
-  font-size: 0.75rem;
+  color: #64748b;
+  font-size: 0.625rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   margin: 0 0 0.5rem 0;
+  font-weight: bold;
 }
 
 .player-id-display {
@@ -98,29 +103,32 @@
 
 .player-id {
   font-family: 'Courier New', monospace;
-  font-size: 1rem;
-  color: #3498db;
-  background: #1a252f;
+  font-size: 0.875rem;
+  color: #22d3ee;
+  background: #0f172a;
   padding: 0.5rem 1rem;
   border-radius: 4px;
+  border: 1px solid #334155;
 }
 
 .copy-btn {
-  background: transparent;
-  border: 1px solid #4a5f7f;
-  padding: 0.4rem 0.6rem;
+  background: #1e293b;
+  border: 1px solid #334155;
+  padding: 0.5rem 0.75rem;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 6px;
   transition: all 0.15s ease;
+  color: #f1f5f9;
 }
 
 .copy-btn:hover {
-  background: #4a5f7f;
+  background: #334155;
+  border-color: #22d3ee;
 }
 
 .player-id-hint {
-  color: #7f8c8d;
-  font-size: 0.7rem;
+  color: #64748b;
+  font-size: 0.625rem;
   margin: 0.5rem 0 0 0;
   font-style: italic;
 }
@@ -128,16 +136,16 @@
 /* Rejoin Section */
 .rejoin-section {
   margin-top: 1rem;
-  border-top: 1px solid #4a5f7f;
+  border-top: 1px solid #334155;
   padding-top: 1rem;
 }
 
 .toggle-rejoin-btn {
   background: transparent;
   border: none;
-  color: #95a5a6;
+  color: #64748b;
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   padding: 0.5rem;
   width: 100%;
   text-align: left;
@@ -145,7 +153,7 @@
 }
 
 .toggle-rejoin-btn:hover {
-  color: #ecf0f1;
+  color: #f1f5f9;
 }
 
 .rejoin-form {
@@ -156,31 +164,34 @@
 }
 
 .rejoin-form input {
-  padding: 0.75rem 1rem;
+  padding: 0.875rem 1rem;
   font-size: 0.875rem;
-  border: 1px solid #4a5f7f;
-  background: #2c3e50;
-  color: #ecf0f1;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  background: #1e293b;
+  color: #f1f5f9;
   font-family: 'Courier New', monospace;
   outline: none;
   transition: all 0.15s ease;
 }
 
 .rejoin-form input::placeholder {
-  color: #95a5a6;
+  color: #64748b;
 }
 
 .rejoin-form input:focus {
-  border-color: #e67e22;
+  border-color: #f97316;
+  box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
 }
 
 .rejoin-btn {
-  padding: 0.75rem 1rem;
+  padding: 0.875rem 1rem;
   font-size: 0.8rem;
   font-weight: 700;
-  border: 2px solid #e67e22;
-  background: transparent;
-  color: #e67e22;
+  border: none;
+  border-radius: 8px;
+  background: #f97316;
+  color: #0a0f1a;
   cursor: pointer;
   transition: all 0.15s ease;
   text-transform: uppercase;
@@ -189,8 +200,8 @@
 }
 
 .rejoin-btn:hover {
-  background: #e67e22;
-  color: #2c3e50;
+  box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
+  transform: translateY(-1px);
 }
 
 /* Responsive Design */
@@ -203,12 +214,13 @@
 
 @media (max-width: 480px) {
   .create-join-game {
-    padding: 1.25rem;
-    gap: 1.25rem;
+    margin: 1rem auto;
+    padding: 1rem;
+    width: 95%;
   }
   
   #join-game-btn, #create-game-btn {
-    padding: 0.75rem 1.25rem;
-    font-size: 0.8125rem;
+    padding: 0.875rem 1rem;
+    font-size: 0.75rem;
   }
 }

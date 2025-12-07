@@ -28,17 +28,43 @@ const Tile = memo(function Tile({ row, col, onClick, onAttack, myAttacks, oppone
 
   if (view === 'P') {
     const imgPath = placedShip && `/assets/${placedShip.img}`;
-    const attemptClass = (opponentAttempts && 'hit') || (opponentAttempts && 'miss') || 'tile';
+    const isHit = opponentAttempts === 'hit' || (opponentAttempts && opponentAttempts !== 'miss');
+    const isMiss = opponentAttempts === 'miss';
+    
     return (
-      <button className={`tile fleet-view ${attemptClass}`} onClick={doClick}>
-        {(placedShip && <img className="tileImg" src={imgPath} alt={placedShip.name} loading="lazy" />)}
+      <button 
+        className={`tile fleet-view ${placedShip ? 'has-ship' : ''} ${isHit ? 'hit' : ''} ${isMiss ? 'miss' : ''}`} 
+        onClick={doClick}
+      >
+        {placedShip && (
+          <div className="ship-container">
+            <img className={`tileImg ${isHit ? 'hit' : ''}`} src={imgPath} alt={placedShip.name} loading="lazy" />
+          </div>
+        )}
+        {isMiss && <div className="miss-marker" />}
+        {isHit && (
+          <div className="hit-marker">
+            <div className="hit-inner" />
+          </div>
+        )}
       </button>
     );
   }
 
+  const isHit = attackAttempts === 'hit' || (attackAttempts && attackAttempts !== 'miss');
+  const isMiss = attackAttempts === 'miss';
+
   return (
-    <button className="tile attack-view" onClick={doAttack}>
-      {attackAttempts || '-'}
+    <button 
+      className={`tile attack-view ${isHit ? 'hit' : ''} ${isMiss ? 'miss' : ''}`} 
+      onClick={doAttack}
+    >
+      {isHit && (
+        <div className="hit-marker">
+          <div className="hit-inner" />
+        </div>
+      )}
+      {isMiss && <div className="miss-marker" />}
     </button>
   );
 }, (prevProps, nextProps) => {

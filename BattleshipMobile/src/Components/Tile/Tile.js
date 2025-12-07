@@ -1,7 +1,26 @@
 import React, {useContext, useCallback, useMemo, memo} from 'react';
-import {TouchableOpacity, StyleSheet, View} from 'react-native';
+import {TouchableOpacity, StyleSheet, View, Dimensions} from 'react-native';
 import GameContext from '../../Context/GameContext';
 import {theme} from '../../theme';
+
+// Import ship SVGs for lookup by name
+import Carrier from '../../assets/Carrier.svg';
+import Battleship from '../../assets/Battleship.svg';
+import Cruiser from '../../assets/Cruiser.svg';
+import Submarine from '../../assets/sub.svg';
+import Destroyer from '../../assets/Destroyer.svg';
+
+// Map ship names to their SVG components
+const shipIcons = {
+  Carrier,
+  Battleship,
+  Cruiser,
+  Submarine,
+  Destroyer,
+};
+
+const {width: screenWidth} = Dimensions.get('window');
+const TILE_SIZE = Math.min(Math.floor((screenWidth - 60) / 10), 36); // Max 36, responsive to screen
 
 const Tile = memo(({row, col, onClick, onAttack, myAttacks, opponentAttacks}) => {
   const {shipPlacements, view} = useContext(GameContext);
@@ -30,7 +49,8 @@ const Tile = memo(({row, col, onClick, onAttack, myAttacks, opponentAttacks}) =>
   );
 
   if (view === 'P') {
-    const ShipIcon = placedShip ? placedShip.img : null;
+    // Look up ship icon by name instead of using placedShip.img (which may be serialized as string)
+    const ShipIcon = placedShip ? shipIcons[placedShip.name] : null;
     const isHit =
       opponentAttempts === 'hit' ||
       (opponentAttempts && opponentAttempts !== 'miss');
@@ -88,8 +108,8 @@ const Tile = memo(({row, col, onClick, onAttack, myAttacks, opponentAttacks}) =>
 
 const styles = StyleSheet.create({
   tile: {
-    width: 30,
-    height: 30,
+    width: TILE_SIZE,
+    height: TILE_SIZE,
     borderWidth: 0.5,
     borderColor: theme.colors.gridLine,
     justifyContent: 'center',
@@ -111,12 +131,12 @@ const styles = StyleSheet.create({
   shipContainer: {
     width: '100%',
     height: '100%',
-    padding: 3,
+    padding: 2,
   },
   hitMarker: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
+    width: TILE_SIZE * 0.55,
+    height: TILE_SIZE * 0.55,
+    borderRadius: TILE_SIZE * 0.275,
     backgroundColor: theme.colors.hit,
     justifyContent: 'center',
     alignItems: 'center',
@@ -124,15 +144,15 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.explosion,
   },
   hitInner: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
+    width: TILE_SIZE * 0.2,
+    height: TILE_SIZE * 0.2,
+    borderRadius: TILE_SIZE * 0.1,
     backgroundColor: theme.colors.gold,
   },
   missMarker: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+    width: TILE_SIZE * 0.3,
+    height: TILE_SIZE * 0.3,
+    borderRadius: TILE_SIZE * 0.15,
     backgroundColor: theme.colors.miss,
     opacity: 0.6,
   },

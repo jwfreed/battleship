@@ -99,65 +99,103 @@ export const Match = memo(() => {
 
   // Add defensive check to prevent blank screen
   if (!matchID) {
-    return <div className="game">Loading match...</div>;
+    return <div className="loading-container">Loading match...</div>;
   }
+
+  const getTurnLabel = () => {
+    if (!turn) return 'WAITING FOR OPPONENT';
+    return turn === player ? '⚔️ YOUR TURN' : "⏳ OPPONENT'S TURN";
+  };
 
   return (
     <div className="game">
-      <p className="ready-player">{`Ready ${player || 'Loading...'}`}</p>
-      <div className="match-info-container">
-        <h4 className="match-info-text">Match ID:</h4>
-        <p className="match-info-text match-info-data" >{matchID}</p>
-        <h4 className="match-info-text">Turn: </h4>
-        <p className="match-info-text match-info-data">
-          {
-            turn
-            || (!opponentShipsCommitted && 'Awaiting all players to position ships')
-            || 'Opponent placed ships, waiting for you'
-          }
-        </p>
-      </div>
-      {view === 'P' && !shipsCommitted && <ShipSelect />}
-      <div className="reset-view-div">
-        <button className="reset-btn" onClick={doResetGame}>
-          Reset Game
-        </button>
-        {shipsCommitted && (
-          <button className="view-btn" onClick={doChangeView}>
-            {view === 'P' ? 'Attack' : 'View Fleet'}
-          </button>
-        )}
-        {!shipsCommitted && (
-          <button className="commit-ships-btn" onClick={doCommitShips}>
-            Commit Ships
-          </button>
-        )}
-      </div>
-      <div className="board-info">
-        <div className="game-prompt">
-          {!gameOver && (
-            <div>
-              {shipsCommitted && opponentShipsCommitted &&
-                (<h4 className="view-text">
-                  {turn === player ? `Man your battlestations, ${player}!` : `${player}, brace for impact!`}
-                </h4>) ||
-                <p className="view-text">The quiet before the storm...</p>
-              }
-              {shipsCommitted &&
-                <div className="fleet-health-container">
-                  <FleetHealth opponentAttacks={opponentAttacks} />
-                  <FleetHealth myAttacks={myAttacks} />
-                </div>
-              }
-              <p className="view-text">
-                {view === 'P' ? 'Fleet View' : 'Select Attack Target'}
-              </p>
-            </div>
-          )}
-          {gameOver && <h1>{winner} Wins!</h1>}
+      {/* Status Bar */}
+      <div className="status-bar">
+        <div 
+          className="status-item" 
+          onClick={() => { navigator.clipboard.writeText(matchID); toast.success('Match ID copied!', { autoClose: 1500 }); }}
+          title="Click to copy"
+        >
+          <span className="status-label">MATCH ID</span>
+          <span className="status-value">{matchID}</span>
+        </div>
+        <div 
+          className="status-item"
+          onClick={() => { navigator.clipboard.writeText(uid); toast.success('Player ID copied!', { autoClose: 1500 }); }}
+          title="Click to copy"
+        >
+          <span className="status-label">PLAYER ID</span>
+          <span className="status-value">{uid}</span>
+        </div>
+        <div className="connection-indicator">
+          <div className={`connection-dot ${isConnected ? 'connected' : ''}`} />
+          <span className="connection-text">{isConnected ? 'LIVE' : 'CONNECTING'}</span>
         </div>
       </div>
-      <Board doAttackTile={doAttackTile} myAttacks={myAttacks} opponentAttacks={opponentAttacks} />
+
+      {/* Turn Indicator */}
+      <div className="turn-container">
+        <div className={`turn-indicator ${turn === player ? 'your-turn' : ''}`}>
+          <p className="turn-label">{getTurnLabel()}</p>
+        </div>
+        <div className="player-badge">
+          <p className="player-text">{player || 'JOINING...'}</p>
+        </div>
+      </div>
+
+      {/* Game Over or Board Section */}
+      {gameOver ? (
+        <div className="game-over-container">
+          <h1 className="game-over-title">🏆 {winner} WINS!</h1>
+          <button className="btn commit-btn" onClick={doResetGame}>
+            🎮 PLAY AGAIN
+          </button>
+        </div>
+      ) : (
+        <>
+          {/* Board Section */}
+          <div className="board-section">
+            <div className="view-label">
+              <span className="view-label-text">
+                {view === 'P' ? '🚢 YOUR FLEET' : '🎯 ATTACK MAP'}
+              </span>
+            </div>
+            <Board doAttackTile={doAttackTile} myAttacks={myAttacks} opponentAttacks={opponentAttacks} />
+          </div>
+
+          {/* Fleet Health */}
+          {shipsCommitted && (
+            <div className="fleet-health-section">
+              <FleetHealth opponentAttacks={opponentAttacks} />
+              <FleetHealth myAttacks={myAttacks} />
+            </div>
+          )}
+
+          {/* Controls */}
+          <div className="controls">
+            {!shipsCommitted ? (
+              <button className="btn commit-btn" onClick={doCommitShips}>
+                🚀 DEPLOY FLEET
+              </button>
+            ) : (
+              <button className="btn view-btn" onClick={doChangeView}>
+                {view === 'P' ? '🎯 ATTACK VIEW' : '🚢 FLEET VIEW'}
+              </button>
+            )}
+            <button className="reset-btn" onClick={doResetGame} title="Leave Game">
+              🚪 EXIT
+            </button>
+          </div>
+
+          {/* Ship Select */}
+          {!shipsCommitted && (
+            <div className="ship-select-container">
+              <ShipSelect />
+            </div>
+          )}
+        </>
+      )}
+
       <ToastContainer
         transition={Flip}
         autoClose={1500}

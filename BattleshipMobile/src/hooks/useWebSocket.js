@@ -11,6 +11,7 @@ const useWebSocket = url => {
   const [lastMessage, setLastMessage] = useState(null);
   const [readyState, setReadyState] = useState(ReadyState.CONNECTING);
   const webSocketRef = useRef(null);
+  const messageQueueRef = useRef([]);
 
   useEffect(() => {
     if (!url) {
@@ -23,6 +24,13 @@ const useWebSocket = url => {
     ws.onopen = () => {
       console.log('WebSocket connected');
       setReadyState(ReadyState.OPEN);
+      
+      // Send any queued messages
+      while (messageQueueRef.current.length > 0) {
+        const queuedMessage = messageQueueRef.current.shift();
+        console.log('Sending queued WebSocket message:', queuedMessage);
+        ws.send(queuedMessage);
+      }
     };
 
     ws.onmessage = event => {
@@ -54,7 +62,9 @@ const useWebSocket = url => {
       console.log('Sending WebSocket message:', message);
       webSocketRef.current.send(message);
     } else {
-      console.warn('WebSocket not connected, cannot send message');
+      // Queue the message to be sent when connection opens
+      console.log('WebSocket not ready, queuing message:', message);
+      messageQueueRef.current.push(message);
     }
   }, []);
 

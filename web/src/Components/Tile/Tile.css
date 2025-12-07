@@ -1,130 +1,117 @@
 .tile {
-  width: 60px;
-  height: 60px;
-  border: 1px solid #2d3748;
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 0;
+  width: clamp(36px, 6vw, 50px);
+  height: clamp(36px, 6vw, 50px);
+  border: 0.5px solid #1e3a5f;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-family: 'Courier New', monospace;
+  background: #0c4a6e;
+  transition: background-color 0.15s;
+  position: relative;
 }
 
 .tile:hover {
-  background: #3d5a80;
-  border-color: #3498db;
+  background: #0369a1;
 }
 
-.tileImg {
-  height: 56px;
-  width: 56px;
-  object-fit: contain;
-}
-
+/* Fleet View (placing ships) */
 .fleet-view {
-  color: #7b8794;
-  background: #1a1f2e;
+  background: #0c4a6e;
 }
 
 .fleet-view:hover {
-  background: #252d3d;
+  background: #0369a1;
 }
 
+.fleet-view.has-ship {
+  background: #0369a1;
+}
+
+/* Attack View */
 .attack-view {
-  color: #7b8794;
-  background: #1e3a3a;
+  background: #0c4a6e;
 }
 
 .attack-view:hover {
-  background: #2d4a4a;
+  background: #0891b2;
+  box-shadow: inset 0 0 8px rgba(34, 211, 238, 0.3);
 }
 
-.hit {
-  background: #e74c3c;
-  border-color: #c0392b;
+/* Hit State */
+.tile.hit {
+  background: rgba(220, 38, 38, 0.5);
 }
 
-.hit::after {
-  content: 'X';
-  font-size: 1.75rem;
-  font-weight: 900;
+.hit-marker {
+  width: 55%;
+  height: 55%;
+  border-radius: 50%;
+  background: #dc2626;
+  border: 2px solid #ff6b35;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.miss {
-  background: #34495e;
-  border-color: #95a5a6;
+.hit-inner {
+  width: 30%;
+  height: 30%;
+  border-radius: 50%;
+  background: #fbbf24;
 }
 
-.miss::after {
-  content: 'O';
-  font-size: 1.5rem;
-  font-weight: 700;
+/* Miss State */
+.tile.miss {
+  background: #082f49;
 }
 
-/* Responsive tile sizing */
-@media (max-width: 1024px) {
-  .tile {
-    width: 55px;
-    height: 55px;
-  }
-  
-  .tileImg {
-    height: 52px;
-    width: 52px;
-  }
+.miss-marker {
+  width: 30%;
+  height: 30%;
+  border-radius: 50%;
+  background: #e2e8f0;
+  opacity: 0.6;
 }
 
+/* Ship in tile */
+.ship-container {
+  width: 100%;
+  height: 100%;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tileImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.tileImg.hit {
+  filter: hue-rotate(180deg) brightness(1.2);
+}
+
+/* Responsive tile sizing - markers use percentages so they auto-scale */
 @media (max-width: 768px) {
   .tile {
-    width: 45px;
-    height: 45px;
-  }
-  
-  .tileImg {
-    height: 42px;
-    width: 42px;
-  }
-  
-  .hit::after {
-    font-size: 1.5rem;
-  }
-  
-  .miss::after {
-    font-size: 1.25rem;
+    width: clamp(30px, 8vw, 40px);
+    height: clamp(30px, 8vw, 40px);
   }
 }
 
 @media (max-width: 480px) {
   .tile {
-    width: 35px;
-    height: 35px;
-  }
-  
-  .tileImg {
-    height: 32px;
-    width: 32px;
-  }
-  
-  .hit::after, .miss::after {
-    font-size: 1rem;
+    width: clamp(26px, 9vw, 32px);
+    height: clamp(26px, 9vw, 32px);
   }
 }
 
 @media (max-width: 360px) {
   .tile {
-    width: 28px;
-    height: 28px;
-    font-size: 0.625rem;
-  }
-  
-  .tileImg {
-    height: 26px;
-    width: 26px;
-  }
-  
-  .hit::after, .miss::after {
-    font-size: 0.875rem;
+    width: clamp(22px, 9vw, 28px);
+    height: clamp(22px, 9vw, 28px);
   }
 }

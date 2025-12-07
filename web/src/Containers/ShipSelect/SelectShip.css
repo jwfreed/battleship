@@ -2,73 +2,131 @@
   display: flex;
   max-width: 100%;
   align-self: center;
-  margin: 0.25rem 0;
   flex-direction: column;
-  background: #34495e;
-  border: 1px solid #4a5f7f;
-  padding: 0.35rem;
+  padding: 1rem;
 }
 
+/* Header */
+.ship-select-header {
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+.ship-select-title {
+  color: #f1f5f9;
+  font-size: 0.875rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin-bottom: 0.5rem;
+}
+
+.progress-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.progress-text {
+  color: #94a3b8;
+  font-size: 0.625rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.progress-bar {
+  width: 100%;
+  max-width: 200px;
+  height: 4px;
+  background: #1e293b;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #22d3ee;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+/* Ship List */
 .select-ship-container {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 0;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
 }
 
-.orientation-btn {
-  padding: 0.35rem 1rem;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  border: 2px solid #fbbf24;
-  background: transparent;
-  color: #fbbf24;
-  cursor: pointer;
-  font-family: 'Courier New', monospace;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  transition: all 0.15s ease;
-}
-
-.orientation-btn:hover {
-  background: #3498db;
-  color: #2c3e50;
-}
-
+/* Orientation */
 .orientation-div {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 0.75rem;
+}
+
+.orientation-btn {
+  display: flex;
+  align-items: center;
   gap: 0.5rem;
-  margin-top: 0.35rem;
-  flex-wrap: wrap;
+  padding: 0.75rem 1rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  background: #1e293b;
+  color: #f1f5f9;
+  cursor: pointer;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.15s ease;
+}
+
+.orientation-btn:hover {
+  background: #334155;
+  border-color: #22d3ee;
+}
+
+.orientation-icon {
+  font-size: 1.25rem;
 }
 
 .current-orientation {
   margin: 0;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  color: #ecf0f1;
-  padding: 0.35rem 0.75rem;
-  background: #2c3e50;
-  border: 1px solid #4a5f7f;
-  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #22d3ee;
+  letter-spacing: 1px;
   text-transform: uppercase;
+}
+
+.tap-hint {
+  font-size: 0.5rem;
+  color: #64748b;
+  margin-left: 0.5rem;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
   .main-ship-container {
-    padding: 0.625rem;
-    margin: 0.5rem 0;
+    padding: 0.75rem;
   }
   
   .orientation-btn {
-    font-size: 0.75rem;
-    padding: 0.4375rem 1rem;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.625rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-ship-container {
+    padding: 0.5rem;
   }
   
-  .current-orientation {
-    font-size: 0.75rem;
+  .select-ship-container {
+    gap: 0.25rem;
   }
 }
