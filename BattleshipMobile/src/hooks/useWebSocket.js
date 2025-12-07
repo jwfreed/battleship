@@ -48,9 +48,16 @@ const useWebSocket = url => {
     };
 
     return () => {
-      if (ws.readyState === ReadyState.OPEN) {
+      // Always close the socket when the hook cleans up so we don't keep
+      // around parallel connections (e.g., after fast refresh or a quick remount)
+      try {
         ws.close();
+      } catch (e) {
+        // ignore
       }
+      webSocketRef.current = null;
+      messageQueueRef.current = [];
+      setReadyState(ReadyState.CLOSED);
     };
   }, [url]);
 
