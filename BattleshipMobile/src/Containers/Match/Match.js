@@ -16,6 +16,13 @@ import {createAttacksObj} from '../../Context/GameActions';
 import {SOCKET_URL} from '../../constants';
 import {theme} from '../../theme';
 
+// Custom icons
+import CrosshairsIcon from '../../assets/icons/Crosshairs.svg';
+import AnchorIcon from '../../assets/icons/Anchor.svg';
+import RadarIcon from '../../assets/icons/Radar.svg';
+import FleetIcon from '../../assets/icons/Fleet.svg';
+import ExitIcon from '../../assets/icons/Exit.svg';
+
 const ATTACK_RESULT_DELAY = 2000; // 2 seconds
 
 const Match = () => {
@@ -172,8 +179,13 @@ const Match = () => {
       {/* Game Board */}
       <View style={styles.boardSection}>
         <View style={styles.viewLabel}>
+          {view === 'P' ? (
+            <FleetIcon width={20} height={20} fill={theme.colors.primary} stroke={theme.colors.primary} />
+          ) : (
+            <RadarIcon width={20} height={20} fill={theme.colors.primary} stroke={theme.colors.primary} />
+          )}
           <Text style={styles.viewLabelText}>
-            {view === 'P' ? '🚢 YOUR FLEET' : '🎯 ATTACK MAP'}
+            {view === 'P' ? 'YOUR FLEET' : 'ATTACK MAP'}
           </Text>
         </View>
         <Board
@@ -189,14 +201,20 @@ const Match = () => {
           <TouchableOpacity
             style={[styles.button, styles.commitButton]}
             onPress={doCommitShips}>
-            <Text style={styles.buttonText}>🚀 DEPLOY FLEET</Text>
+            <AnchorIcon width={18} height={18} fill={theme.colors.background} stroke={theme.colors.background} />
+            <Text style={styles.buttonText}>DEPLOY FLEET</Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
             style={[styles.button, styles.viewButton]}
             onPress={doChangeView}>
+            {view === 'P' ? (
+              <CrosshairsIcon width={18} height={18} fill={theme.colors.background} stroke={theme.colors.background} />
+            ) : (
+              <AnchorIcon width={18} height={18} fill={theme.colors.background} stroke={theme.colors.background} />
+            )}
             <Text style={styles.buttonText}>
-              {view === 'P' ? '🎯 ATTACK VIEW' : '🚢 FLEET VIEW'}
+              {view === 'P' ? 'ATTACK VIEW' : 'FLEET VIEW'}
             </Text>
           </TouchableOpacity>
         )}
@@ -204,7 +222,8 @@ const Match = () => {
         <TouchableOpacity
           style={[styles.button, styles.resetButton]}
           onPress={doResetGame}>
-          <Text style={styles.resetButtonText}>🚪 EXIT</Text>
+          <ExitIcon width={18} height={18} fill="#fecaca" stroke="#fecaca" />
+          <Text style={styles.resetButtonText}>EXIT</Text>
         </TouchableOpacity>
       </View>
 
@@ -311,6 +330,9 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing.s,
   },
   viewLabel: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
     marginBottom: theme.spacing.s,
   },
   viewLabelText: {
@@ -328,11 +350,13 @@ const styles = StyleSheet.create({
     gap: theme.spacing.s,
   },
   button: {
+    flexDirection: 'row',
     paddingVertical: theme.spacing.m,
     paddingHorizontal: theme.spacing.l,
     borderRadius: theme.layout.borderRadius,
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 8,
     ...theme.shadows.small,
   },
   commitButton: {
@@ -344,12 +368,14 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.primary,
   },
   resetButton: {
+    flexDirection: 'row',
     backgroundColor: '#7f1d1d',
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 25,
     borderWidth: 1,
     borderColor: '#991b1b',
+    gap: 6,
   },
   buttonText: {
     color: theme.colors.background,

@@ -6,6 +6,7 @@ import ShipSelect from '../ShipSelect/ShipSelect';
 import GameContext from '../../Context/GameContext';
 import { createAttacksObj } from './matchService';
 import FleetHealth from '../../Components/FleetHealth/FleetHealth';
+import { CrosshairsIcon, AnchorIcon, RadarIcon, FleetIcon, ExitIcon } from '../../Components/Icons/Icons';
 import 'react-toastify/dist/ReactToastify.css';
 import './Match.css';
 
@@ -156,8 +157,9 @@ export const Match = memo(() => {
           {/* Board Section */}
           <div className="board-section">
             <div className="view-label">
+              {view === 'P' ? <FleetIcon size={18} /> : <RadarIcon size={18} />}
               <span className="view-label-text">
-                {view === 'P' ? '🚢 YOUR FLEET' : '🎯 ATTACK MAP'}
+                {view === 'P' ? 'YOUR FLEET' : 'ATTACK MAP'}
               </span>
             </div>
             <Board doAttackTile={doAttackTile} myAttacks={myAttacks} opponentAttacks={opponentAttacks} />
@@ -175,15 +177,18 @@ export const Match = memo(() => {
           <div className="controls">
             {!shipsCommitted ? (
               <button className="btn commit-btn" onClick={doCommitShips}>
-                🚀 DEPLOY FLEET
+                <AnchorIcon size={18} />
+                DEPLOY FLEET
               </button>
             ) : (
               <button className="btn view-btn" onClick={doChangeView}>
-                {view === 'P' ? '🎯 ATTACK VIEW' : '🚢 FLEET VIEW'}
+                {view === 'P' ? <CrosshairsIcon size={18} /> : <AnchorIcon size={18} />}
+                {view === 'P' ? 'ATTACK VIEW' : 'FLEET VIEW'}
               </button>
             )}
             <button className="reset-btn" onClick={doResetGame} title="Leave Game">
-              🚪 EXIT
+              <ExitIcon size={16} />
+              EXIT
             </button>
           </div>
 
