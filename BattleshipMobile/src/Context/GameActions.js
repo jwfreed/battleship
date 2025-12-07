@@ -1,6 +1,19 @@
+import React from 'react';
 import {Alert} from 'react-native';
 import {initialState} from './GameContext';
 import {showToast} from '../Components/Toast/Toast';
+import HitIcon from '../assets/icons/Hit.svg';
+import MissIcon from '../assets/icons/Miss.svg';
+
+const toastWithIcon = (message, type, IconComponent) =>
+  showToast(
+    message,
+    type,
+    2500,
+    IconComponent ? (
+      <IconComponent width={18} height={18} fill="#0a0f1a" stroke="#0a0f1a" />
+    ) : null,
+  );
 
 export const selectShip = (prevState, action) => {
   const ship = action.ship;
@@ -237,10 +250,12 @@ export const updateContext = (prevState, action) => {
       };
       // Show result, then switch to fleet view after delay
       pendingViewChange = 'P';
-      showToast(
-        wasHit ? `💥 HIT! You hit their ${lastAttack.hit.name}!` : '💦 MISS - Your shot missed.',
+      toastWithIcon(
+        wasHit
+          ? `HIT! You hit their ${lastAttack.hit.name}!`
+          : 'MISS - Your shot missed.',
         wasHit ? 'success' : 'info',
-        2500
+        wasHit ? HitIcon : MissIcon,
       );
     }
     // Opponent just attacked me (opponent attack count increased)
@@ -254,10 +269,12 @@ export const updateContext = (prevState, action) => {
       };
       // Show result, then switch to attack view after delay
       pendingViewChange = 'A';
-      showToast(
-        wasHit ? `🚨 HIT! They hit your ${lastAttack.hit.name}!` : '💨 MISS - Their shot missed.',
+      toastWithIcon(
+        wasHit
+          ? `HIT! They hit your ${lastAttack.hit.name}!`
+          : 'MISS - Their shot missed.',
         wasHit ? 'error' : 'info',
-        2500
+        wasHit ? HitIcon : MissIcon,
       );
     }
     

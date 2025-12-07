@@ -92,6 +92,17 @@
   box-shadow: 0 0 15px rgba(34, 211, 238, 0.3);
 }
 
+.turn-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.turn-icon {
+  color: #22d3ee;
+}
+
 .turn-label {
   color: #f1f5f9;
   font-size: 0.75rem;
@@ -210,6 +221,14 @@
 
 .reset-btn:hover {
   background: #991b1b;
+}
+
+.toast-icon-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #0f172a;
+  font-weight: 600;
 }
 
 /* Ship Select Container */

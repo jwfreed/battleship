@@ -90,3 +90,82 @@ export function ExitIcon({ size = 20, color = 'currentColor', className = '' }) 
     </svg>
   );
 }
+
+export function HitIcon({ size = 20, color = 'currentColor', className = '' }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      className={className}
+    >
+      <circle cx="12" cy="12" r="9" opacity="0.2" fill={color} />
+      <line x1="6" y1="6" x2="18" y2="18" strokeLinecap="round" />
+      <line x1="18" y1="6" x2="6" y2="18" strokeLinecap="round" />
+      <circle cx="12" cy="12" r="2.5" fill={color} />
+    </svg>
+  );
+}
+
+export function MissIcon({ size = 20, color = 'currentColor', className = '' }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      className={className}
+    >
+      <path d="M12 3 C9 7 7 10 7 13.5 C7 16.5 9.2 19 12 19 C14.8 19 17 16.5 17 13.5 C17 10 15 7 12 3 Z" fill="none" />
+      <circle cx="12" cy="14" r="1.5" fill={color} />
+      <path d="M9 21 H15" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function YourTurnIcon({ size = 20, color = 'currentColor', className = '' }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      className={className}
+    >
+      <circle cx="12" cy="12" r="9" opacity="0.15" fill={color} />
+      <path d="M8 12 L12 7 L12 11 L17 11 L12 16 L12 12 Z" fill={color} stroke="none" />
+      <circle cx="12" cy="12" r="9" />
+    </svg>
+  );
+}
+
+export function OpponentTurnIcon({ size = 20, color = 'currentColor', className = '' }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      className={className}
+    >
+      <circle cx="12" cy="12" r="9" opacity="0.15" fill={color} />
+      <path d="M16 12 L12 17 L12 13 L7 13 L12 8 L12 12 Z" fill="none" />
+      <path d="M16 12 L12 17" />
+      <path d="M12 17 L12 13" />
+      <path d="M12 13 L7 13" />
+      <path d="M7 13 L12 8" />
+      <path d="M12 8 L12 12" />
+      <path d="M12 12 L16 12" />
+      <circle cx="12" cy="12" r="9" />
+    </svg>
+  );
+}

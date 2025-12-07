@@ -1,6 +1,18 @@
+import React from 'react';
 import { toast, Flip, Zoom } from 'react-toastify';
+import { HitIcon, MissIcon } from '../Components/Icons/Icons';
 import { initialState } from './GameContext';
 import 'react-toastify/dist/ReactToastify.css';
+
+const showAttackToast = (isHit, text, options = {}) => {
+  const Icon = isHit ? HitIcon : MissIcon;
+  toast.info(text, {
+    autoClose: 2000,
+    transition: Flip,
+    icon: Icon ? <Icon size={20} /> : undefined,
+    ...options,
+  });
+};
 
 export const selectShip = (prevState, action) => {
   const ship = action.ship;
@@ -277,23 +289,21 @@ export const updateContext = (prevState, action) => {
       // If it was my turn and now it's not, I just attacked
       if (wasMyTurn && !isNowMyTurn && myAttacks?.length > 0) {
         const lastAttack = myAttacks[myAttacks.length - 1];
-        const hitResult = lastAttack.hit ? `🎯 HIT! You struck their ${lastAttack.hit.name}!` : '💨 Miss! Shot went wide.';
+        const hitResult = lastAttack.hit
+          ? `HIT! You struck their ${lastAttack.hit.name}!`
+          : 'Miss! Shot went wide.';
         setTimeout(() => {
-          toast.info(hitResult, {
-            autoClose: 2000,
-            transition: Flip,
-          });
+          showAttackToast(!!lastAttack.hit, hitResult);
         }, 0);
       }
       // If it wasn't my turn and now it is, opponent just attacked me
       if (!wasMyTurn && isNowMyTurn && opponentAttacks?.length > 0) {
         const lastAttack = opponentAttacks[opponentAttacks.length - 1];
-        const hitResult = lastAttack.hit ? `💥 INCOMING! They hit your ${lastAttack.hit.name}!` : '🌊 Enemy missed! They hit nothing but water.';
+        const hitResult = lastAttack.hit
+          ? `Incoming! They hit your ${lastAttack.hit.name}!`
+          : 'Enemy missed! They hit nothing but water.';
         setTimeout(() => {
-          toast.info(hitResult, {
-            autoClose: 2000,
-            transition: Flip,
-          });
+          showAttackToast(!!lastAttack.hit, hitResult);
         }, 0);
       }
     }

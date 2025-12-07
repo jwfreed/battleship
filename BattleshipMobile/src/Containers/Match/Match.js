@@ -23,6 +23,8 @@ import AnchorIcon from '../../assets/icons/Anchor.svg';
 import RadarIcon from '../../assets/icons/Radar.svg';
 import FleetIcon from '../../assets/icons/Fleet.svg';
 import ExitIcon from '../../assets/icons/Exit.svg';
+import YourTurnIcon from '../../assets/icons/YourTurn.svg';
+import OpponentTurnIcon from '../../assets/icons/OpponentTurn.svg';
 
 const ATTACK_RESULT_DELAY = 2000; // 2 seconds
 
@@ -135,6 +137,17 @@ const Match = () => {
     [opponentAttackPlacements],
   );
 
+  const getTurnMeta = () => {
+    if (!turn) {
+      return {label: 'WAITING FOR OPPONENT', Icon: OpponentTurnIcon};
+    }
+    return turn === player
+      ? {label: 'YOUR TURN', Icon: YourTurnIcon}
+      : {label: "OPPONENT'S TURN", Icon: OpponentTurnIcon};
+  };
+
+  const {label: turnLabel, Icon: TurnIcon} = getTurnMeta();
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Status Bar */}
@@ -161,13 +174,19 @@ const Match = () => {
       <View style={styles.turnContainer}>
         <View
           style={[styles.turnIndicator, turn === player && styles.yourTurn]}>
-          <Text style={styles.turnLabel}>
-            {!turn
-              ? 'WAITING FOR OPPONENT'
-              : turn === player
-              ? '⚔️ YOUR TURN'
-              : "⏳ OPPONENT'S TURN"}
-          </Text>
+          <View style={styles.turnRow}>
+            {TurnIcon ? (
+              <View style={styles.turnIcon}>
+                <TurnIcon
+                  width={18}
+                  height={18}
+                  fill={theme.colors.primary}
+                  stroke={theme.colors.primary}
+                />
+              </View>
+            ) : null}
+            <Text style={styles.turnLabel}>{turnLabel}</Text>
+          </View>
         </View>
         <View style={styles.playerBadge}>
           <Text style={styles.playerText}>{player || 'JOINING...'}</Text>
@@ -303,6 +322,14 @@ const styles = StyleSheet.create({
   },
   yourTurn: {
     backgroundColor: theme.colors.primaryDark,
+  },
+  turnRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  turnIcon: {
+    marginRight: 6,
   },
   turnLabel: {
     color: theme.colors.text,

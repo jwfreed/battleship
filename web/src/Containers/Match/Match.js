@@ -6,7 +6,17 @@ import ShipSelect from '../ShipSelect/ShipSelect';
 import GameContext from '../../Context/GameContext';
 import { createAttacksObj } from './matchService';
 import FleetHealth from '../../Components/FleetHealth/FleetHealth';
-import { CrosshairsIcon, AnchorIcon, RadarIcon, FleetIcon, ExitIcon } from '../../Components/Icons/Icons';
+import {
+  CrosshairsIcon,
+  AnchorIcon,
+  RadarIcon,
+  FleetIcon,
+  ExitIcon,
+  HitIcon,
+  MissIcon,
+  YourTurnIcon,
+  OpponentTurnIcon,
+} from '../../Components/Icons/Icons';
 import 'react-toastify/dist/ReactToastify.css';
 import './Match.css';
 
@@ -103,10 +113,14 @@ export const Match = memo(() => {
     return <div className="loading-container">Loading match...</div>;
   }
 
-  const getTurnLabel = () => {
-    if (!turn) return 'WAITING FOR OPPONENT';
-    return turn === player ? '⚔️ YOUR TURN' : "⏳ OPPONENT'S TURN";
+  const getTurnMeta = () => {
+    if (!turn) return { label: 'WAITING FOR OPPONENT', Icon: OpponentTurnIcon };
+    return turn === player
+      ? { label: 'YOUR TURN', Icon: YourTurnIcon }
+      : { label: "OPPONENT'S TURN", Icon: OpponentTurnIcon };
   };
+
+  const { label: turnLabel, Icon: TurnIcon } = getTurnMeta();
 
   return (
     <div className="game">
@@ -137,7 +151,10 @@ export const Match = memo(() => {
       {/* Turn Indicator */}
       <div className="turn-container">
         <div className={`turn-indicator ${turn === player ? 'your-turn' : ''}`}>
-          <p className="turn-label">{getTurnLabel()}</p>
+          <div className="turn-label-row">
+            {TurnIcon ? <TurnIcon size={18} className="turn-icon" /> : null}
+            <p className="turn-label">{turnLabel}</p>
+          </div>
         </div>
         <div className="player-badge">
           <p className="player-text">{player || 'JOINING...'}</p>
