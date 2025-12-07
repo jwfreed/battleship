@@ -16,28 +16,46 @@ const App = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const controller = new AbortController();
+    let isMounted = true;
+
     const init = async () => {
       const loadedState = await loadInitialState();
+      if (!isMounted) {
+        return;
+      }
       dispatch({type: 'INITIALIZE', data: loadedState});
       
       // Check for active match if not already in one
       if (!loadedState.matchID && loadedState.uid) {
         try {
-          const response = await fetch(`${API_URL}/match/active/${loadedState.uid}`);
+          const response = await fetch(`${API_URL}/match/active/${loadedState.uid}`, {
+            signal: controller.signal,
+          });
           const data = await response.json();
           
-          if (data.success && data.data) {
+          if (isMounted && data.success && data.data) {
             console.log('Found active match, rejoining:', data.data);
             dispatch({type: 'REJOIN_MATCH', data: data.data});
           }
         } catch (error) {
-          console.error('Error checking for active match:', error);
+          if (error.name !== 'AbortError') {
+            console.error('Error checking for active match:', error);
+          }
         }
       }
       
-      setLoading(false);
+      if (isMounted) {
+        setLoading(false);
+      }
     };
+
     init();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, []);
 
   if (loading) {

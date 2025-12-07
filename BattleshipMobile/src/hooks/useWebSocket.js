@@ -12,46 +12,68 @@ const useWebSocket = url => {
   const [readyState, setReadyState] = useState(ReadyState.CONNECTING);
   const webSocketRef = useRef(null);
   const messageQueueRef = useRef([]);
+  const reconnectAttemptsRef = useRef(0);
+  const reconnectTimeoutRef = useRef(null);
+  const shouldReconnectRef = useRef(true);
 
   useEffect(() => {
     if (!url) {
       return;
     }
 
-    const ws = new WebSocket(url);
-    webSocketRef.current = ws;
+    shouldReconnectRef.current = true;
 
-    ws.onopen = () => {
-      console.log('WebSocket connected');
-      setReadyState(ReadyState.OPEN);
-      
-      // Send any queued messages
-      while (messageQueueRef.current.length > 0) {
-        const queuedMessage = messageQueueRef.current.shift();
-        console.log('Sending queued WebSocket message:', queuedMessage);
-        ws.send(queuedMessage);
-      }
+    const connect = () => {
+      const ws = new WebSocket(url);
+      webSocketRef.current = ws;
+
+      ws.onopen = () => {
+        console.log('WebSocket connected');
+        setReadyState(ReadyState.OPEN);
+        reconnectAttemptsRef.current = 0;
+
+        // Send any queued messages
+        while (messageQueueRef.current.length > 0) {
+          const queuedMessage = messageQueueRef.current.shift();
+          console.log('Sending queued WebSocket message:', queuedMessage);
+          ws.send(queuedMessage);
+        }
+      };
+
+      ws.onmessage = event => {
+        console.log('WebSocket message received:', event.data);
+        setLastMessage({data: event.data});
+      };
+
+      ws.onerror = error => {
+        console.error('WebSocket error:', error);
+      };
+
+      ws.onclose = () => {
+        console.log('WebSocket closed');
+        setReadyState(ReadyState.CLOSED);
+
+        if (shouldReconnectRef.current) {
+          const attempt = reconnectAttemptsRef.current;
+          const delay = Math.min(1000 * 2 ** attempt, 10000);
+          reconnectAttemptsRef.current += 1;
+          reconnectTimeoutRef.current = setTimeout(connect, delay);
+        }
+      };
     };
 
-    ws.onmessage = event => {
-      console.log('WebSocket message received:', event.data);
-      setLastMessage({data: event.data});
-    };
-
-    ws.onerror = error => {
-      console.error('WebSocket error:', error);
-    };
-
-    ws.onclose = () => {
-      console.log('WebSocket closed');
-      setReadyState(ReadyState.CLOSED);
-    };
+    connect();
 
     return () => {
+      shouldReconnectRef.current = false;
+      reconnectAttemptsRef.current = 0;
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+      }
       // Always close the socket when the hook cleans up so we don't keep
       // around parallel connections (e.g., after fast refresh or a quick remount)
       try {
-        ws.close();
+        webSocketRef.current?.close();
       } catch (e) {
         // ignore
       }

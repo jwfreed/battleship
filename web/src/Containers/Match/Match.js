@@ -41,7 +41,12 @@ export const Match = memo(() => {
   } = useContext(GameContext);
 
   const socketUrl = `${import.meta.env.VITE_SOCKET_URL}/${matchID}`;
-  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
+  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl, {
+    shouldReconnect: () => true,
+    retryOnError: true,
+    reconnectAttempts: 10,
+    reconnectInterval: (attempt) => Math.min(1000 * 2 ** attempt, 10000),
+  });
 
   const isConnected = useMemo(() => readyState === 1, [readyState]);
 
