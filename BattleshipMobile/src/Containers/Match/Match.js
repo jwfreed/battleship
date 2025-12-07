@@ -15,6 +15,7 @@ import GameContext from '../../Context/GameContext';
 import {createAttacksObj} from '../../Context/GameActions';
 import {SOCKET_URL} from '../../constants';
 import {theme} from '../../theme';
+import {showToast} from '../../Components/Toast/Toast';
 
 // Custom icons
 import CrosshairsIcon from '../../assets/icons/Crosshairs.svg';
@@ -92,16 +93,13 @@ const Match = () => {
 
   const copyToClipboard = useCallback((text, label) => {
     Clipboard.setString(text);
-    Alert.alert('Copied', `${label} copied to clipboard`);
+    showToast(`${label} copied to clipboard`, 'success');
   }, []);
 
   const doCommitShips = () => {
     const numberOfShipsPlaced = Object.keys(shipsPlaced).length;
     if (numberOfShipsPlaced < ships.length) {
-      return Alert.alert(
-        'Warning',
-        'You must position all ships in your fleet.',
-      );
+      return showToast('You must position all ships in your fleet.', 'warning');
     }
     const placeShipsMessage = JSON.stringify({
       action: 'SHIP_PLACEMENTS',
@@ -109,13 +107,13 @@ const Match = () => {
       uid,
       turn,
     });
-    Alert.alert('Success', 'Ships Placed');
+    showToast('Ships Deployed!', 'success');
     return sendMessage(placeShipsMessage);
   };
 
   const doAttackTile = (row, col) => {
     if (player !== turn) {
-      return Alert.alert('Warning', "It's not your turn");
+      return showToast("It's not your turn", 'warning');
     }
     const placeAttackMessage = JSON.stringify({
       action: 'ATTACK',

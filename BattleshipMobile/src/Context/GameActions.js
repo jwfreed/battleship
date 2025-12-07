@@ -1,5 +1,6 @@
 import {Alert} from 'react-native';
 import {initialState} from './GameContext';
+import {showToast} from '../Components/Toast/Toast';
 
 export const selectShip = (prevState, action) => {
   const ship = action.ship;
@@ -26,19 +27,19 @@ export const placeShip = (prevState, action) => {
   };
 
   if (prevState.shipsCommitted) {
-    Alert.alert('Warning', 'Ships already placed and committed');
+    showToast('Ships already placed and committed', 'warning');
     return prevState;
   }
 
   if (!selectedShip.name && !prevState.shipsCommitted) {
     // if no selected ship
-    Alert.alert('Warning', 'Select a ship first');
+    showToast('Select a ship first', 'warning');
     return prevState;
   }
 
   if (prevState.shipsPlaced[selectedShip.name] && !prevState.shipsCommitted) {
     // if ship is already on the board
-    Alert.alert('Warning', 'Ship is already on the board\nSelect another ship');
+    showToast('Ship is already on the board', 'warning');
     return prevState;
   }
 
@@ -53,7 +54,7 @@ export const placeShip = (prevState, action) => {
   };
 
   const invalidMove = () => {
-    Alert.alert('Warning', 'Cannot place ships off board or on occupied tile');
+    showToast('Cannot place ship here', 'warning');
 
     newPlacements = {...currentPlacements};
     shipPlacementSuccessful = {[selectedShip.name]: false};
@@ -236,9 +237,10 @@ export const updateContext = (prevState, action) => {
       };
       // Show result, then switch to fleet view after delay
       pendingViewChange = 'P';
-      Alert.alert(
-        wasHit ? '💥 HIT!' : '💦 MISS',
-        wasHit ? `You hit their ${lastAttack.hit.name}!` : 'Your shot missed.',
+      showToast(
+        wasHit ? `💥 HIT! You hit their ${lastAttack.hit.name}!` : '💦 MISS - Your shot missed.',
+        wasHit ? 'success' : 'info',
+        2500
       );
     }
     // Opponent just attacked me (opponent attack count increased)
@@ -252,9 +254,10 @@ export const updateContext = (prevState, action) => {
       };
       // Show result, then switch to attack view after delay
       pendingViewChange = 'A';
-      Alert.alert(
-        wasHit ? '🚨 HIT!' : '💨 MISS',
-        wasHit ? `They hit your ${lastAttack.hit.name}!` : 'Their shot missed.',
+      showToast(
+        wasHit ? `🚨 HIT! They hit your ${lastAttack.hit.name}!` : '💨 MISS - Their shot missed.',
+        wasHit ? 'error' : 'info',
+        2500
       );
     }
     
@@ -372,7 +375,7 @@ export const rejoinMatch = (prevState, action) => {
     shipsPlaced,
   });
 
-  Alert.alert('Welcome Back', 'Rejoined active match!');
+  showToast('Welcome back! Rejoined match.', 'success');
 
   return {
     ...prevState,

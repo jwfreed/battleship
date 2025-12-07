@@ -14,6 +14,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import GameContext from '../../Context/GameContext';
 import {API_URL} from '../../constants';
 import {theme} from '../../theme';
+import {showToast} from '../Toast/Toast';
 
 const {width} = Dimensions.get('window');
 
@@ -47,7 +48,7 @@ const CreateOrJoinGame = () => {
 
       if (matchID) {
         dispatch({type: 'JOIN_GAME', matchID});
-        Alert.alert('Success', 'Share Match ID with your opponent: ' + matchID);
+        showToast('Game created! Share Match ID with opponent.', 'success', 3000);
       } else {
         throw new Error('No match ID returned from server');
       }
@@ -62,7 +63,7 @@ const CreateOrJoinGame = () => {
       dispatch({type: 'JOIN_GAME', matchID: joinMatch});
       return;
     }
-    Alert.alert('Warning', 'Enter a match Id to join a match');
+    showToast('Enter a match ID to join', 'warning');
   };
 
   const copyUid = async () => {
@@ -71,13 +72,13 @@ const CreateOrJoinGame = () => {
         message: uid,
       });
     } catch (error) {
-      Alert.alert('Player ID', uid);
+      showToast(`Player ID: ${uid}`, 'info', 3000);
     }
   };
 
   const handleRejoinFromOtherDevice = async () => {
     if (!rejoinMatch || !rejoinUid) {
-      Alert.alert('Error', 'Enter both Match ID and your Player ID');
+      showToast('Enter both Match ID and Player ID', 'warning');
       return;
     }
 

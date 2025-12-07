@@ -9,6 +9,7 @@ import Match from './src/Containers/Match/Match';
 import CreateOrJoinGame from './src/Components/CreateOrJoinGame/CreateOrJoinGame';
 import {theme} from './src/theme';
 import {API_URL} from './src/constants';
+import {Toast} from './src/Components/Toast/Toast';
 
 const App = () => {
   const [state, dispatch] = useReducer(GameReducer, initialState);
@@ -55,6 +56,7 @@ const App = () => {
       />
       <GameContext.Provider value={{...state, dispatch}}>
         {state.matchID ? <Match /> : <CreateOrJoinGame />}
+        <Toast />
       </GameContext.Provider>
     </SafeAreaView>
   );
