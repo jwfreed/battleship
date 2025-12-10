@@ -25,7 +25,8 @@ CREATE INDEX IF NOT EXISTS idx_matches_created_at ON matches(created_at);
 
 -- Create function to automatically update updated_at timestamp
 CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+SET search_path = public AS $$
 BEGIN
   NEW.updated_at = NOW();
   RETURN NEW;
@@ -93,7 +94,8 @@ WHERE player_two IS NOT NULL;
 
 -- Optional: Create a function to clean up old matches (older than 7 days)
 CREATE OR REPLACE FUNCTION cleanup_old_matches()
-RETURNS void AS $$
+RETURNS void
+SET search_path = public AS $$
 BEGIN
   DELETE FROM matches 
   WHERE created_at < NOW() - INTERVAL '7 days';

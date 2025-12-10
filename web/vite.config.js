@@ -21,7 +21,8 @@ export default defineConfig({
     open: true,
   },
   build: {
-    outDir: 'build',
+    // Align with Netlify default publish directory
+    outDir: 'dist',
     // Production optimizations
     minify: 'terser',
     terserOptions: {
