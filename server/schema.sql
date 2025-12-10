@@ -76,7 +76,9 @@ CREATE POLICY "Users can update their matches"
 -- This is automatically handled when using service_role key
 
 -- Optional: Create a view for active matches (matches with both players)
-CREATE OR REPLACE VIEW active_matches AS
+-- Use security_invoker so the caller's RLS/permissions are applied
+CREATE OR REPLACE VIEW active_matches
+WITH (security_invoker = true) AS
 SELECT 
   id,
   player_one,

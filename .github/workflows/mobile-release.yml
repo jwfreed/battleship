@@ -1,0 +1,49 @@
+name: Mobile Release Build
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: BattleshipMobile
+    env:
+      EAS_TOKEN: ${{ secrets.EAS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: BattleshipMobile/package-lock.json
+      - run: npm ci
+      - name: Install EAS CLI
+        if: env.EAS_TOKEN != ''
+        run: npm install -g eas-cli
+      - name: EAS Android build (APK/AAB)
+        if: env.EAS_TOKEN != ''
+        run: |
+          eas build --platform android --profile production --non-interactive --output=../artifacts/android
+      - name: EAS iOS build (IPA)
+        if: env.EAS_TOKEN != ''
+        run: |
+          eas build --platform ios --profile production --non-interactive --output=../artifacts/ios
+      - name: Upload artifacts to GitHub
+        if: env.EAS_TOKEN != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-builds
+          path: |
+            artifacts/android/**
+            artifacts/ios/**
+      - name: Create GitHub Release with APK
+        if: env.EAS_TOKEN != ''
+        uses: softprops/action-gh-release@v1
+        with:
+          files: artifacts/android/**
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
