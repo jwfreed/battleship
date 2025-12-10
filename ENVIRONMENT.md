@@ -2,12 +2,12 @@
 
 Supabase-powered Battleship requires a few environment variables across web, mobile, and server. Use `.env.example` as a starting point.
 
-## Required
+## Required (Web client)
 - `SUPABASE_URL` / `VITE_SUPABASE_URL` / `MOBILE_SUPABASE_URL`: Your Supabase project URL.
 - `SUPABASE_ANON_KEY` / `VITE_SUPABASE_ANON_KEY` / `MOBILE_SUPABASE_ANON_KEY`: Supabase anon key for client SDKs.
 - `SUPABASE_SERVICE_ROLE_KEY`: Only for trusted server-side contexts (never ship to client).
 - `API_URL` / `SOCKET_URL`: Backend REST/WebSocket endpoints used by the mobile app.
-- `VITE_SOCKET_URL`: WebSocket endpoint used by the Vite web client (must start with `wss://` in production).
+- `VITE_SOCKET_URL`: WebSocket endpoint used by the Vite web client (must start with `wss://` in production), e.g. `wss://<project>.functions.supabase.co/realtime-ws`.
 - `MOBILE_SOCKET_URL`: WebSocket endpoint used by the React Native app.
 
 ## Usage
